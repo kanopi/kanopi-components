@@ -1,0 +1,31 @@
+{
+  "name": "kanopi/utilities",
+  "description": "Kanopi Utility Functionality for other libraries, plugins, themes, etc.",
+  "type": "library",
+  "version": "1.0.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Kanopi Studios",
+      "email": "support@kanopistudios.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Kanopi\\Utilities\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=7.4",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "automattic/vipwpcs": "^2.3",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}
