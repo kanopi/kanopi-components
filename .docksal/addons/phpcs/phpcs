@@ -6,10 +6,10 @@
 ## to help make sure is to coding standards.
 ##
 ## Running PHPCS
-##   fin phpcs cs "[directory name]"
+##   fin phpcs cs "[directory name]" [additional options]
 ##
 ## Running PHPCBF
-##   fin phpcs cbf "[directory name]"
+##   fin phpcs cbf "[directory name]" [additional options]
 ##
 ## Usage:
 ##   cs     Run PHPCS
@@ -19,10 +19,6 @@ STANDARDS=""
 
 if [[ -n "${PHPCS_STANDARDS}" ]]; then
   STANDARDS="${PHPCS_STANDARDS}"
-fi
-
-if [[ -n "${PHPCS_EXTENSIONS}" ]]; then
-  EXTENSIONS="${PHPCS_EXTENSIONS}"
 fi
 
 COMMAND=""
@@ -48,12 +44,14 @@ if [[ "$@" =~ "--standard=" ]]; then
   STANDARD_OPT=""
 fi
 
-# If extension flag is used remove our default.
-EXTENSION_OPT="--extensions=\"${EXTENSIONS}\""
-if [[ "$@" =~ "--extensions=" ]]; then
+# If extension flag is used remove any environment provided extensions
+EXTENSION_OPT=""
+if [[ -n "${PHPCS_EXTENSIONS}" ]]; then
+  EXTENSION_OPT="--extensions=\"${PHPCS_EXTENSIONS}\""
+fi
+if [[ "$*" =~ "--extensions=" ]]; then
   EXTENSION_OPT=""
 fi
 
-echo "$COMMAND $STANDARD_OPT $EXTENSION_OPT $@ -vvv"
 # run the command in the container.
-fin exec "$COMMAND $STANDARD_OPT $EXTENSION_OPT $@ -vvv"
+fin exec "$COMMAND $STANDARD_OPT $EXTENSION_OPT $*"

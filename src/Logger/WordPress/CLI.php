@@ -3,15 +3,16 @@
  * Standard echo and WP error logging
  */
 
-namespace Kanopi\Utilities\Logger;
+namespace Kanopi\Utilities\Logger\WordPress;
 
+use Kanopi\Utilities\Logger\ILogger;
 use WP_CLI;
 
 class CLI implements ILogger {
 	/**
 	 * @inheritDoc
 	 */
-	function error( string $_message ): void {
+	function error( $_message ): void {
 		WP_CLI::error( $_message, false );
 	}
 

@@ -30,9 +30,12 @@ class JsonSetStream implements ISetStream {
 	 * @return iterable
 	 */
 	protected function process( string $_input ): iterable {
-		$rawData = ltrim( $_input, chr( 239 ) . chr( 187 ) . chr( 191 ) );
-		$rawData = str_starts_with( bin2hex( $rawData ), 'efbbbf' ) ? substr( $rawData, 3 ) : $rawData;
-		$data    = json_decode( $rawData, true );
+		$startSegment = 'efbbbf';
+		$rawData      = ltrim( $_input, chr( 239 ) . chr( 187 ) . chr( 191 ) );
+		$rawData      = $startSegment === substr( bin2hex( $rawData ), 0, strlen( $startSegment ) )
+			? substr( $rawData, 3 )
+			: $rawData;
+		$data         = json_decode( $rawData, true );
 
 		return !empty( $data ) && is_array( $data ) ? new ArrayIterator( $data ) : new EmptyIterator();
 	}

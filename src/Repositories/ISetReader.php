@@ -15,5 +15,5 @@ interface ISetReader {
 	 *
 	 * @return EntityIterator
 	 */
-	function read( mixed $_filter = null ): EntityIterator;
+	function read( $_filter = null ): EntityIterator;
 }

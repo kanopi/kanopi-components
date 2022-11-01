@@ -28,7 +28,7 @@ trait Entities {
 	/**
 	 * Read the entity iterator
 	 *
-	 * @return iterable
+	 * @return EntityIterator
 	 */
 	function read(): EntityIterator {
 		return $this->entities;
