@@ -6,3 +6,6 @@
 # Composer Installations
 /vendor
 /composer.lock
+
+# Makefile Results
+/results*.txt
