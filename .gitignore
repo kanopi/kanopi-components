@@ -1,5 +1,8 @@
-/vendor
+# Local and Editors
+.idea
 *.sql
 *.log
 
+# Composer Installations
+/vendor
 /composer.lock
