@@ -3,9 +3,9 @@
  * Common data set trait
  */
 
-namespace Kanopi\Utilities\Model\Data;
+namespace Kanopi\Components\Model\Data;
 
-use Kanopi\Utilities\Model\Collection\EntityIterator;
+use Kanopi\Components\Model\Collection\EntityIterator;
 
 trait Entities {
 	/**

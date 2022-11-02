@@ -3,9 +3,9 @@
  * Data reader interface for sets of content of a given type
  */
 
-namespace Kanopi\Utilities\Repositories;
+namespace Kanopi\Components\Repositories;
 
-use Kanopi\Utilities\Model\Collection\EntityIterator;
+use Kanopi\Components\Model\Collection\EntityIterator;
 
 interface ISetReader {
 	/**

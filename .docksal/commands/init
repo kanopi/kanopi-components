@@ -35,4 +35,4 @@ fi
 echo -e "${green_bg} Step 2 ${NC}${green} Initializing Composer...${NC}"
 fin composer install
 echo
-echo -e "${green} For PHPCS in the CLI, run:${NC} ${yellow}fin phpcs cs${NC}"
+echo -e "${green} For PHPCS in the CLI, run:${NC} ${yellow}fin composer -n phpcs${NC}"

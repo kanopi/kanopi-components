@@ -1,6 +1,6 @@
 {
-  "name": "kanopi/utilities",
-  "description": "Kanopi Utility Functionality for other libraries, plugins, themes, etc.",
+  "name": "kanopi/components",
+  "description": "Kanopi Modular Component patterns for use in related PHP libraries, plugins, themes, and more",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -11,7 +11,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Kanopi\\Utilities\\": "src/"
+      "Kanopi\\Components\\": "src/"
     }
   },
   "require": {

@@ -3,7 +3,7 @@
  * Logging Interface
  */
 
-namespace Kanopi\Utilities\Logger;
+namespace Kanopi\Components\Logger;
 
 interface ILogger {
 	/**

@@ -3,7 +3,7 @@
  * Read a local file at a give path
  */
 
-namespace Kanopi\Utilities\Repositories;
+namespace Kanopi\Components\Repositories;
 
 use InvalidArgumentException;
 

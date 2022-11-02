@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanopi\Utilities\Model\Collection;
+namespace Kanopi\Components\Model\Collection;
 
 use ArrayIterator;
 

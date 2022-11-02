@@ -1,4 +1,4 @@
-# Kanopi Utilities
+# Kanopi Components Library
 
 PHP library to provide common model and service patterns for building other applications
 
@@ -9,24 +9,24 @@ PHP library to provide common model and service patterns for building other appl
 
 ## Structure
 
-All structures are stored under the PSR-4 namespace `Kanopi\Utilities`.
+All structures are stored under the PSR-4 namespace `Kanopi\Components`.
 
 ### Logger
 
-**Namespace**: `Kanopi\Utilties\Logger`
+**Namespace**: `Kanopi\Components\Logger`
 
 `ILogger` is the interface to wrap and proxy different logging methods.
 
 ### Model
 
-**Namespace**: `Kanopi\Utilties\Model`
+**Namespace**: `Kanopi\Components\Model`
 
 Helper models for other Repositories and Services, provides patterns for Collections/Iterators 
 with validity and Exceptions.
 
 ### Repositories
 
-**Namespace**: `Kanopi\Utilties\Repositories`
+**Namespace**: `Kanopi\Components\Repositories`
 
 Interfaces in front of direct I/O operations in the concrete classes. This namespace
 is intended to pattern interactions with direct sources like databases, files, etc.  
@@ -38,6 +38,6 @@ There are concrete implementations of WP_Query and the WP Post Meta for `ISetRea
 
 ### Services
 
-**Namespace**: `Kanopi\Utilties\Services`
+**Namespace**: `Kanopi\Components\Services`
 
 Interfaces to coordinate data processing from external sources into an local system resource. 

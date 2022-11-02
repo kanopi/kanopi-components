@@ -3,10 +3,10 @@
  * Generic repository to read all post meta for a give post ID
  */
 
-namespace Kanopi\Utilities\Repositories\WordPress;
+namespace Kanopi\Components\Repositories\WordPress;
 
-use Kanopi\Utilities\Model\Collection\EntityIterator;
-use Kanopi\Utilities\Repositories\ISetReader;
+use Kanopi\Components\Model\Collection\EntityIterator;
+use Kanopi\Components\Repositories\ISetReader;
 
 class PostMeta implements ISetReader {
 	/**

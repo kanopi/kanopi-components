@@ -3,9 +3,9 @@
  * Transform an iterable set into an EntityIterator
  */
 
-namespace Kanopi\Utilities\Model\Transform;
+namespace Kanopi\Components\Model\Transform;
 
-use Kanopi\Utilities\Model\Collection\EntityIterator;
+use Kanopi\Components\Model\Collection\EntityIterator;
 
 interface IEntitySet {
 	/**

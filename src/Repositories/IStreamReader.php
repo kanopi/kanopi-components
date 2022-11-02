@@ -3,7 +3,7 @@
  * Data reader interface for streams of data
  */
 
-namespace Kanopi\Utilities\Repositories;
+namespace Kanopi\Components\Repositories;
 
 use InvalidArgumentException;
 

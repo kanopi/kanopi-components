@@ -3,9 +3,9 @@
  * Standard echo and WP error logging
  */
 
-namespace Kanopi\Utilities\Logger\WordPress;
+namespace Kanopi\Components\Logger\WordPress;
 
-use Kanopi\Utilities\Logger\ILogger;
+use Kanopi\Components\Logger\ILogger;
 use WP_CLI;
 
 class CLI implements ILogger {

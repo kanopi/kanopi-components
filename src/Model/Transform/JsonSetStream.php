@@ -3,9 +3,9 @@
  * Convert a JSON string into a JSON array equivalent
  */
 
-namespace Kanopi\Utilities\Model\Transform;
+namespace Kanopi\Components\Model\Transform;
 
-use Kanopi\Utilities\Model\Exception\SetStreamException;
+use Kanopi\Components\Model\Exception\SetStreamException;
 
 use ArrayIterator;
 use EmptyIterator;

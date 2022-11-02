@@ -1,10 +1,10 @@
 <?php
 
-namespace Kanopi\Utilities\Services\External;
+namespace Kanopi\Components\Services\External;
 
-use Kanopi\Utilities\Model\Exception\SetStreamException;
-use Kanopi\Utilities\Model\Transform\IEntitySet;
-use Kanopi\Utilities\Services\IIndexedEntityReader;
+use Kanopi\Components\Model\Exception\SetStreamException;
+use Kanopi\Components\Model\Transform\IEntitySet;
+use Kanopi\Components\Services\IIndexedEntityReader;
 
 interface IExternalStreamReader extends IIndexedEntityReader {
 	/**

@@ -3,7 +3,7 @@
  * Standard echo and error logging
  */
 
-namespace Kanopi\Utilities\Logger;
+namespace Kanopi\Components\Logger;
 
 class Standard implements ILogger {
 	/**

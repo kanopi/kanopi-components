@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanopi\Utilities\Model\Data;
+namespace Kanopi\Components\Model\Data;
 
 interface IIndexedEntity {
 	/**

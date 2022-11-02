@@ -2,10 +2,10 @@
 /**
  * Wrapper to catch SetStream transform exceptions
  *
- * @package kanopi/utilities
+ * @package kanopi/components
  */
 
-namespace Kanopi\Utilities\Model\Exception;
+namespace Kanopi\Components\Model\Exception;
 
 use Exception;
 use Throwable;

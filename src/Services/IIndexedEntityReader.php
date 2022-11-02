@@ -1,8 +1,8 @@
 <?php
 
-namespace Kanopi\Utilities\Services;
+namespace Kanopi\Components\Services;
 
-use Kanopi\Utilities\Model\Collection\EntityIterator;
+use Kanopi\Components\Model\Collection\EntityIterator;
 
 interface IIndexedEntityReader {
 	/**

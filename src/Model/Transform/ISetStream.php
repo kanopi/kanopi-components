@@ -3,9 +3,9 @@
  * Transform an input stream into an iterable set
  */
 
-namespace Kanopi\Utilities\Model\Transform;
+namespace Kanopi\Components\Model\Transform;
 
-use Kanopi\Utilities\Model\Exception\SetStreamException;
+use Kanopi\Components\Model\Exception\SetStreamException;
 
 interface ISetStream {
 	/**

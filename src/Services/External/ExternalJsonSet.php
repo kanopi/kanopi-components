@@ -3,12 +3,12 @@
  * External JSON based Location data model set
  */
 
-namespace Kanopi\Utilities\Services\External;
+namespace Kanopi\Components\Services\External;
 
-use Kanopi\Utilities\Model\Data\Entities;
-use Kanopi\Utilities\Model\Transform\IEntitySet;
-use Kanopi\Utilities\Model\Transform\ISetStream;
-use Kanopi\Utilities\Repositories\IStreamReader;
+use Kanopi\Components\Model\Data\Entities;
+use Kanopi\Components\Model\Transform\IEntitySet;
+use Kanopi\Components\Model\Transform\ISetStream;
+use Kanopi\Components\Repositories\IStreamReader;
 
 class ExternalJsonSet implements IExternalStreamReader {
 	/**
