@@ -2,7 +2,6 @@
   "name": "kanopi/utilities",
   "description": "Kanopi Utility Functionality for other libraries, plugins, themes, etc.",
   "type": "library",
-  "version": "1.0.0",
   "license": "MIT",
   "authors": [
     {
