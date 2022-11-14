@@ -1,4 +1,5 @@
 # Local and Editors
+.DS_Store
 .idea
 *.sql
 *.log

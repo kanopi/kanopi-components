@@ -4,8 +4,7 @@
     name="PSR-4-PHP-7-4"
     xsi:noNamespaceSchemaLocation="phpcs.xsd"
 >
-    <description>PSR-4 PHP 7.4 Rules</description>
-    <config name="testVersion" value="7.4-"/>
+    <description>PSR-4 PHP Rules</description>
 
 	<arg name="basepath" value="./"/>
 	<arg name="extensions" value="php"/>

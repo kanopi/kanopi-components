@@ -27,4 +27,7 @@ php81:
 .PHONY: test
 
 test:
+	$(MAKE) -j 2 php74 php80
+
+test-experimental:
 	$(MAKE) -j 3 php74 php80 php81
