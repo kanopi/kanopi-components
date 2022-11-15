@@ -3,12 +3,11 @@
  * Convert a JSON string into a JSON array equivalent
  */
 
-namespace Kanopi\Components\Model\Transform;
-
-use Kanopi\Components\Model\Exception\SetStreamException;
+namespace Kanopi\Components\Repositories;
 
 use ArrayIterator;
 use EmptyIterator;
+use Kanopi\Components\Model\Exception\SetStreamException;
 
 class JsonSetStream implements ISetStream {
 	const ERROR_REFERENCE = [
@@ -43,7 +42,7 @@ class JsonSetStream implements ISetStream {
 	/**
 	 * @inheritDoc
 	 */
-	public function transform( string $_input_stream ): iterable {
+	public function read( string $_input_stream ): iterable {
 		$output     = $this->process( $_input_stream ?? '' );
 		$error_code = max( 0, json_last_error() );
 

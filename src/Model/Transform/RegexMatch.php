@@ -1,24 +1,28 @@
 <?php
-namespace Kanopi\Components\Models\Transform;
+/**
+ * Structure for the results of a single Regex Match
+ */
+
+namespace Kanopi\Components\Model\Transform;
 
 class RegexMatch {
 	/**
 	 * @var boolean
 	 */
-	public $is_excluded;
+	public bool $is_excluded;
 
 	/**
 	 * @var boolean
 	 */
-	public $is_match;
+	public bool $is_match;
 
 	/**
 	 * @var string
 	 */
-	public $original;
+	public string $original;
 
 	/**
 	 * @var string|null
 	 */
-	public $replacement;
+	public ?string $replacement;
 }

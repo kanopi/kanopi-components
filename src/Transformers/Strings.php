@@ -1,15 +1,15 @@
 <?php
 /**
- * String conversion utilities
+ * Common string transformation utilities
  */
 
-namespace Kanopi\Components\Converters;
+namespace Kanopi\Components\Transformers;
 
 class Strings {
 	/**
 	 * @var string
 	 */
-	protected $subject;
+	protected string $subject;
 
 	/**
 	 * Strings constructor, wraps the subject for chainable operations
@@ -27,7 +27,7 @@ class Strings {
 	 *
 	 * @return Strings
 	 */
-	static function from( string $_string ) {
+	static function from( string $_string ) : Strings {
 		return new Strings( $_string );
 	}
 
@@ -36,7 +36,7 @@ class Strings {
 	 *
 	 * @return Strings
 	 */
-	function pascal_to_separate( string $_separator = '-' ) {
+	function pascal_to_separate( string $_separator = '-' ): Strings {
 		preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $this->subject, $matches);
 
 		$conversion = $matches[0] ?? [ $this->subject ];
@@ -53,7 +53,7 @@ class Strings {
 	 *
 	 * @return Strings
 	 */
-	function separate_to_pascal( string $_separator = '-' ) {
+	function separate_to_pascal( string $_separator = '-' ): Strings {
 		return new Strings(
 			implode(
 				'',
@@ -69,7 +69,7 @@ class Strings {
 	 *
 	 * @return string
 	 */
-	function to_string() {
+	function to_string(): string {
 		return $this->subject ?? '';
 	}
 }

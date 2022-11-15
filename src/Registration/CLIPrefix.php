@@ -5,7 +5,7 @@
 
 namespace Kanopi\Components\Registration;
 
-use Kanopi\Components\Converters;
+use Kanopi\Components\Transformers;
 use WP_CLI;
 
 class CLIPrefix {
@@ -31,7 +31,7 @@ class CLIPrefix {
 
 				if ( ! empty( $match[1] ) ) {
 					WP_CLI::add_command(
-						$this->prefix . Converters\Strings::from( $match[1] )->pascal_to_separate()->to_string(),
+						$this->prefix . Transformers\Strings::from( $match[1] )->pascal_to_separate()->to_string(),
 						$_namespace . $match[1]
 					);
 				}

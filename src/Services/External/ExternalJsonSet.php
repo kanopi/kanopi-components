@@ -7,7 +7,7 @@ namespace Kanopi\Components\Services\External;
 
 use Kanopi\Components\Model\Data\Entities;
 use Kanopi\Components\Model\Transform\IEntitySet;
-use Kanopi\Components\Model\Transform\ISetStream;
+use Kanopi\Components\Repositories\ISetStream;
 use Kanopi\Components\Repositories\IStreamReader;
 
 class ExternalJsonSet implements IExternalStreamReader {

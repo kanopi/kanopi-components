@@ -1,23 +1,23 @@
 <?php
-namespace Kanopi\Components\Converters;
+namespace Kanopi\Components\Transformers;
 
-use Kanopi\Components\Models\Transform\RegexMatch;
+use Kanopi\Components\Model\Transform\RegexMatch;
 
 class RegexMatchReplace {
 	/**
 	 * @var string
 	 */
-	protected $_exclude;
+	protected string $_exclude;
 
 	/**
 	 * @var string
 	 */
-	protected $_replace;
+	protected string $_replace;
 
 	/**
 	 * @var string
 	 */
-	protected $_search;
+	protected string $_search;
 
 
 	public function __construct(
@@ -37,7 +37,7 @@ class RegexMatchReplace {
 	 *
 	 * @return RegexMatch
 	 */
-	public function replace( string $_original ) {
+	public function replace( string $_original ): RegexMatch {
 		$replacement = new RegexMatch();
 		$replacement->original = $_original;
 		$replacement->is_excluded = !empty( $this->_exclude ) && 1 === preg_match( $this->_exclude, $_original );

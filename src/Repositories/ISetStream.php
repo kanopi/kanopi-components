@@ -1,9 +1,9 @@
 <?php
 /**
- * Transform an input stream into an iterable set
+ * Reads an input stream into an iterable set
  */
 
-namespace Kanopi\Components\Model\Transform;
+namespace Kanopi\Components\Repositories;
 
 use Kanopi\Components\Model\Exception\SetStreamException;
 
@@ -17,5 +17,5 @@ interface ISetStream {
 	 *
 	 * @return iterable
 	 */
-	function transform( string $_input_stream ): iterable;
+	function read( string $_input_stream ): iterable;
 }
