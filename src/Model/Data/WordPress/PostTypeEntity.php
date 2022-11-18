@@ -25,28 +25,28 @@ abstract class PostTypeEntity implements IIndexedEntity {
 	 *
 	 * @var string
 	 */
-	public string $post_content = '';
+	public string $postContent = '';
 
 	/**
 	 * System post identifier
 	 *
 	 * @var int
 	 */
-	public int $post_id = 0;
+	public int $postId = 0;
 
 	/**
 	 * System post status
 	 *
 	 * @var string
 	 */
-	public string $post_status = 'publish';
+	public string $postStatus = 'publish';
 
 	/**
 	 * System post title
 	 *
 	 * @var string
 	 */
-	public string $post_title = '';
+	public string $postTitle = '';
 
 	/**
 	 * @inheritDoc
@@ -57,7 +57,7 @@ abstract class PostTypeEntity implements IIndexedEntity {
 	 * @inheritDoc
 	 */
 	function indexIdentifier(): int {
-		return $this->post_id;
+		return $this->postId;
 	}
 
 	/**
@@ -82,10 +82,10 @@ abstract class PostTypeEntity implements IIndexedEntity {
 	 */
 	function systemTransform(): array {
 		return Arrays::from( [
-			'post_status'  => $this->post_status,
+			'post_status'  => $this->postStatus,
 			'post_type'    => $this->entityName(),
-			'post_content' => $this->post_content,
-			'post_title'   => $this->post_title,
+			'post_content' => $this->postContent,
+			'post_title'   => $this->postTitle,
 		] )
 			->append_maybe( [ 'tax_input' => $this->taxonomyTermMapping() ], !empty( $this->taxonomyTermMapping() ) )
 			->append_maybe( [ 'meta_input' => $this->metaFieldMapping() ], !empty( $this->metaFieldMapping() ) )
@@ -103,7 +103,7 @@ abstract class PostTypeEntity implements IIndexedEntity {
 	 * @inheritDoc
 	 */
 	function updateIndexIdentifier( int $_index ): void {
-		$this->post_id = $_index;
+		$this->postId = $_index;
 	}
 
 	/**

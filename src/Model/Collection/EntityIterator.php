@@ -10,7 +10,7 @@ class EntityIterator extends ArrayIterator {
 	 *
 	 * @var string
 	 */
-	protected string $valid_entity_type;
+	protected string $validEntityType;
 
 	/**
 	 * Construct an iterator which validates all internal entities are of a given type
@@ -21,7 +21,7 @@ class EntityIterator extends ArrayIterator {
 	public function __construct( array $_entities, string $_valid_entity_type ) {
 		parent::__construct( $_entities );
 
-		$this->valid_entity_type = $_valid_entity_type;
+		$this->validEntityType = $_valid_entity_type;
 	}
 
 	/**
@@ -35,7 +35,7 @@ class EntityIterator extends ArrayIterator {
 	 * @return bool
 	 */
 	protected function checkValidObjectType(): bool {
-		return is_a( $this->current(), $this->valid_entity_type );
+		return is_a( $this->current(), $this->validEntityType );
 	}
 
 	/**
@@ -43,7 +43,7 @@ class EntityIterator extends ArrayIterator {
 	 */
 	protected function checkValidScalarType(): bool {
 		$type = gettype( $this->current() );
-		return 'object' !== $type && $this->valid_entity_type === $type;
+		return 'object' !== $type && $this->validEntityType === $type;
 	}
 
 	/**
