@@ -18,6 +18,14 @@ interface IIndexedEntity {
 	function indexIdentifier(): int;
 
 	/**
+	 * Transform to a system compatible entity array
+	 * 	- Target system dependent, structure per implementation
+	 *
+	 * @return array
+	 */
+	function systemTransform() : array;
+
+	/**
 	 * Cross-system unique identifier (hash, etc)
 	 *
 	 * @return string

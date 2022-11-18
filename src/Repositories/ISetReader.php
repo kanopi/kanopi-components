@@ -1,6 +1,6 @@
 <?php
 /**
- * Data reader interface for sets of content of a given type
+ * Data reader interface for sets of indexed content to a target repository
  */
 
 namespace Kanopi\Components\Repositories;
@@ -9,7 +9,7 @@ use Kanopi\Components\Model\Collection\EntityIterator;
 
 interface ISetReader {
 	/**
-	 * Read value/values for the underlying model
+	 * Read a set of values with an optional filter
 	 *
 	 * @param mixed $_filter Optional filter for read operation
 	 *

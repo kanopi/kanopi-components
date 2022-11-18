@@ -14,7 +14,7 @@ class CLIPrefix {
 	/**
 	 * @var string
 	 */
-	protected $prefix;
+	protected string $prefix;
 
 	function __construct( string $_prefix = '' ) {
 		$this->prefix = empty( $_prefix ) ? self::DEFAULT_PREFIX : $_prefix;
@@ -24,14 +24,14 @@ class CLIPrefix {
 		return new CLIPrefix( $_prefix );
 	}
 
-	function commands_in_namespace_directory( string $_namespace, string $_directory ) {
+	function commandsInNamespaceDirectory( string $_namespace, string $_directory ) {
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			foreach ( scandir( $_directory ) as $file ) {
 				preg_match( '/^([\w\-]+)\.php/', $file, $match );
 
 				if ( ! empty( $match[1] ) ) {
 					WP_CLI::add_command(
-						$this->prefix . Transformers\Strings::from( $match[1] )->pascal_to_separate()->to_string(),
+						$this->prefix . Transformers\Strings::from( $match[1] )->pascalToSeparate()->toString(),
 						$_namespace . $match[1]
 					);
 				}

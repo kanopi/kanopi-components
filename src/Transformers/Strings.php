@@ -36,7 +36,7 @@ class Strings {
 	 *
 	 * @return Strings
 	 */
-	function pascal_to_separate( string $_separator = '-' ): Strings {
+	function pascalToSeparate( string $_separator = '-' ): Strings {
 		preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $this->subject, $matches);
 
 		$conversion = $matches[0] ?? [ $this->subject ];
@@ -53,7 +53,7 @@ class Strings {
 	 *
 	 * @return Strings
 	 */
-	function separate_to_pascal( string $_separator = '-' ): Strings {
+	function separateToPascal( string $_separator = '-' ): Strings {
 		return new Strings(
 			implode(
 				'',
@@ -69,7 +69,7 @@ class Strings {
 	 *
 	 * @return string
 	 */
-	function to_string(): string {
+	function toString(): string {
 		return $this->subject ?? '';
 	}
 }
