@@ -21,6 +21,10 @@ trait Entities {
 	 * @return bool
 	 */
 	public function hasEntities(): bool {
+		if ( empty( $this->entities ) ) {
+			return false;
+		}
+
 		$this->entities->rewind();
 		return $this->entities->valid();
 	}
@@ -31,6 +35,6 @@ trait Entities {
 	 * @return EntityIterator
 	 */
 	function read(): EntityIterator {
-		return $this->entities;
+		return $this->hasEntities() ? $this->entities : new EntityIterator( [], 'int' );
 	}
 }

@@ -13,7 +13,7 @@ interface IIndexedEntityReader {
 	function hasEntities(): bool;
 
 	/**
-	 * Read value/values for the underlying model
+	 * Read all value/values for the underlying model
 	 *
 	 * @return EntityIterator
 	 */
