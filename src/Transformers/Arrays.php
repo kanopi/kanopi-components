@@ -80,12 +80,13 @@ class Arrays {
 
 	/**
 	 * Chainable wrapper for array_unique to sort and remove duplicate arrays values
+	 * 	- Sort regular to allow sorting/filtering of sub-arrays
 	 *
 	 * @param int   $_sort_flags
 	 *
 	 * @return Arrays
 	 */
-	function unique( int $_sort_flags = SORT_STRING ): Arrays {
+	function unique( int $_sort_flags = SORT_REGULAR ): Arrays {
 		$this->subject = array_unique( $this->subject, $_sort_flags );
 
 		return $this;
