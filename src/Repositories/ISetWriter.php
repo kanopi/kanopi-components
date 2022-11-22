@@ -11,9 +11,10 @@ use Kanopi\Components\Model\Exception\SetWriterException;
 interface ISetWriter extends ISetReader {
 	/**
 	 * Create a new indexed entity in the repository
-	 * 	- Ideally returns an updated model with the repository generated identifier
+	 *    - Ideally returns an updated model with the repository generated identifier
 	 *
 	 * @param IIndexedEntity $_entity Entity model
+	 *
 	 * @throws SetWriterException
 	 *
 	 * @return IIndexedEntity
@@ -24,6 +25,7 @@ interface ISetWriter extends ISetReader {
 	 * Delete a given indexed entity
 	 *
 	 * @param IIndexedEntity $_entity Entity model
+	 *
 	 * @throws SetWriterException
 	 *
 	 * @return bool
@@ -34,6 +36,7 @@ interface ISetWriter extends ISetReader {
 	 * Updates an indexed entity in the repository
 	 *
 	 * @param IIndexedEntity $_entity Entity model
+	 *
 	 * @throws SetWriterException
 	 *
 	 * @return bool
