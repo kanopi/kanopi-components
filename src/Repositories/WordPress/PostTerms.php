@@ -7,6 +7,7 @@ namespace Kanopi\Components\Repositories\WordPress;
 
 use Kanopi\Components\Model\Collection\EntityIterator;
 use Kanopi\Components\Model\Data\WordPress\EntityTaxonomyFilter;
+use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Repositories\ISetReader;
 use WP_Term;
 
@@ -14,7 +15,12 @@ class PostTerms implements ISetReader {
 	/**
 	 * @inheritDoc
 	 */
-	function read( ?EntityTaxonomyFilter $_filter = null ): EntityIterator {
+	function read( $_filter = null ): EntityIterator {
+		if ( !is_a( $_filter, EntityTaxonomyFilter::class ) ) {
+			throw new SetReaderException(
+				'PostTerms repository requires a EntitiyTaxonomyFilter to read terms for a post' );
+		}
+
 		$terms = [];
 
 		if ( $_filter->isValid() ?? false ) {
