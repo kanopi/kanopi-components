@@ -8,7 +8,7 @@ use Kanopi\Components\Transformers\Arrays;
  * Base indexed entity model for processing WordPress Post Types
  *    To use:
  *      - Implement all remaining interface methods, mapping methods can return an empty array([]) if unused
- *      - System post_id is set to 0, defaults for insert mode, it can be externally set with updateIndexIdentifier
+ *      - System ID is set to 0, defaults for insert mode, it can be externally set with updateIndexIdentifier
  *      - post_content, post_status, and post_title are all required and set to defaults
  */
 abstract class BasePostType implements IPostTypeEntity {
@@ -25,6 +25,7 @@ abstract class BasePostType implements IPostTypeEntity {
 			'post_content' => $this->postContent,
 			'post_title'   => $this->postTitle,
 		] )
+			->append_maybe( [ 'ID' => $this->postId ], 0 < $this->postId )
 			->append_maybe( [ 'tax_input' => $this->taxonomyTermMapping() ], !empty( $this->taxonomyTermMapping() ) )
 			->append_maybe( [ 'meta_input' => $this->metaFieldMapping() ], !empty( $this->metaFieldMapping() ) )
 			->append_maybe( $this->extraInsertFieldMapping(), !empty( $this->extraInsertFieldMapping() ) )
