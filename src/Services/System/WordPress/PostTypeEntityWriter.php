@@ -3,6 +3,7 @@
 namespace Kanopi\Components\Services\System\WordPress;
 
 use Kanopi\Components\Model\Data\WordPress\IPostTypeEntity;
+use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Repositories\ISetReader;
 use Kanopi\Components\Services\System\IndexedEntityWriter;
 
@@ -25,7 +26,7 @@ trait PostTypeEntityWriter {
 
 	/**
 	 * Maximum entity identifiers to retrieve during a read
-	 * 	- Override to change
+	 *    - Override to change
 	 *
 	 * @return int
 	 */
@@ -45,6 +46,7 @@ trait PostTypeEntityWriter {
 	 *
 	 * @param int $_index_identifier
 	 *
+	 * @throws SetReaderException
 	 * @return ?IPostTypeEntity
 	 */
 	function readByIndexIdentifier( int $_index_identifier ): ?IPostTypeEntity {
@@ -56,17 +58,19 @@ trait PostTypeEntityWriter {
 	 *
 	 * @param int $_index_identifier
 	 *
+	 * @throws SetReaderException
 	 * @return IPostTypeEntity|null
 	 */
 	abstract function readSystemEntity( int $_index_identifier ): ?IPostTypeEntity;
 
 	/**
 	 * Read an entity by a unique identifier
-	 * 	- Assumes the Unique Identifier is in a meta field named by uniqueIdentifierFieldName
-	 * 	- Override this function if it does not fit the use case
+	 *    - Assumes the Unique Identifier is in a meta field named by uniqueIdentifierFieldName
+	 *    - Override this function if it does not fit the use case
 	 *
 	 * @param string $_unique_identifier
 	 *
+	 * @throws SetReaderException
 	 * @return IPostTypeEntity|null
 	 */
 	function readByUniqueIdentifier( string $_unique_identifier ): ?IPostTypeEntity {

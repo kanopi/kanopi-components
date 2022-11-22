@@ -3,6 +3,7 @@
 namespace Kanopi\Components\Services\System;
 
 use Kanopi\Components\Model\Data\IIndexedEntity;
+use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Model\Exception\SetWriterException;
 use Kanopi\Components\Services\IIndexedEntityReader;
 
@@ -32,6 +33,7 @@ interface IIndexedEntityWriter extends IIndexedEntityReader {
 	 *
 	 * @param int $_index_identifier
 	 *
+	 * @throws SetReaderException
 	 * @return ?IIndexedEntity
 	 */
 	function readByIndexIdentifier( int $_index_identifier ): ?IIndexedEntity;
@@ -41,6 +43,7 @@ interface IIndexedEntityWriter extends IIndexedEntityReader {
 	 *
 	 * @param string $_unique_identifier
 	 *
+	 * @throws SetReaderException
 	 * @return ?IIndexedEntity
 	 */
 	function readByUniqueIdentifier( string $_unique_identifier ): ?IIndexedEntity;
