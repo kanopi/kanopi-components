@@ -4,6 +4,7 @@ namespace Kanopi\Components\Services\System\WordPress;
 
 use Kanopi\Components\Model\Data\WordPress\IPostTypeEntity;
 use Kanopi\Components\Model\Exception\SetReaderException;
+use Kanopi\Components\Repositories\IIndexedEntityGroupWriter;
 use Kanopi\Components\Repositories\ISetReader;
 use Kanopi\Components\Services\System\IndexedEntityWriter;
 
@@ -20,9 +21,9 @@ trait PostTypeEntityWriter {
 	/**
 	 * Taxonomy repository
 	 *
-	 * @var ISetReader
+	 * @var IIndexedEntityGroupWriter
 	 */
-	protected ISetReader $taxonomyRepository;
+	protected IIndexedEntityGroupWriter $taxonomyRepository;
 
 	/**
 	 * Maximum entity identifiers to retrieve during a read

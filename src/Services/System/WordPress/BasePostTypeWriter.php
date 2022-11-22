@@ -2,6 +2,7 @@
 
 namespace Kanopi\Components\Services\System\WordPress;
 
+use Kanopi\Components\Repositories\IIndexedEntityGroupWriter;
 use Kanopi\Components\Repositories\ISetReader;
 use Kanopi\Components\Repositories\ISetWriter;
 use Kanopi\Components\Services\System\IIndexedEntityWriter;
@@ -15,12 +16,12 @@ abstract class BasePostTypeWriter implements IIndexedEntityWriter {
 	 *
 	 * @param ISetWriter $_entity_repository
 	 * @param ISetReader $_meta_data_repository
-	 * @param ISetReader $_taxonomy_repository
+	 * @param IIndexedEntityGroupWriter $_taxonomy_repository
 	 */
 	public function __construct(
 		ISetWriter $_entity_repository,
 		ISetReader $_meta_data_repository,
-		ISetReader $_taxonomy_repository
+		IIndexedEntityGroupWriter $_taxonomy_repository
 	) {
 		$this->systemWriter       = $_entity_repository;
 		$this->metaDataRepository = $_meta_data_repository;
