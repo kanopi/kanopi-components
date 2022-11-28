@@ -5,8 +5,23 @@ PHP library to provide common model and service patterns for building other appl
 
 ## Documentation Reference
 
+* [Definitions](#definitions)
 * [Structure](#structure)
-* [Code Quality]()
+* [Code Quality](#code-quality)
+* [How To]()
+
+## Definitions
+
+* **Entity** - Any structured model, class, interface, etc representing data flowing through the system. The model contains sets of data fields with free-form and indexed content. For instance, a Post Type or Node which represents a Location with a free-form Address and an indexed Region or State.
+* **Entity Iterator** - PHP Iterator which takes a Class, Interface or Scalar type and validates each member entity is of the requested type
+* **Indexed Entity** - Any entity which uses a numerical index, for instance, a Post Type in WordPress uses a Post ID, its index.
+* **Indexed Group Entity** - Perhaps written in a grammatically incorrect way, this is a Group associated with an indexed entity, for instance a City/Region taxonomy associated with a Location
+* **Reader** - Data repository which only allows reading
+* **Repository** - Generic name for a place to store data, could be a CSV file, HTTP/S Endpoint, Database, etc.
+* **Set** - A grouping of similar data, generally expected to be of the same entity in this system, enforced using Entity Iterators
+* **Stream** - Flow of data between repositories, this system implements streams to read from source repositories and write to target repositories 
+* **Writer** - Data repository which allows reading/writing
+
 
 ## Structure
 
@@ -16,7 +31,7 @@ All structures are stored under the PSR-4 namespace `Kanopi\Components`.
 
 **Namespace**: `Kanopi\Components\Logger`
 
-`ILogger` is the interface to wrap and proxy different logging methods.
+`ILogger` is the interface to wrap and proxy different logging methods. Use a Multiplex to log to more than one Logger target at once.
 
 ### Model
 
@@ -24,6 +39,9 @@ All structures are stored under the PSR-4 namespace `Kanopi\Components`.
 
 Data structures used by functional components, like Repositories and Services, provide patterns for 
 Collections/Iterators with validity, Data Transformation, and Exceptions.
+
+Provides a set of Exception classes for standard interactions, please add custom exceptions or use this depending on your use case.
+
 
 ### Processor
 
@@ -90,4 +108,105 @@ run against that language level using the language specific tag or run all versi
 ```shell
 make test-experimental
 ```
+
+
+## How To
+
+### WordPress: Use the Base Post Type Entity Model
+
+The `Kanopi\Components\Model\Data\WordPress\BasePostType` abstract class is a consolidated helper class for many common WordPress import situations.
+It will NOT support every use case, though is useful if your data follows the following requirements:
+
+* Uses one or more scalar/simple meta fields
+* Uses one or more **non-hierarchical** taxonomies
+* Uses a cross-system Identifier which can be constructed/retrieved from any source/target repositories to match data for updates
+
+Implementation can follow this pattern, for instance a Location of post type `location`. The model has the following fields:
+
+| Property                | Type          | Field Name |
+|-------------------------|---------------|------------|
+| Address                 | Meta Field    | `address`  |
+| City                    | Taxonomy Term | `city`     |
+| Cross-system Identifier | Meta Field    |  `id`      |
+| Modified Date           | Meta Field    | `modifiedDate` |
+ | Post Type | Post Type | `location` |
+
+The model can be implemented using the following criteria: 
+
+* Add scalar types of type string to your class for `address` and `city`
+* Extend the class and implement `extraInsertFieldMapping`, `metaFieldMapping`, and `taxonomyTermMapping`, which map the Meta and Taxonomy field names to the entity attributes. For instance, a Location with Address and City/Region:
+    ```php
+    class Location extends BasePostType implements IIndexedEntity {
+        /**
+         * @var string
+         */
+        public string $address = '';
+
+        /**
+         * @var string
+         */
+        public string $city = '';
+
+        /**
+         * @var string
+         */
+        public string $id = '';
+  
+        /**
+         * @var string
+         */
+        public string $modifiedDate = '';
+  
+        /**
+         * @inheritDoc
+         */
+        function entityName(): string {
+            return 'location';
+        }
+        
+        /**
+         * @inheritDoc
+         */
+        function uniqueIdentifier(): string {
+            return $this->id;
+        }
+    
+        /**
+         * @inheritdoc
+         */
+        function version(): string {
+            return $this->modifiedDate;
+        }
+   
+        /**
+         * @inheritDoc
+         */
+         function extraInsertFieldMapping(): array {
+            return [];
+         }
+        
+         /**
+          * @inheritDoc
+          */
+         function metaFieldMapping(): array {
+            return [
+                'address' => $this->address,
+                'id' => $this->id,
+                'modifiedDate' => $this->modifiedDate,
+            ];
+         }
+  
+         /**
+          * @inheritDoc
+          */
+         function taxonomyTermMapping(): array {
+            return [
+                'city' => $this->city,
+            ];
+         }
+    }
+    ```
+* Now, when using a service, like `BasePostTypeWriter`, the built-in implementation of `systemTransform` returns an appropriate format for `wp_insert_post`
+
+
 

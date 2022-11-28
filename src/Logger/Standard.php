@@ -6,6 +6,8 @@
 namespace Kanopi\Components\Logger;
 
 class Standard implements ILogger {
+	use VerboseLogging;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -20,5 +22,26 @@ class Standard implements ILogger {
 	function info( string $_message ): void {
 		// phpcs:ignore -- Console output only, doesn't need sophisticated sanitization
 		echo strip_tags( $_message );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function table( array $_header, array $_messages ): void {
+		if ( $this->verbose_enabled ) {
+			// phpcs:ignore -- Console output only, doesn't need sophisticated sanitization
+			print_r( $_header );
+			// phpcs:ignore -- Console output only, doesn't need sophisticated sanitization
+			print_r( $_messages );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function verbose( string $_message ): void {
+		if ( $this->verbose_enabled ) {
+			$this->info( $_message );
+		}
 	}
 }
