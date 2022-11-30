@@ -1,6 +1,6 @@
 <?php
 /**
- * Common data set trait
+ * Common trait to hold a type-validated collection of entities
  */
 
 namespace Kanopi\Components\Model\Data;
@@ -31,6 +31,7 @@ trait Entities {
 
 	/**
 	 * Read the entity iterator
+	 * 	- If empty/invalid, return an empty numeric iterator
 	 *
 	 * @return EntityIterator
 	 */

@@ -1,6 +1,7 @@
 <?php
 /**
  * Generic repository to manage taxonomy terms for a given post
+ * 	- Automatically purges missing terms on create/update of associations
  */
 
 namespace Kanopi\Components\Repositories\WordPress;

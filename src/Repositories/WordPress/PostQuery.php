@@ -21,7 +21,7 @@ class PostQuery implements ISetWriter {
 		$post_id = wp_insert_post( $_entity->systemTransform() );
 		if ( is_a( $post_id, WP_Error::class ) || 1 > $post_id ) {
 			throw new SetWriterException(
-				"Unable to create entity of type {$_entity->entityName()} "
+				"Unable to create entity of type {$_entity->systemEntityName()} "
 				. "with Unique Identifier {$_entity->uniqueIdentifier()}"
 			);
 		}
@@ -37,7 +37,7 @@ class PostQuery implements ISetWriter {
 		$result = wp_delete_post( $_entity->indexIdentifier() );
 		if ( empty( $result ) ) {
 			throw new SetWriterException(
-				"Cannot delete entity of type {$_entity->entityName()} "
+				"Cannot delete entity of type {$_entity->systemEntityName()} "
 				. "with Unique Identifier {$_entity->uniqueIdentifier()} "
 				. "and Post Identifier {$_entity->indexIdentifier()}"
 			);
@@ -62,7 +62,7 @@ class PostQuery implements ISetWriter {
 		$post_id = wp_insert_post( $_entity->systemTransform() );
 		if ( is_a( $post_id, WP_Error::class ) || 1 > $post_id ) {
 			throw new SetWriterException(
-				"Unable to update entity of type {$_entity->entityName()} "
+				"Unable to update entity of type {$_entity->systemEntityName()} "
 				. "with Unique Identifier {$_entity->uniqueIdentifier()} "
 				. "and Post Identifier {$_entity->indexIdentifier()}"
 			);

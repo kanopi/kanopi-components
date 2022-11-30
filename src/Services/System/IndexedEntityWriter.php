@@ -5,6 +5,7 @@ namespace Kanopi\Components\Services\System;
 use Kanopi\Components\Model\Collection\EntityIterator;
 use Kanopi\Components\Model\Data\Entities;
 use Kanopi\Components\Model\Data\IIndexedEntity;
+use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Model\Exception\SetWriterException;
 use Kanopi\Components\Repositories\ISetWriter;
 
@@ -31,6 +32,7 @@ trait IndexedEntityWriter {
 	/**
 	 * Create a new entity
 	 *
+	 * @throws SetReaderException
 	 * @throws SetWriterException
 	 *
 	 * @return IIndexedEntity Entity with created identifier
@@ -59,6 +61,8 @@ trait IndexedEntityWriter {
 	/**
 	 * @param int $_index_identifier
 	 *
+	 * @throws SetReaderException
+	 *
 	 * @return bool
 	 */
 	protected function hasEntityByIndex( int $_index_identifier ): bool {
@@ -66,8 +70,9 @@ trait IndexedEntityWriter {
 	}
 
 	/**
-	 * Stores and returns the currently indexed entity identifiers (not the models
+	 * Stores and returns the currently indexed entity identifiers (not the models)
 	 *
+	 * @throws SetReaderException
 	 * @return EntityIterator
 	 * @see IIndexedEntityWriter::read()
 	 */

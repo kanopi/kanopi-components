@@ -39,9 +39,9 @@ interface IIndexedEntityGroupWriter extends IIndexedEntityGroupReader {
 	/**
 	 * Updates a group association to an indexed entity
 	 *
-	 * @param int            $_identifier Entity identifier
-	 * @param string         $_group_key  Group key name (taxonomy, etc)
-	 * @param EntityIterator $_entities   Entity set
+	 * @param int            $_identifier     Entity identifier
+	 * @param string         $_group_key      Group key name (taxonomy, etc)
+	 * @param EntityIterator $_entities       Entity set
 	 *
 	 * @throws SetWriterException
 	 *

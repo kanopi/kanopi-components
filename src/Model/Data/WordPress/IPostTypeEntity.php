@@ -6,6 +6,13 @@ use Kanopi\Components\Model\Data\IIndexedEntity;
 
 interface IPostTypeEntity extends IIndexedEntity  {
 	/**
+	 * System post content
+	 *
+	 * @return string
+	 */
+	function content(): string;
+
+	/**
 	 * Any extra fields needed for the post type as wp_insert_post array arguments
 	 *
 	 * @return array
@@ -20,6 +27,20 @@ interface IPostTypeEntity extends IIndexedEntity  {
 	 * @return array
 	 */
 	function metaFieldMapping(): array;
+
+	/**
+	 * System post status
+	 *
+	 * @return string
+	 */
+	function status(): string;
+
+	/**
+	 * System post title
+	 *
+	 * @return string
+	 */
+	function title(): string;
 
 	/**
 	 * Mapping from taxonomy => term_list_or_array

@@ -4,18 +4,18 @@ namespace Kanopi\Components\Model\Data;
 
 interface IIndexedEntity {
 	/**
-	 * Name of the underlying system content entity
-	 *
-	 * @return string
-	 */
-	function entityName(): string;
-
-	/**
 	 * Local index identifier
 	 *
 	 * @return int
 	 */
 	function indexIdentifier(): int;
+
+	/**
+	 * Name of the underlying system content entity
+	 *
+	 * @return string
+	 */
+	function systemEntityName(): string;
 
 	/**
 	 * Transform to a system compatible entity array

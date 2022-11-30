@@ -20,16 +20,16 @@ abstract class BasePostType implements IPostTypeEntity {
 	 */
 	function systemTransform(): array {
 		return Arrays::from( [
-			'post_status'  => $this->postStatus,
-			'post_type'    => $this->entityName(),
-			'post_content' => $this->postContent,
-			'post_title'   => $this->postTitle,
+			'post_status'  => $this->status(),
+			'post_type'    => $this->systemEntityName(),
+			'post_content' => $this->content(),
+			'post_title'   => $this->title(),
 		] )
-			->append_maybe( [ 'ID' => $this->postId ], 0 < $this->postId )
-			->append_maybe( [ 'tax_input' => $this->taxonomyTermMapping() ], !empty( $this->taxonomyTermMapping() ) )
-			->append_maybe( [ 'meta_input' => $this->metaFieldMapping() ], !empty( $this->metaFieldMapping() ) )
-			->append_maybe( $this->extraInsertFieldMapping(), !empty( $this->extraInsertFieldMapping() ) )
-			->unique()
+			->appendMaybe( [ 'ID' => $this->indexIdentifier() ], 0 < $this->indexIdentifier() )
+			->appendMaybe( [ 'tax_input' => $this->taxonomyTermMapping() ], !empty( $this->taxonomyTermMapping() ) )
+			->appendMaybe( [ 'meta_input' => $this->metaFieldMapping() ], !empty( $this->metaFieldMapping() ) )
+			->appendMaybe( $this->extraInsertFieldMapping(), !empty( $this->extraInsertFieldMapping() ) )
+			->filterUnique()
 			->toArray();
 	}
 }
