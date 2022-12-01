@@ -18,9 +18,9 @@ trait IndexedEntityWriter {
 	/**
 	 * System writable repository
 	 *
-	 * @var ISetWriter
+	 * @returns ISetWriter
 	 */
-	protected ISetWriter $systemWriter;
+	abstract function entityRepository(): ISetWriter;
 
 	/**
 	 * Tracking flag tells if the location index is loaded
@@ -39,7 +39,7 @@ trait IndexedEntityWriter {
 	 * @see IIndexedEntityWriter::create()
 	 */
 	function create( IIndexedEntity $_entity ): IIndexedEntity {
-		$created_entity = $this->systemWriter->create( $_entity );
+		$created_entity = $this->entityRepository()->create( $_entity );
 
 		if ( !$this->hasEntityByIndex( $created_entity->indexIdentifier() ) ) {
 			$this->entities->append( $created_entity->indexIdentifier() );
@@ -55,7 +55,7 @@ trait IndexedEntityWriter {
 	 * @see IIndexedEntityWriter::delete()
 	 */
 	function delete( IIndexedEntity $_entity ): void {
-		$this->systemWriter->delete( $_entity );
+		$this->entityRepository()->delete( $_entity );
 	}
 
 	/**
@@ -78,7 +78,7 @@ trait IndexedEntityWriter {
 	 */
 	function read(): EntityIterator {
 		if ( !$this->isIndexLoaded ) {
-			$this->entities      = $this->systemWriter->read( $this->readIndexFilter() );
+			$this->entities      = $this->entityRepository()->read( $this->readIndexFilter() );
 			$this->isIndexLoaded = true;
 		}
 
@@ -102,6 +102,6 @@ trait IndexedEntityWriter {
 	 * @see IIndexedEntityWriter::update()
 	 */
 	function update( IIndexedEntity $_entity ): bool {
-		return $this->systemWriter->update( $_entity );
+		return $this->entityRepository()->update( $_entity );
 	}
 }

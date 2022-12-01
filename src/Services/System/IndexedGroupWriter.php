@@ -12,9 +12,9 @@ trait IndexedGroupWriter {
 	/**
 	 * System writable repository
 	 *
-	 * @var IGroupSetWriter
+	 * @returns IGroupSetWriter
 	 */
-	protected IGroupSetWriter $systemWriter;
+	abstract function entityRepository(): IGroupSetWriter;
 
 	/**
 	 * @var array
@@ -35,7 +35,7 @@ trait IndexedGroupWriter {
 	 * @see IIndexedGroupWriter::create()
 	 */
 	function create( string $_group_key, IIndexedEntity $_entity ): IIndexedEntity {
-		$created_entity = $this->systemWriter->create( $_group_key, $_entity );
+		$created_entity = $this->entityRepository()->create( $_group_key, $_entity );
 
 		if ( !$this->hasEntityByIndex( $_group_key, $created_entity->indexIdentifier() ) ) {
 			$this->entityGroups[ $_group_key ]->append( $created_entity->indexIdentifier() );
@@ -51,7 +51,7 @@ trait IndexedGroupWriter {
 	 * @see IIndexedEntityWriter::delete()
 	 */
 	function delete( string $_group_key, IIndexedEntity $_entity ): void {
-		$this->systemWriter->delete( $_group_key, $_entity );
+		$this->entityRepository()->delete( $_group_key, $_entity );
 	}
 
 	/**
@@ -86,7 +86,7 @@ trait IndexedGroupWriter {
 	 */
 	function read( string $_group_key, $_filter = [] ): EntityIterator {
 		if ( !empty( $this->isIndexLoaded[ $_group_key ] ) ) {
-			$this->entityGroups[ $_group_key ]  = $this->systemWriter->read( $_group_key, $this->readIndexFilter() );
+			$this->entityGroups[ $_group_key ]  = $this->entityRepository()->read( $_group_key, $this->readIndexFilter() );
 			$this->isIndexLoaded[ $_group_key ] = true;
 		}
 
@@ -102,6 +102,6 @@ trait IndexedGroupWriter {
 	 * @see IIndexedEntityWriter::update()
 	 */
 	function update( string $_group_key, IIndexedEntity $_entity ): bool {
-		return $this->systemWriter->update( $_group_key, $_entity );
+		return $this->entityRepository()->update( $_group_key, $_entity );
 	}
 }

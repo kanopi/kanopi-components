@@ -52,4 +52,16 @@ class EntityIterator extends ArrayIterator {
 	public function valid(): bool {
 		return parent::valid() && $this->checkEntity();
 	}
+
+	/**
+	 * Static generator to get an iterator
+	 *
+	 * @param array  $_entities
+	 * @param string $_valid_entity_type
+	 *
+	 * @return EntityIterator
+	 */
+	public static function fromArray( array $_entities, string $_valid_entity_type ): EntityIterator {
+		return new EntityIterator( $_entities, $_valid_entity_type );
+	}
 }

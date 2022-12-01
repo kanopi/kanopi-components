@@ -4,35 +4,20 @@ namespace Kanopi\Components\Services\System\WordPress;
 
 use Kanopi\Components\Model\Data\WordPress\IPostTypeEntity;
 use Kanopi\Components\Model\Exception\SetReaderException;
-use Kanopi\Components\Repositories\IIndexedEntityGroupWriter;
-use Kanopi\Components\Repositories\ISetReader;
 use Kanopi\Components\Services\System\IndexedEntityWriter;
 
 trait PostTypeEntityWriter {
 	use IndexedEntityWriter;
 
 	/**
-	 * Meta data repository
-	 *
-	 * @var ISetReader
-	 */
-	protected ISetReader $metaDataRepository;
-
-	/**
-	 * Taxonomy repository
-	 *
-	 * @var IIndexedEntityGroupWriter
-	 */
-	protected IIndexedEntityGroupWriter $taxonomyRepository;
-
-	/**
 	 * Maximum entity identifiers to retrieve during a read
-	 *    - Override to change
+	 * 	- Index query returns IDs only, not full entities/posts
+	 *  - Override to change
 	 *
 	 * @return int
 	 */
 	protected function maximumIndexLength(): int {
-		return 1000;
+		return 10000;
 	}
 
 	/**
@@ -51,18 +36,15 @@ trait PostTypeEntityWriter {
 	 * @return ?IPostTypeEntity
 	 */
 	function readByIndexIdentifier( int $_index_identifier ): ?IPostTypeEntity {
-		return $this->hasEntityByIndex( $_index_identifier ) ? $this->readSystemEntity( $_index_identifier ) : null;
-	}
+		$post_cursor = $this->entityRepository()->read( [
+			'post_type'      => $this->systemEntityName(),
+			'p'              => $_index_identifier,
+			'posts_per_page' => 1,
+			'fields'         => 'all'
+		] );
 
-	/**
-	 * Implement this method to read a system entity with all meta fields and taxonomies
-	 *
-	 * @param int $_index_identifier
-	 *
-	 * @throws SetReaderException
-	 * @return IPostTypeEntity|null
-	 */
-	abstract function readSystemEntity( int $_index_identifier ): ?IPostTypeEntity;
+		return $post_cursor->valid() ? $this->readSystemEntity( $post_cursor->current() ) : null;
+	}
 
 	/**
 	 * Read an entity by a unique identifier
@@ -75,7 +57,7 @@ trait PostTypeEntityWriter {
 	 * @return IPostTypeEntity|null
 	 */
 	function readByUniqueIdentifier( string $_unique_identifier ): ?IPostTypeEntity {
-		$post_id_cursor = $this->systemWriter->read( [
+		$post_cursor = $this->entityRepository()->read( [
 			'post_type'      => $this->systemEntityName(),
 			// phpcs:ignore -- Intentional meta data query
 			'meta_query'     => [
@@ -85,16 +67,27 @@ trait PostTypeEntityWriter {
 				]
 			],
 			'posts_per_page' => 1,
-			'fields'         => 'ids'
+			'fields'         => 'all'
 		] );
 
-		$post_id = $post_id_cursor->current();
-
-		return null !== $post_id && $this->hasEntityByIndex( $post_id ) ? $this->readSystemEntity( $post_id ) : null;
+		return $post_cursor->valid() ? $this->readSystemEntity( $post_cursor->current() ) : null;
 	}
 
 	/**
+	 * Implement this method to read a system entity with all meta fields and taxonomies
+	 * 	- Pass the WP_Post retrieved from a WP_Query to build the PostTypeEntity
+	 * 	- Use the Metadata and Taxonomy repositories to add additional data
+	 *
+	 * @param WP_Post $_post_entity
+	 *
+	 * @throws SetReaderException
+	 * @return IPostTypeEntity|null
+	 */
+	abstract function readSystemEntity( WP_Post $_post_entity ): ?IPostTypeEntity;
+
+	/**
 	 * @inheritDoc
+	 * @see IndexedEntityWriter::readIndexFilter()
 	 */
 	function readIndexFilter(): array {
 		return [

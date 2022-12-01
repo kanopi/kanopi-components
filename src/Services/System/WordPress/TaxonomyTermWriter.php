@@ -24,7 +24,7 @@ trait TaxonomyTermWriter {
 	 * @throws SetReaderException
 	 */
 	function readByIndexIdentifier( string $_group_key, int $_index_identifier ): ?IIndexedEntity {
-		$term_cursor = $this->systemWriter->read(
+		$term_cursor = $this->entityRepository()->read(
 			$_group_key,
 			[
 				'fields'  => 'all',
@@ -42,7 +42,7 @@ trait TaxonomyTermWriter {
 	 * @throws SetReaderException
 	 */
 	function readByUniqueIdentifier( string $_group_key, string $_unique_identifier ): ?IIndexedEntity {
-		$term_cursor = $this->systemWriter->read(
+		$term_cursor = $this->entityRepository()->read(
 			$_group_key,
 			[
 				'fields'  => 'all',
