@@ -5,6 +5,7 @@ namespace Kanopi\Components\Services\System\WordPress;
 use Kanopi\Components\Model\Data\WordPress\IPostTypeEntity;
 use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Services\System\IndexedEntityWriter;
+use WP_Post;
 
 trait PostTypeEntityWriter {
 	use IndexedEntityWriter;
