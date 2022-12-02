@@ -26,8 +26,7 @@ class PostQuery implements ISetWriter {
 			);
 		}
 
-		$_entity->updateIndexIdentifier( $post_id );
-		return $_entity;
+		return $_entity->updateIndexIdentifier( $post_id );
 	}
 
 	/**

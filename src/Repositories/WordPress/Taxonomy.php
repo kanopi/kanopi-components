@@ -33,9 +33,7 @@ class Taxonomy implements IGroupSetWriter {
 			throw new SetWriterException( 'Created term has no ID' );
 		}
 
-		$_entity->updateIndexIdentifier( intval( $result[ 'term_id' ] ) );
-
-		return $_entity;
+		return $_entity->updateIndexIdentifier( intval( $result[ 'term_id' ] ) );
 	}
 
 	/**

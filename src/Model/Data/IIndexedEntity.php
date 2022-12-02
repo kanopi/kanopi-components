@@ -33,13 +33,13 @@ interface IIndexedEntity {
 	function uniqueIdentifier(): string;
 
 	/**
-	 * Change to entities index identifier, useful for create/update operations
+	 * Chainable update the index identifier, useful for create/update operations
 	 *
 	 * @param int $_index
 	 *
-	 * @return void
+	 * @return IIndexedEntity
 	 */
-	function updateIndexIdentifier( int $_index ): void;
+	function updateIndexIdentifier( int $_index ): IIndexedEntity;
 
 	/**
 	 * Version of entity, compare between version to determine change

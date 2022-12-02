@@ -2,67 +2,160 @@
 
 namespace Kanopi\Components\Model\Data\WordPress;
 
+use Kanopi\Components\Model\Data\IIndexedEntity;
+use Kanopi\Components\Transformers\Arrays;
+use Kanopi\Components\Transformers\Strings;
+use WP_Post;
+
 trait PostTypeEntity {
 	/**
-	 * System post content
+	 * Override system post content
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	public string $_content = '';
+	protected ?string $_content = null;
 
 	/**
-	 * System post identifier
+	 * Override system post identifier
 	 *
-	 * @var int
+	 * @var int|null
 	 */
-	public int $_postId = 0;
+	protected ?int $_postId = null;
 
 	/**
-	 * System post status
+	 * Override system post status
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	public string $_status = 'publish';
+	protected ?string $_status = null;
 
 	/**
-	 * System post title
+	 * Override system post title
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	public string $_title = '';
+	protected ?string $_title = null;
 
 	/**
-	 * @inheritDoc
+	 * Wrapped WP_Post entity if read from the system
+	 *
+	 * @var WP_Post|null
+	 */
+	protected ?WP_Post $_wpPost = null;
+
+	/**
+	 * @see IPostTypeEntity::content()
 	 */
 	function content(): string {
-		return $this->_content;
+		return $this->_content ?? ( $this->hasWPPost() ? $this->_wpPost->post_content : '' );
+	}
+
+	/**
+	 * @see IPostTypeEntity::fromWPPost()
+	 */
+	static function fromWPPost( WP_Post $_wpPost ): IPostTypeEntity {
+		return ( new static() )->updateWPPost( $_wpPost );
+	}
+
+	/**
+	 * Human-readable term check
+	 *
+	 * @return bool
+	 */
+	protected function hasWPPost(): bool {
+		return !empty( $this->_wp_term );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	function indexIdentifier(): int {
-		return $this->_postId;
+		return $this->_postId ?? ( $this->hasWPPost() ? $this->_wpPost->ID : 0 );
+	}
+
+	/**
+	 * @see IIndexedEntity::systemEntityName()
+	 */
+	function systemEntityName(): string {
+		$shortName = explode( '\\', static::class );
+		return Strings::from( end( $shortName ) )->pascalToSeparate()->toString();
 	}
 
 	/**
 	 * @inheritDoc
+	 * @see wp_insert_post
+	 */
+	function systemTransform(): array {
+		return Arrays::from( [
+			'post_status'  => $this->status(),
+			'post_type'    => $this->systemEntityName(),
+			'post_content' => $this->content(),
+			'post_title'   => $this->title(),
+		] )
+			->appendMaybe( [ 'ID' => $this->indexIdentifier() ], 0 < $this->indexIdentifier() )
+			->appendMaybe( [ 'tax_input' => $this->taxonomyTermMapping() ], !empty( $this->taxonomyTermMapping() ) )
+			->appendMaybe( [ 'meta_input' => $this->metaFieldMapping() ], !empty( $this->metaFieldMapping() ) )
+			->appendMaybe( $this->extraInsertFieldMapping(), !empty( $this->extraInsertFieldMapping() ) )
+			->filterUnique()
+			->toArray();
+	}
+
+	/**
+	 * @see IPostTypeEntity::status()
 	 */
 	function status(): string {
-		return $this->_status;
+		return $this->_status ?? ( $this->hasWPPost() ? $this->_wpPost->post_status : 'publish' );
 	}
 
 	/**
-	 * @inheritDoc
+	 * @see IPostTypeEntity::title()
 	 */
 	function title(): string {
-		return $this->_title;
+		return $this->_title ?? ( $this->hasWPPost() ? $this->_wpPost->post_title : '' );
 	}
 
 	/**
-	 * @inheritDoc
+	 * @see IIndexedEntity::updateIndexIdentifier()
 	 */
-	function updateIndexIdentifier( int $_index ): void {
+	function updateContent( string $_content ): IIndexedEntity {
+		$this->_content = $_content;
+
+		return $this;
+	}
+
+	/**
+	 * @see IIndexedEntity::updateIndexIdentifier()
+	 */
+	function updateIndexIdentifier( int $_index ): IIndexedEntity {
 		$this->_postId = $_index;
+
+		return $this;
+	}
+
+	/**
+	 * @see IIndexedEntity::updateIndexIdentifier()
+	 */
+	function updateStatus( string $_status ): IIndexedEntity {
+		$this->_postId = $_status;
+
+		return $this;
+	}
+
+	/**
+	 * @see IIndexedEntity::updateIndexIdentifier()
+	 */
+	function updateTitle( string $_title ): IIndexedEntity {
+		$this->_title = $_title;
+
+		return $this;
+	}
+
+	/**
+	 * @see IPostTypeEntity::updateWPPost()
+	 */
+	function updateWPPost( ?WP_Post $_wpPost ): IIndexedEntity {
+		$this->_wpPost = $_wpPost;
+
+		return $this;
 	}
 }
