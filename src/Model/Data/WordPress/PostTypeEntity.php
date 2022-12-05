@@ -115,36 +115,36 @@ trait PostTypeEntity {
 	}
 
 	/**
-	 * @see IIndexedEntity::updateIndexIdentifier()
+	 * @see IPostTypeEntity::updateIndexIdentifier()
 	 */
-	function updateContent( string $_content ): IIndexedEntity {
+	function updateContent( string $_content ): IPostTypeEntity {
 		$this->_content = $_content;
 
 		return $this;
 	}
 
 	/**
-	 * @see IIndexedEntity::updateIndexIdentifier()
+	 * @see IPostTypeEntity::updateIndexIdentifier()
 	 */
-	function updateIndexIdentifier( int $_index ): IIndexedEntity {
+	function updateIndexIdentifier( int $_index ): IPostTypeEntity {
 		$this->_postId = $_index;
 
 		return $this;
 	}
 
 	/**
-	 * @see IIndexedEntity::updateIndexIdentifier()
+	 * @see IPostTypeEntity::updateIndexIdentifier()
 	 */
-	function updateStatus( string $_status ): IIndexedEntity {
+	function updateStatus( string $_status ): IPostTypeEntity {
 		$this->_postId = $_status;
 
 		return $this;
 	}
 
 	/**
-	 * @see IIndexedEntity::updateIndexIdentifier()
+	 * @see IPostTypeEntity::updateIndexIdentifier()
 	 */
-	function updateTitle( string $_title ): IIndexedEntity {
+	function updateTitle( string $_title ): IPostTypeEntity {
 		$this->_title = $_title;
 
 		return $this;
@@ -153,7 +153,7 @@ trait PostTypeEntity {
 	/**
 	 * @see IPostTypeEntity::updateWPPost()
 	 */
-	function updateWPPost( ?WP_Post $_wpPost ): IIndexedEntity {
+	function updateWPPost( ?WP_Post $_wpPost ): IPostTypeEntity {
 		$this->_wpPost = $_wpPost;
 
 		return $this;
