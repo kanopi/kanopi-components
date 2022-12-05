@@ -29,7 +29,8 @@ trait TaxonomyTermWriter {
 			[
 				'fields'  => 'all',
 				'include' => [ $_index_identifier ],
-				'number'  => 1
+				'number'  => 1,
+				'hide_empty' => false
 			]
 		);
 
@@ -47,7 +48,8 @@ trait TaxonomyTermWriter {
 			[
 				'fields'  => 'all',
 				'slug' => [ $_unique_identifier ],
-				'number'  => 1
+				'number'  => 1,
+				'hide_empty' => false
 			]
 		);
 
