@@ -8,6 +8,7 @@ namespace Kanopi\Components\Repositories\WordPress;
 
 use Kanopi\Components\Model\Collection\EntityIterator;
 use Kanopi\Components\Model\Data\IIndexedEntity;
+use Kanopi\Components\Model\Data\WordPress\ITaxonomyTermEntity;
 use Kanopi\Components\Model\Exception\SetWriterException;
 use Kanopi\Components\Repositories\IGroupSetWriter;
 use Kanopi\Components\Transformers\Arrays;
@@ -19,8 +20,9 @@ class Taxonomy implements IGroupSetWriter {
 	 * @inheritDoc
 	 */
 	function create( string $_group_key, IIndexedEntity $_entity ): IIndexedEntity {
+		$term_name = is_a( $_entity, ITaxonomyTermEntity::class ) ? $_entity->name() : $_entity->uniqueIdentifier();
 		$result = wp_insert_term(
-			$_entity->uniqueIdentifier(),
+			$term_name,
 			$_group_key,
 			$_entity->systemTransform()
 		);

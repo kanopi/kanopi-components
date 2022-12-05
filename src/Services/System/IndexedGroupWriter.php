@@ -22,11 +22,11 @@ trait IndexedGroupWriter {
 	protected array $entityGroups = [];
 
 	/**
-	 * Tracking flag tells if the location index is loaded
+	 * Associative array by group tracking flag tells if the groups index is loaded
 	 *
 	 * @var array
 	 */
-	protected array $isIndexLoaded = [];
+	protected array $isGroupIndexLoaded = [];
 
 	/**
 	 * @throws SetReaderException
@@ -68,6 +68,16 @@ trait IndexedGroupWriter {
 		return in_array( $_index_identifier, $this->read( $_group_key )->getArrayCopy(), true );
 	}
 
+	/**
+	 * Readable check if an index is loaded for the given group
+	 *
+	 * @param string $_group_key
+	 *
+	 * @return bool
+	 */
+	protected function isGroupIndexLoaded( string $_group_key ): bool {
+		return !empty( $this->isGroupIndexLoaded[ $_group_key ] );
+	}
 
 	/**
 	 * Required repository query filter used to read the system index for the grouped entity type
@@ -85,9 +95,10 @@ trait IndexedGroupWriter {
 	 * @see IIndexedEntityWriter::read()
 	 */
 	function read( string $_group_key, $_filter = [] ): EntityIterator {
-		if ( !empty( $this->isIndexLoaded[ $_group_key ] ) ) {
-			$this->entityGroups[ $_group_key ]  = $this->entityRepository()->read( $_group_key, $this->readIndexFilter() );
-			$this->isIndexLoaded[ $_group_key ] = true;
+		if ( !$this->isGroupIndexLoaded( $_group_key ) ) {
+			$this->entityGroups[ $_group_key ] =
+				$this->entityRepository()->read( $_group_key, $this->readIndexFilter() );
+			$this->updateGroupIndexLoaded( $_group_key, true );
 		}
 
 		return $this->entityGroups[ $_group_key ];
@@ -103,5 +114,17 @@ trait IndexedGroupWriter {
 	 */
 	function update( string $_group_key, IIndexedEntity $_entity ): bool {
 		return $this->entityRepository()->update( $_group_key, $_entity );
+	}
+
+	/**
+	 * Update the loaded state of the index for a given group
+	 *
+	 * @param string $_group_key
+	 * @param bool   $_is_loaded
+	 *
+	 * @return void
+	 */
+	protected function updateGroupIndexLoaded( string $_group_key, bool $_is_loaded ): void {
+		$this->isGroupIndexLoaded[ $_group_key ] = $_is_loaded;
 	}
 }
