@@ -7,6 +7,9 @@ namespace Kanopi\Components\Repositories;
 
 use ArrayIterator;
 use EmptyIterator;
+use Kanopi\Components\Model\Data\IStream;
+use Kanopi\Components\Model\Data\IStreamCollection;
+use Kanopi\Components\Model\Data\StreamCollection;
 use Kanopi\Components\Model\Exception\SetStreamException;
 
 class JsonSetStream implements ISetStream {
@@ -42,8 +45,8 @@ class JsonSetStream implements ISetStream {
 	/**
 	 * @inheritDoc
 	 */
-	public function read( string $_input_stream ): iterable {
-		$output     = $this->process( $_input_stream ?? '' );
+	public function read( IStream $_input_stream ): IStreamCollection {
+		$output     = $this->process( $_input_stream->stream() ?? '' );
 		$error_code = max( 0, json_last_error() );
 
 		if ( 0 < $error_code ) {
@@ -51,6 +54,6 @@ class JsonSetStream implements ISetStream {
 				self::ERROR_REFERENCE[ $error_code ] ?? "Unknown JSON read error ($error_code)" );
 		}
 
-		return $output;
+		return new StreamCollection( $output, $_input_stream );
 	}
 }

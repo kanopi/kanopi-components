@@ -1,21 +1,23 @@
 <?php
 /**
- * Reads an input stream into an iterable set
+ * Reads an input stream into an iterable collection
  */
 
 namespace Kanopi\Components\Repositories;
 
+use Kanopi\Components\Model\Data\IStream;
+use Kanopi\Components\Model\Data\IStreamCollection;
 use Kanopi\Components\Model\Exception\SetStreamException;
 
 interface ISetStream {
 	/**
 	 * Read an input stream value from a requested stream location
 	 *
-	 * @param string $_input_stream
+	 * @param IStream $_input_stream
 	 *
 	 * @throws SetStreamException
 	 *
-	 * @return iterable
+	 * @return IStreamCollection
 	 */
-	function read( string $_input_stream ): iterable;
+	function read( IStream $_input_stream ): IStreamCollection;
 }

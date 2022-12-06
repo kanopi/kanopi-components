@@ -6,6 +6,7 @@
 namespace Kanopi\Components\Repositories;
 
 use InvalidArgumentException;
+use Kanopi\Components\Model\Data\IStream;
 
 interface IStreamReader {
 	/**
@@ -15,7 +16,7 @@ interface IStreamReader {
 	 *
 	 * @throws InvalidArgumentException
 	 *
-	 * @return string
+	 * @return IStream
 	 */
-	function read( string $_stream_path ): string;
+	function read( string $_stream_path ): IStream;
 }

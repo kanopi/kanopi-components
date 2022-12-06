@@ -6,13 +6,17 @@
 namespace Kanopi\Components\Repositories;
 
 use InvalidArgumentException;
+use Kanopi\Components\Model\Data\IStream;
+use Kanopi\Components\Model\Data\Stream;
+use Kanopi\Components\Model\Data\StreamProperties;
 
 class LocalFileReader implements IStreamReader {
 	/**
 	 * @inheritDoc
 	 */
-	function read( string $_stream_path ): string {
-		if ( false === file_exists( $_stream_path ) ) {
+	function read( string $_stream_path ): IStream {
+		$lastModifiedTimestamp = filemtime( $_stream_path );
+		if ( false === $lastModifiedTimestamp ) {
 			throw new InvalidArgumentException(
 				"Import file not found at: $_stream_path",
 				'Import file does not exists' );
@@ -20,7 +24,16 @@ class LocalFileReader implements IStreamReader {
 
 		// phpcs:ignore -- File read is intentionally uncached, intended for singular read
 		$contents = file_get_contents( $_stream_path );
+		$readContents = !empty( $contents ) ? $contents : '';
 
-		return !empty( $contents ) ? $contents : '';
+		return new Stream(
+			$readContents,
+			new StreamProperties(
+				$_stream_path,
+				$lastModifiedTimestamp,
+				strlen( $readContents ),
+				time()
+			)
+		);
 	}
 }
