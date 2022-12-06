@@ -63,7 +63,7 @@ trait PostTypeEntity {
 	 * @return bool
 	 */
 	protected function hasWPPost(): bool {
-		return !empty( $this->_wp_term );
+		return !empty( $this->_wpPost );
 	}
 
 	/**
