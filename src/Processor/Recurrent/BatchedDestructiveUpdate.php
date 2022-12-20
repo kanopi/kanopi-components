@@ -104,7 +104,7 @@ abstract class BatchedDestructiveUpdate extends DestructiveUpdate implements IBa
 	 * @inheritDoc
 	 */
 	protected function preProcessValidationEvents( IStreamProperties $_streamProperties ): void {
-		$this->_batchService->readCurrentByIdentifier(
+		$this->_batchConfiguration = $this->_batchService->readCurrentByIdentifier(
 			$this->batchStorageUniqueIdentifier(),
 			$this->_requestedBatchSize,
 			$_streamProperties
