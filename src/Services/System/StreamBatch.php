@@ -39,7 +39,8 @@ class StreamBatch implements IStreamBatch {
 		}
 
 		if (
-			$batch->batchSize() === $storedBatch->batchSize()
+			null !== $storedBatch
+			&& $batch->batchSize() === $storedBatch->batchSize()
 			&& $_properties->isSameStream( $storedBatch->streamProperties() )
 		) {
 			$batch = $storedBatch;
