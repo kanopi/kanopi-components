@@ -6,9 +6,9 @@
 namespace Kanopi\Components\Repositories;
 
 use InvalidArgumentException;
-use Kanopi\Components\Model\Data\IStream;
-use Kanopi\Components\Model\Data\Stream;
-use Kanopi\Components\Model\Data\StreamProperties;
+use Kanopi\Components\Model\Data\Stream\IStream;
+use Kanopi\Components\Model\Data\Stream\Stream;
+use Kanopi\Components\Model\Data\Stream\StreamProperties;
 
 class LocalFileReader implements IStreamReader {
 	/**

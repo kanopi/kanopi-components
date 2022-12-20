@@ -7,9 +7,9 @@ namespace Kanopi\Components\Repositories;
 
 use ArrayIterator;
 use EmptyIterator;
-use Kanopi\Components\Model\Data\IStream;
-use Kanopi\Components\Model\Data\IStreamCollection;
-use Kanopi\Components\Model\Data\StreamCollection;
+use Kanopi\Components\Model\Data\Stream\IStream;
+use Kanopi\Components\Model\Data\Stream\IStreamCollection;
+use Kanopi\Components\Model\Data\Stream\StreamCollection;
 use Kanopi\Components\Model\Exception\SetStreamException;
 
 class JsonSetStream implements ISetStream {

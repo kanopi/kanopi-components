@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanopi\Components\Model\Data;
+namespace Kanopi\Components\Model\Data\Stream;
 
 class StreamProperties implements IStreamProperties {
 	/**
@@ -67,5 +67,14 @@ class StreamProperties implements IStreamProperties {
 	 */
 	function uri(): string {
 		return $this->_uri;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function isSameStream( IStreamProperties $_comparison ): bool {
+		return $this->lastModifiedTimestamp() === $_comparison->lastModifiedTimestamp()
+			&& $this->length() === $_comparison->length()
+			&& $this->uri() === $_comparison->uri();
 	}
 }

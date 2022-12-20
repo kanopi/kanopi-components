@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanopi\Components\Model\Data;
+namespace Kanopi\Components\Model\Data\Stream;
 
 class StreamCollection implements IStreamCollection {
 	/**
