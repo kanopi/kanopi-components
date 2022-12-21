@@ -41,7 +41,7 @@ class TrackingIndex implements ITrackingIndex {
 		$index = [];
 		$fresh = call_user_func( $_read_fresh );
 
-		if ( is_array( $fresh ) ) {
+		if ( is_iterable( $fresh ) ) {
 			foreach ( $fresh as $_id ) {
 				$index[ $_id ] = false;
 			}

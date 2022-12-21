@@ -84,6 +84,11 @@ abstract class BatchedDestructiveUpdate extends DestructiveUpdate implements IBa
 		$this->_batchService->updateByIdentifier( $this->batchStorageUniqueIdentifier(), $this->_batchConfiguration );
 
 		parent::postProcessingEvents();
+
+		// Clears the tracking index when the batch is complete
+		if ( $this->_batchConfiguration->isStreamComplete() ) {
+			$this->_trackingService->updateByIdentifier( $this->trackingStorageUniqueIdentifier(), [] );
+		}
 	}
 
 	/**
@@ -91,12 +96,15 @@ abstract class BatchedDestructiveUpdate extends DestructiveUpdate implements IBa
 	 */
 	protected function preProcessEvents(): void {
 		parent::preProcessEvents();
+
+		$loadNewIndex = 2 > $this->_batchConfiguration->currentBatch();
+
 		$this->_trackingIndex = $this->_trackingService->readTrackingIndexByIdentifier(
 			$this->trackingStorageUniqueIdentifier(),
 			function () {
 				return $this->_systemService->read();
 			},
-			$this->_batchConfiguration->currentBatch()
+			$loadNewIndex
 		);
 	}
 
