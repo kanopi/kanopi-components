@@ -20,7 +20,8 @@
   },
   "require-dev": {
     "automattic/vipwpcs": "^2.3",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
+    "phpunit/phpunit": "^9.5"
   },
   "config": {
     "allow-plugins": {
@@ -28,6 +29,7 @@
     }
   },
   "scripts": {
-    "phpcs": "./vendor/bin/phpcs --standard=\"./.phpcs.xml.dist\""
+    "phpcs": "./vendor/bin/phpcs --standard=\"./.phpcs.xml.dist\"",
+    "phpunit": "./vendor/bin/phpunit -c \"./phpunit.xml.dist\""
   }
 }
