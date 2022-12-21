@@ -2,7 +2,7 @@
 
 namespace Kanopi\Components\Services\External;
 
-use Kanopi\Components\Model\Data\IStreamProperties;
+use Kanopi\Components\Model\Data\Stream\IStreamProperties;
 use Kanopi\Components\Model\Exception\SetStreamException;
 use Kanopi\Components\Model\Transform\IEntitySet;
 use Kanopi\Components\Services\IIndexedEntityReader;

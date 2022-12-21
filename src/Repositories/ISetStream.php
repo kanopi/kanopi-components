@@ -5,8 +5,8 @@
 
 namespace Kanopi\Components\Repositories;
 
-use Kanopi\Components\Model\Data\IStream;
-use Kanopi\Components\Model\Data\IStreamCollection;
+use Kanopi\Components\Model\Data\Stream\IStream;
+use Kanopi\Components\Model\Data\Stream\IStreamCollection;
 use Kanopi\Components\Model\Exception\SetStreamException;
 
 interface ISetStream {

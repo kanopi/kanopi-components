@@ -6,7 +6,7 @@
 namespace Kanopi\Components\Repositories;
 
 use InvalidArgumentException;
-use Kanopi\Components\Model\Data\IStream;
+use Kanopi\Components\Model\Data\Stream\IStream;
 
 interface IStreamReader {
 	/**

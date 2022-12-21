@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanopi\Components\Model\Data;
+namespace Kanopi\Components\Model\Data\Stream;
 
 interface IStreamProperties {
 	/**
@@ -30,4 +30,13 @@ interface IStreamProperties {
 	 * @return string
 	 */
 	function uri(): string;
+
+	/**
+	 * Compare two stream to see if they are the same
+	 *
+	 * @param IStreamProperties $_comparison
+	 *
+	 * @return bool
+	 */
+	function isSameStream( IStreamProperties $_comparison ): bool;
 }
