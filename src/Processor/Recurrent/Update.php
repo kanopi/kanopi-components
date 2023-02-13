@@ -265,12 +265,12 @@ abstract class Update implements IDryRunProcessor {
 	}
 
 	/**
-	 * @param int $_identifier
+	 * @param string $_identifier
 	 *
 	 * @throws SetReaderException
 	 * @return IIndexedEntity|null
 	 */
-	protected function readSystemEntityByIdentifier( int $_identifier ): ?IIndexedEntity {
+	protected function readSystemEntityByIdentifier( string $_identifier ): ?IIndexedEntity {
 		return $this->_systemService->readByUniqueIdentifier( $_identifier );
 	}
 
