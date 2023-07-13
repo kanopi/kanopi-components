@@ -44,6 +44,11 @@ class ExternalStreamSet implements IExternalStreamReader {
 		$streamCollection = $this->set_reader->read( $stream );
 		$this->entities   = $_transform->transform( $streamCollection->collection() );
 
-		return $stream->properties();
+		return new StreamProperties(
+			$stream->properties()->uri(),
+			$stream->properties()->lastModifiedTimestamp(),
+			$this->entities->count(),
+			$stream->properties()->readTimestamp()
+		);
 	}
 }
