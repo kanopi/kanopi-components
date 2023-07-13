@@ -3,7 +3,7 @@
 namespace Kanopi\Components\Services\External;
 
 use Kanopi\Components\Model\Data\Entities;
-use Kanopi\Components\Model\Data\Stream\IStreamProperties;
+use Kanopi\Components\Model\Data\Stream\{IStreamProperties,StreamProperties};
 use Kanopi\Components\Model\Transform\IEntitySet;
 use Kanopi\Components\Repositories\ISetStream;
 use Kanopi\Components\Repositories\IStreamReader;
@@ -44,6 +44,11 @@ class ExternalStreamSet implements IExternalStreamReader {
 		$streamCollection = $this->set_reader->read( $stream );
 		$this->entities   = $_transform->transform( $streamCollection->collection() );
 
-		return $stream->properties();
+		return new StreamProperties(
+			$stream->properties()->uri(),
+			$stream->properties()->lastModifiedTimestamp(),
+			$this->entities->count(),
+			$stream->properties()->readTimestamp()
+		);
 	}
 }
