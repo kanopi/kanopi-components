@@ -114,14 +114,16 @@ abstract class Update implements IDryRunProcessor {
 	}
 
 	/**
-	 * Compares the existing System entity against the incoming entity to determine if the entity updated is skipped
+	 * Compares the existing System entity against the incoming entity to determine if the entity should update
+	 * 	- By default, compares the two versions and updates if the are different (!==)
+	 *  - If overwriteContent is set, it will return true
 	 *
 	 * @param IIndexedEntity $_existing
 	 * @param IIndexedEntity $_incoming
 	 *
 	 * @return bool
 	 */
-	protected function isExistingEntitySkipped( IIndexedEntity $_existing, IIndexedEntity $_incoming ): bool {
+	protected function shouldEntityUpdate( IIndexedEntity $_existing, IIndexedEntity $_incoming ): bool {
 		return $this->overwriteContent || $_incoming->version() !== $_existing->version();
 	}
 
@@ -301,7 +303,7 @@ abstract class Update implements IDryRunProcessor {
 	): IIndexedEntity {
 		$_incoming->updateIndexIdentifier( $_existing->indexIdentifier() );
 
-		if ( $this->isExistingEntitySkipped( $_existing, $_incoming ) ) {
+		if ( $this->shouldEntityUpdate( $_existing, $_incoming ) ) {
 			if ( false === $this->isDryRunEnabled() ) {
 				$this->systemService()->update( $_incoming );
 			}
