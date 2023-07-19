@@ -15,6 +15,13 @@ class StreamBatch implements IStreamBatch {
 	protected IGroupSetWriter $_batchStorageRepository;
 
 	/**
+	 * When enabled, forces the next requested batch to restart
+	 *
+	 * @var bool
+	 */
+	protected bool $restartNextBatch = false;
+
+	/**
 	 * @param IGroupSetWriter $_batch_storage_repository
 	 */
 	public function __construct( IGroupSetWriter $_batch_storage_repository ) {
@@ -22,9 +29,9 @@ class StreamBatch implements IStreamBatch {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function readCurrentByIdentifier(
+	public function readCurrentByIdentifier(
 		string $_unique_identifier,
 		int $_batch_size,
 		IStreamProperties $_properties
@@ -61,15 +68,26 @@ class StreamBatch implements IStreamBatch {
 	 * @return IStreamBatchConfiguration|null
 	 */
 	protected function readStoredBatchConfiguration( string $_unique_identifier ): ?IStreamBatchConfiguration {
-		$resumeBatch = $this->_batchStorageRepository->read( $_unique_identifier );
+		// Find the stored batch if a restart is not requested
+		$resumeBatch = $this->restartNextBatch ? null : $this->_batchStorageRepository->read( $_unique_identifier );
 
-		return $resumeBatch->valid() ? $resumeBatch->current() : null;
+		// Clear the one-shot restart flag
+		$this->restartNextBatch = false;
+
+		return ! empty( $resumeBatch ) && $resumeBatch->valid() ? $resumeBatch->current() : null;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function updateByIdentifier(
+	public function forceRestart(): void {
+		$this->restartNextBatch = true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function updateByIdentifier(
 		string $_unique_identifier,
 		IStreamBatchConfiguration $_configuration
 	): void {

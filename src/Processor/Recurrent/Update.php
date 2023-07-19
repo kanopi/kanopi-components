@@ -21,7 +21,7 @@ abstract class Update implements IDryRunProcessor {
 	use DryRunProcessor;
 
 	/**
-	 * External CSV data import source service
+	 * External data import source service
 	 *
 	 * @var IExternalStreamReader
 	 */
@@ -46,6 +46,20 @@ abstract class Update implements IDryRunProcessor {
 	 */
 	protected IIndexedProcessStatistics $_processStatistics;
 
+	/**
+	 * Whether to overwrite existing content during updates
+	 *
+	 * @var bool
+	 */
+	protected bool $overwriteContent = false;
+
+	/**
+	 * Whether to stop processing the entire record set on any entity errors
+	 *
+	 * @var bool
+	 */
+	protected bool $stopOnError = false;
+
 	public function __construct(
 		ILogger $_logger,
 		IExternalStreamReader $_external_service,
@@ -56,6 +70,59 @@ abstract class Update implements IDryRunProcessor {
 		$this->_logger          = $_logger;
 		$this->_externalService = $_external_service;
 		$this->_systemService   = $_system_service;
+	}
+
+	/**
+	 * External data import source service
+	 *
+	 * @return IExternalStreamReader
+	 */
+	protected function externalService(): IExternalStreamReader {
+		return $this->_externalService;
+	}
+
+	/**
+	 * Logging interface
+	 *
+	 * @return ILogger
+	 */
+	protected function logger(): ILogger {
+		return $this->_logger;
+	}
+
+	/**
+	 * Target data store service
+	 *
+	 * @return IIndexedEntityWriter
+	 */
+	protected function systemService(): IIndexedEntityWriter {
+		return $this->_systemService;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function changeOverwriteStatus( bool $_enableState ): void {
+		$this->overwriteContent = $_enableState;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function changeStopOnError( bool $_enableState ): void {
+		$this->stopOnError = $_enableState;
+	}
+
+	/**
+	 * Compares the existing System entity against the incoming entity to determine if the entity updated is skipped
+	 *
+	 * @param IIndexedEntity $_existing
+	 * @param IIndexedEntity $_incoming
+	 *
+	 * @return bool
+	 */
+	protected function isExistingEntitySkipped( IIndexedEntity $_existing, IIndexedEntity $_incoming ): bool {
+		return $this->overwriteContent || $_incoming->version() !== $_existing->version();
 	}
 
 	/**
@@ -81,7 +148,7 @@ abstract class Update implements IDryRunProcessor {
 	 * @return void
 	 */
 	protected function postProcessingBanner(): void {
-		$this->_logger->table(
+		$this->logger()->table(
 			$this->postProcessingBannerHeader(),
 			[
 				$this->postProcessingBannerDataRow()
@@ -145,7 +212,7 @@ abstract class Update implements IDryRunProcessor {
 	 * @return void
 	 */
 	protected function preProcessBanner( IStreamProperties $_streamProperties ): void {
-		$this->_logger->table(
+		$this->logger()->table(
 			$this->preProcessingBannerHeader(),
 			[
 				$this->preProcessingBannerDataRow( $_streamProperties )
@@ -192,7 +259,7 @@ abstract class Update implements IDryRunProcessor {
 	 */
 	protected function preProcessEvents(): void {
 		if ( $this->isDryRunEnabled() ) {
-			$this->_logger->info( "Dry run is enabled for this process" );
+			$this->logger()->info( "Dry run is enabled for this process" );
 		}
 	}
 
@@ -206,6 +273,18 @@ abstract class Update implements IDryRunProcessor {
 	 * @return void
 	 */
 	abstract protected function preProcessValidationEvents( IStreamProperties $_streamProperties ): void;
+
+	/**
+	 * Main event to process the entire entity set
+	 *
+	 * @throws SetWriterException
+	 */
+	protected function mainProcessingEvent(): void {
+		foreach ( $this->readSystemEntities() as $record ) {
+			$this->processSystemEntity( $record );
+			$this->postSystemEntityProcessedEvent( $record );
+		}
+	}
 
 	/**
 	 * Compares entity version(), updates if matched, otherwise skips
@@ -222,10 +301,11 @@ abstract class Update implements IDryRunProcessor {
 	): IIndexedEntity {
 		$_incoming->updateIndexIdentifier( $_existing->indexIdentifier() );
 
-		if ( $_incoming->version() !== $_existing->version() ) {
+		if ( $this->isExistingEntitySkipped( $_existing, $_incoming ) ) {
 			if ( false === $this->isDryRunEnabled() ) {
-				$this->_systemService->update( $_incoming );
+				$this->systemService()->update( $_incoming );
 			}
+
 			$this->_processStatistics->updated( $_incoming->indexIdentifier() );
 		}
 		else {
@@ -245,11 +325,42 @@ abstract class Update implements IDryRunProcessor {
 	 */
 	protected function processNewSystemEntity( IIndexedEntity $_incoming ): IIndexedEntity {
 		if ( false === $this->isDryRunEnabled() ) {
-			$_incoming = $this->_systemService->create( $_incoming );
+			$_incoming = $this->systemService()->create( $_incoming );
 		}
 
 		$this->_processStatistics->created( $_incoming->indexIdentifier() );
 		return $_incoming;
+	}
+
+	/**
+	 * Process the supplied system entity
+	 *
+	 * @param IIndexedEntity $_systemEntity Current system entity
+	 *
+	 * @throws SetWriterException
+	 */
+	protected function processSystemEntity( IIndexedEntity $_systemEntity ): void {
+		try {
+			$systemEntity    = $this->readSystemEntityByIdentifier( $_systemEntity->uniqueIdentifier() );
+			$hasSystemEntity = !empty( $systemEntity );
+
+			$hasSystemEntity
+				? $this->processExistingSystemEntity( $_systemEntity, $systemEntity )
+				: $this->processNewSystemEntity( $_systemEntity );
+		}
+		catch ( SetReaderException|SetWriterException $exception ) {
+			$message = sprintf( 'Error processing entity with UID %s: %s',
+				$_systemEntity->uniqueIdentifier(),
+				$exception->getMessage()
+			);
+
+			$this->logger()->error( $message );
+
+			// When stop on error is set, rethrow the error to stop processing
+			if ( $this->stopOnError ) {
+				throw new SetWriterException( $message );
+			}
+		}
 	}
 
 	/**
@@ -259,7 +370,7 @@ abstract class Update implements IDryRunProcessor {
 	 * @return iterable
 	 */
 	protected function readSystemEntities(): iterable {
-		$entities = $this->_externalService->read();
+		$entities = $this->externalService()->read();
 		$this->_processStatistics->incomingTotal( $entities->count() );
 		return $entities;
 	}
@@ -271,17 +382,17 @@ abstract class Update implements IDryRunProcessor {
 	 * @return IIndexedEntity|null
 	 */
 	protected function readSystemEntityByIdentifier( string $_identifier ): ?IIndexedEntity {
-		return $this->_systemService->readByUniqueIdentifier( $_identifier );
+		return $this->systemService()->readByUniqueIdentifier( $_identifier );
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public function process( string $_input_stream_uri ): void {
 		try {
 			$processStartTime = hrtime( true );
 
-			$streamProperties = $this->_externalService->readStream(
+			$streamProperties = $this->externalService()->readStream(
 				$_input_stream_uri,
 				$this->incomingEntityTransformer()
 			);
@@ -294,27 +405,13 @@ abstract class Update implements IDryRunProcessor {
 			}
 
 			$this->preProcessEvents();
-
-			/**
-			 * @var IIndexedEntity $record
-			 */
-			foreach ( $this->readSystemEntities() as $record ) {
-				$systemEntity    = $this->readSystemEntityByIdentifier( $record->uniqueIdentifier() );
-				$hasSystemEntity = !empty( $systemEntity );
-
-				$hasSystemEntity
-					? $this->processExistingSystemEntity( $record, $systemEntity )
-					: $this->processNewSystemEntity( $record );
-
-				$this->postSystemEntityProcessedEvent( $record );
-			}
-
+			$this->mainProcessingEvent();
 			$this->postProcessingEvents();
 			$this->postProcessingBanner();
 
 			$processEndTime = hrtime( true );
 			$elapsedTime    = round( ( $processEndTime - $processStartTime ) / 1e+9, 1 );
-			$this->_logger->info( "Process run took $elapsedTime seconds." );
+			$this->logger()->info( "Process run took $elapsedTime seconds." );
 		}
 		catch ( Exception $exception ) {
 			throw new ImportStreamException(
