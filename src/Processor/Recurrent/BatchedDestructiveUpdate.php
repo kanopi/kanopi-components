@@ -190,7 +190,7 @@ abstract class BatchedDestructiveUpdate extends DestructiveUpdate implements IBa
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function readSystemEntities(): iterable {
+	protected function readExternalEntities(): iterable {
 		$entities = $this->externalService()->read();
 		$this->_processStatistics->incomingTotal( $entities->count() );
 		return $this->_batchConfiguration->readCurrentBatch( $entities->getArrayCopy() );

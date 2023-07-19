@@ -282,9 +282,9 @@ abstract class Update implements IDryRunProcessor {
 	 * @throws SetWriterException
 	 */
 	protected function mainProcessingEvent(): void {
-		foreach ( $this->readSystemEntities() as $record ) {
-			$this->processSystemEntity( $record );
-			$this->postSystemEntityProcessedEvent( $record );
+		foreach ( $this->readExternalEntities() as $externalEntity ) {
+			$this->processSystemEntity( $externalEntity );
+			$this->postSystemEntityProcessedEvent( $externalEntity );
 		}
 	}
 
@@ -366,12 +366,12 @@ abstract class Update implements IDryRunProcessor {
 	}
 
 	/**
-	 * Read the set of system entities to process
+	 * Read the set of external entities, converted to the common entity type, to process
 	 *    - Override this in extended classes batching, etc
 	 *
 	 * @return iterable
 	 */
-	protected function readSystemEntities(): iterable {
+	protected function readExternalEntities(): iterable {
 		$entities = $this->externalService()->read();
 		$this->_processStatistics->incomingTotal( $entities->count() );
 		return $entities;
