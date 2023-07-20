@@ -340,13 +340,15 @@ abstract class Update implements IDryRunProcessor {
 	 * @param IIndexedEntity $_systemEntity Current system entity
 	 *
 	 * @throws SetWriterException
+	 *
+	 * @return IIndexedEntity Final updated entity
 	 */
-	protected function processSystemEntity( IIndexedEntity $_systemEntity ): void {
+	protected function processSystemEntity( IIndexedEntity $_systemEntity ): IIndexedEntity {
 		try {
 			$systemEntity    = $this->readSystemEntityByIdentifier( $_systemEntity->uniqueIdentifier() );
 			$hasSystemEntity = !empty( $systemEntity );
 
-			$hasSystemEntity
+			return $hasSystemEntity
 				? $this->processExistingSystemEntity( $_systemEntity, $systemEntity )
 				: $this->processNewSystemEntity( $_systemEntity );
 		}
@@ -362,6 +364,8 @@ abstract class Update implements IDryRunProcessor {
 			if ( $this->stopOnError ) {
 				throw new SetWriterException( $message );
 			}
+
+			return $_systemEntity;
 		}
 	}
 
