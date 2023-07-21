@@ -136,7 +136,7 @@ trait PostTypeEntity {
 	 * @see IPostTypeEntity::updateIndexIdentifier()
 	 */
 	function updateStatus( string $_status ): IPostTypeEntity {
-		$this->_postId = $_status;
+		$this->_status = $_status;
 
 		return $this;
 	}

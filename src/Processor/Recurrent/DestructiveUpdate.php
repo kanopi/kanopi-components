@@ -18,18 +18,18 @@ use Kanopi\Components\Transformers\Arrays;
  */
 abstract class DestructiveUpdate extends Update {
 	/**
-	 * Tracking index of (ID => Processed Boolean Flag)
-	 *
-	 * @var array
-	 */
-	protected array $_trackingIndex = [];
-
-	/**
 	 * Options interface to track batch progress
 	 *
 	 * @var ITrackingIndex
 	 */
 	protected ITrackingIndex $_trackingService;
+
+	/**
+	 * Tracking index of (ID => Processed Boolean Flag)
+	 *
+	 * @var array
+	 */
+	protected array $_trackingIndex = [];
 
 	public function __construct(
 		ILogger $_logger,
@@ -39,6 +39,15 @@ abstract class DestructiveUpdate extends Update {
 	) {
 		parent::__construct( $_logger, $_external_service, $_system_service );
 		$this->_trackingService = $_tracking_service;
+	}
+
+	/**
+	 * Options interface to track progress
+	 *
+	 * @return ITrackingIndex
+	 */
+	protected function trackingService(): ITrackingIndex {
+		return $this->_trackingService;
 	}
 
 	/**
@@ -66,12 +75,12 @@ abstract class DestructiveUpdate extends Update {
 				continue;
 			}
 
-			$this->_logger->verbose( "Removing system entity with ID $_id" );
+			$this->logger()->verbose( "Removing system entity with ID $_id" );
 			$proxyEntity = $this->createSystemEntity();
 			$proxyEntity->updateIndexIdentifier( $_id );
 
 			if ( false === $this->isDryRunEnabled() ) {
-				$this->_systemService->delete( $proxyEntity );
+				$this->systemService()->delete( $proxyEntity );
 			}
 
 			$this->_processStatistics->deleted( $proxyEntity->indexIdentifier() );
@@ -103,8 +112,11 @@ abstract class DestructiveUpdate extends Update {
 	 * @throws SetWriterException
 	 */
 	protected function postProcessingEvents(): void {
-		$this->_logger->info( "Updating the stored tracking index" );
-		$this->_trackingService->updateByIdentifier( $this->trackingStorageUniqueIdentifier(), $this->_trackingIndex );
+		$this->logger()->info( "Updating the stored tracking index" );
+		$this->trackingService()->updateByIdentifier(
+			$this->trackingStorageUniqueIdentifier(),
+			$this->_trackingIndex
+		);
 
 		$this->deleteAllUnprocessedEntities();
 	}
@@ -123,10 +135,10 @@ abstract class DestructiveUpdate extends Update {
 	 * @throws SetReaderException
 	 */
 	protected function preProcessEvents(): void {
-		$this->_trackingIndex = $this->_trackingService->readTrackingIndexByIdentifier(
+		$this->_trackingIndex = $this->trackingService()->readTrackingIndexByIdentifier(
 			$this->trackingStorageUniqueIdentifier(),
 			function () {
-				return $this->_systemService->read();
+				return $this->systemService()->read();
 			},
 			true
 		);

@@ -4,10 +4,16 @@ namespace Kanopi\Components\Services\System;
 
 use Kanopi\Components\Model\Data\Process\IStreamBatchConfiguration;
 use Kanopi\Components\Model\Data\Stream\IStreamProperties;
-use Kanopi\Components\Model\Exception\SetReaderException;
-use Kanopi\Components\Model\Exception\SetWriterException;
+use Kanopi\Components\Model\Exception\{SetReaderException, SetWriterException};
 
 interface IStreamBatch {
+	/**
+	 * Force restart the next requested batch
+	 *
+	 * @return void
+	 */
+	public function forceRestart(): void;
+
 	/**
 	 * Read the current batch configuration by identifier
 	 *    - Compares against stored batch configurations
@@ -19,9 +25,9 @@ interface IStreamBatch {
 	 *
 	 * @throws SetReaderException
 	 *
-	 * @return void
+	 * @return IStreamBatchConfiguration
 	 */
-	function readCurrentByIdentifier(
+	public function readCurrentByIdentifier(
 		string $_unique_identifier,
 		int $_batch_size,
 		IStreamProperties $_properties
@@ -37,5 +43,5 @@ interface IStreamBatch {
 	 *
 	 * @return void
 	 */
-	function updateByIdentifier( string $_unique_identifier, IStreamBatchConfiguration $_configuration ): void;
+	public function updateByIdentifier( string $_unique_identifier, IStreamBatchConfiguration $_configuration ): void;
 }
