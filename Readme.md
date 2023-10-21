@@ -158,35 +158,35 @@ The model can be implemented using the following criteria:
         public string $modifiedDate = '';
   
         /**
-         * @inheritDoc
+         * {@inheritDoc}
          */
         function entityName(): string {
             return 'location';
         }
         
         /**
-         * @inheritDoc
+         * {@inheritDoc}
          */
         function uniqueIdentifier(): string {
             return $this->id;
         }
     
         /**
-         * @inheritdoc
+         * {@inheritDoc}
          */
         function version(): string {
             return $this->modifiedDate;
         }
    
         /**
-         * @inheritDoc
+         * {@inheritDoc}
          */
          function extraInsertFieldMapping(): array {
             return [];
          }
         
          /**
-          * @inheritDoc
+          * {@inheritDoc}
           */
          function metaFieldMapping(): array {
             return [
@@ -197,7 +197,7 @@ The model can be implemented using the following criteria:
          }
   
          /**
-          * @inheritDoc
+          * {@inheritDoc}
           */
          function taxonomyTermMapping(): array {
             return [

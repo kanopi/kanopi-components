@@ -23,7 +23,7 @@ interface IGroupSetWriter extends IGroupSetReader {
 	 * @throws SetWriterException Entity write failure
 	 *
 	 */
-	function create( string $_group_key, IIndexedEntity $_entity ): IIndexedEntity;
+	public function create( string $_group_key, IIndexedEntity $_entity ): IIndexedEntity;
 
 	/**
 	 * Delete a given indexed entity
@@ -35,7 +35,7 @@ interface IGroupSetWriter extends IGroupSetReader {
 	 * @throws SetWriterException Entity delete failure
 	 *
 	 */
-	function delete( string $_group_key, IIndexedEntity $_entity ): bool;
+	public function delete( string $_group_key, IIndexedEntity $_entity ): bool;
 
 	/**
 	 * Updates an indexed entity in the repository
@@ -47,5 +47,5 @@ interface IGroupSetWriter extends IGroupSetReader {
 	 * @throws SetWriterException Entity write failure
 	 *
 	 */
-	function update( string $_group_key, IIndexedEntity $_entity ): bool;
+	public function update( string $_group_key, IIndexedEntity $_entity ): bool;
 }

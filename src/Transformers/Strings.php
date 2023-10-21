@@ -27,7 +27,7 @@ class Strings {
 	 *
 	 * @return Strings
 	 */
-	static function from( string $_string ) : Strings {
+	static function from( string $_string ): Strings {
 		return new Strings( $_string );
 	}
 
@@ -37,7 +37,7 @@ class Strings {
 	 * @return Strings
 	 */
 	function pascalToSeparate( string $_separator = '-' ): Strings {
-		preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $this->subject, $matches);
+		preg_match_all( '!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $this->subject, $matches );
 
 		$conversion = $matches[0] ?? [ $this->subject ];
 
@@ -57,9 +57,12 @@ class Strings {
 		return new Strings(
 			implode(
 				'',
-				array_map( function( $_part ) {
-					return ucfirst( $_part );
-				}, explode( $_separator, $this->subject ) )
+				array_map(
+					function ( $_part ) {
+						return ucfirst( $_part );
+					},
+					explode( $_separator, $this->subject ) 
+				)
 			)
 		);
 	}

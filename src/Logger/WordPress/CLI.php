@@ -13,39 +13,39 @@ use WP_CLI\Utils;
  * @package kanopi/components
  */
 class CLI implements ILogger {
-use VerboseLogging;
+	use VerboseLogging;
 
-/**
- * {@inheritDoc}
- */
-function error( $_message ): void {
-    WP_CLI::error( $_message, false );
-}
+	/**
+	 * {@inheritDoc}
+	 */
+	public function error( string $_message ): void {
+		WP_CLI::error( $_message, false );
+	}
 
-/**
- * {@inheritDoc}
- */
-function info( string $_message ): void {
-    WP_CLI::log( $_message );
-}
+	/**
+	 * {@inheritDoc}
+	 */
+	public function table( array $_header, array $_messages ): void {
+		Utils\format_items(
+			'table',
+			$_messages,
+			$_header
+		);
+	}
 
-/**
- * {@inheritDoc}
- */
-function table( array $_header, array $_messages ): void {
-    Utils\format_items(
-    'table',
-    $_messages,
-    $_header
-    );
-}
+	/**
+	 * {@inheritDoc}
+	 */
+	public function verbose( string $_message ): void {
+		if ( $this->verbose_enabled ) {
+			$this->info( $_message );
+		}
+	}
 
-/**
- * {@inheritDoc}
- */
-function verbose( string $_message ): void {
-    if ($this->verbose_enabled) {
-    $this->info( $_message );
-    }
-}
+	/**
+	 * {@inheritDoc}
+	 */
+	public function info( string $_message ): void {
+		WP_CLI::log( $_message );
+	}
 }

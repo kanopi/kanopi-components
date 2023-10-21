@@ -7,13 +7,6 @@ use WP_Term;
 
 interface ITaxonomyTermEntity extends IIndexedEntity {
 	/**
-	 * System term description
-	 *
-	 * @return string
-	 */
-	function description(): string;
-
-	/**
 	 * Create entity model form WordPress specific WP_Term object
 	 *
 	 * @param WP_Term $_term
@@ -21,6 +14,13 @@ interface ITaxonomyTermEntity extends IIndexedEntity {
 	 * @return ITaxonomyTermEntity
 	 */
 	static function fromWPTerm( WP_Term $_term ): ITaxonomyTermEntity;
+
+	/**
+	 * System term description
+	 *
+	 * @return string
+	 */
+	function description(): string;
 
 	/**
 	 * Term name

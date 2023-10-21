@@ -5,7 +5,16 @@ namespace Kanopi\Components\Model\Data\WordPress;
 use Kanopi\Components\Model\Data\IIndexedEntity;
 use WP_Post;
 
-interface IPostTypeEntity extends IIndexedEntity  {
+interface IPostTypeEntity extends IIndexedEntity {
+	/**
+	 * Create entity model form WordPress specific WP_Post object
+	 *
+	 * @param WP_Post $_post
+	 *
+	 * @return IPostTypeEntity
+	 */
+	static function fromWPPost( WP_Post $_post ): IPostTypeEntity;
+
 	/**
 	 * Effective post content
 	 *
@@ -20,15 +29,6 @@ interface IPostTypeEntity extends IIndexedEntity  {
 	 * @see wp_insert_post
 	 */
 	function extraInsertFieldMapping(): array;
-
-	/**
-	 * Create entity model form WordPress specific WP_Post object
-	 *
-	 * @param WP_Post $_post
-	 *
-	 * @return IPostTypeEntity
-	 */
-	static function fromWPPost( WP_Post $_post ): IPostTypeEntity;
 
 	/**
 	 * Mapping from meta_key => meta_value

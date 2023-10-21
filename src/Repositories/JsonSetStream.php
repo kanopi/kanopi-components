@@ -1,7 +1,4 @@
 <?php
-/**
- * Convert a JSON string into a JSON array equivalent
- */
 
 namespace Kanopi\Components\Repositories;
 
@@ -12,7 +9,13 @@ use Kanopi\Components\Model\Data\Stream\IStreamCollection;
 use Kanopi\Components\Model\Data\Stream\StreamCollection;
 use Kanopi\Components\Model\Exception\SetStreamException;
 
+/**
+ * Convert a JSON string into a JSON array equivalent
+ *
+ * @package kanopi/components
+ */
 class JsonSetStream implements ISetStream {
+	//phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- No actual output, exception messages
 	const ERROR_REFERENCE = [
 		JSON_ERROR_DEPTH            => 'The maximum stack depth has been exceeded.',
 		JSON_ERROR_STATE_MISMATCH   => 'Invalid or malformed JSON.',
@@ -25,25 +28,8 @@ class JsonSetStream implements ISetStream {
 	];
 
 	/**
-	 * Translate the JSON string to an array
-	 *
-	 * @param string $_input
-	 *
-	 * @return iterable
-	 */
-	protected function process( string $_input ): iterable {
-		$startSegment = 'efbbbf';
-		$rawData      = ltrim( $_input, chr( 239 ) . chr( 187 ) . chr( 191 ) );
-		$rawData      = $startSegment === substr( bin2hex( $rawData ), 0, strlen( $startSegment ) )
-			? substr( $rawData, 3 )
-			: $rawData;
-		$data         = json_decode( $rawData, true );
-
-		return !empty( $data ) && is_array( $data ) ? new ArrayIterator( $data ) : new EmptyIterator();
-	}
-
-	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
+	 * @throws SetStreamException JSON read failed
 	 */
 	public function read( IStream $_input_stream ): IStreamCollection {
 		$output     = $this->process( $_input_stream->stream() ?? '' );
@@ -51,9 +37,28 @@ class JsonSetStream implements ISetStream {
 
 		if ( 0 < $error_code ) {
 			throw new SetStreamException(
-				self::ERROR_REFERENCE[ $error_code ] ?? "Unknown JSON read error ($error_code)" );
+				self::ERROR_REFERENCE[ $error_code ] ?? "Unknown JSON read error ($error_code)"
+			);
 		}
 
 		return new StreamCollection( $output, $_input_stream );
+	}
+
+	/**
+	 * Translate the JSON string to an array
+	 *
+	 * @param string $_input Incoming JSON data
+	 *
+	 * @return iterable
+	 */
+	protected function process( string $_input ): iterable {
+		$startSegment = 'efbbbf';
+		$rawData      = ltrim( $_input, chr( 239 ) . chr( 187 ) . chr( 191 ) );
+		$rawData      = substr( bin2hex( $rawData ), 0, strlen( $startSegment ) ) === $startSegment
+			? substr( $rawData, 3 )
+			: $rawData;
+		$data         = json_decode( $rawData, true );
+
+		return ! empty( $data ) && is_array( $data ) ? new ArrayIterator( $data ) : new EmptyIterator();
 	}
 }

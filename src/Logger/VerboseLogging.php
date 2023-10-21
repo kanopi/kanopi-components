@@ -19,11 +19,11 @@ trait VerboseLogging {
 	 *
 	 * @param bool $_is_enabled Whether verbose logging is enabled
 	 *
+	 * @return void
 	 * @see ILogger::enableVerboseLogging()
 	 *
-	 * @return void
 	 */
-	function enableVerboseLogging( bool $_is_enabled ): void {
+	public function enableVerboseLogging( bool $_is_enabled ): void {
 		$this->verbose_enabled = $_is_enabled;
 	}
 }

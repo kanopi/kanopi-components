@@ -13,7 +13,7 @@ class Standard implements ILogger {
 	/**
 	 * {@inheritDoc}
 	 */
-	function error( string $_message ): void {
+	public function error( string $_message ): void {
 		// phpcs:ignore -- Intentionally writes to the error log
 		error_log( strip_tags( $_message ) );
 	}
@@ -21,15 +21,7 @@ class Standard implements ILogger {
 	/**
 	 * {@inheritDoc}
 	 */
-	function info( string $_message ): void {
-		// phpcs:ignore -- Console output only, doesn't need sophisticated sanitization
-		echo strip_tags( $_message );
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	function table( array $_header, array $_messages ): void {
+	public function table( array $_header, array $_messages ): void {
 		if ( $this->verbose_enabled ) {
 			// phpcs:ignore -- Console output only, doesn't need sophisticated sanitization
 			print_r( $_header );
@@ -41,9 +33,17 @@ class Standard implements ILogger {
 	/**
 	 * {@inheritDoc}
 	 */
-	function verbose( string $_message ): void {
+	public function verbose( string $_message ): void {
 		if ( $this->verbose_enabled ) {
 			$this->info( $_message );
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function info( string $_message ): void {
+		// phpcs:ignore -- Console output only, doesn't need sophisticated sanitization
+		echo strip_tags( $_message );
 	}
 }

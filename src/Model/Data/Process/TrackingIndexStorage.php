@@ -4,77 +4,83 @@ namespace Kanopi\Components\Model\Data\Process;
 
 use Kanopi\Components\Model\Data\IIndexedEntity;
 
+/**
+ * Process tracking by integer based (internal/system) entity index
+ *
+ * @package kanopi/components
+ */
 class TrackingIndexStorage implements IIndexedEntity {
 	/**
 	 * @var int
 	 */
-	protected int $_indexIdentifier = 0;
-
+	protected int $indexIdentifier = 0;
 	/**
 	 * @var array
 	 */
-	protected array $_trackingIndex = [];
-
+	protected array $trackingIndex = [];
 	/**
 	 * @var string
 	 */
-	protected string $_uniqueIdentifier = '';
-
+	protected string $uniqueIdentifier = '';
 	/**
 	 * @var string
 	 */
-	protected string $_version;
+	protected string $version;
 
+	/**
+	 * @param string $_unique_identifier Unique identifier for the process
+	 * @param array  $_index             Initial system index to use in tracking
+	 */
 	public function __construct(
 		string $_unique_identifier,
 		array $_index
 	) {
-		$this->_trackingIndex    = $_index;
-		$this->_uniqueIdentifier = $_unique_identifier;
-		$this->_version          = gmdate( 'U', time() );
+		$this->trackingIndex    = $_index;
+		$this->uniqueIdentifier = $_unique_identifier;
+		$this->version          = gmdate( 'U', time() );
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function indexIdentifier(): int {
-		return $this->_indexIdentifier;
+	public function indexIdentifier(): int {
+		return $this->indexIdentifier;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function systemEntityName(): string {
+	public function systemEntityName(): string {
 		return 'option';
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function systemTransform(): array {
-		return $this->_trackingIndex;
+	public function systemTransform(): array {
+		return $this->trackingIndex;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function uniqueIdentifier(): string {
-		return $this->_uniqueIdentifier;
+	public function uniqueIdentifier(): string {
+		return $this->uniqueIdentifier;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function updateIndexIdentifier( int $_index ): IIndexedEntity {
-		$this->_indexIdentifier = $_index;
+	public function updateIndexIdentifier( int $_index ): IIndexedEntity {
+		$this->indexIdentifier = $_index;
 
 		return $this;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function version(): string {
-		return $this->_version;
+	public function version(): string {
+		return $this->version;
 	}
 }

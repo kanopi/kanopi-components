@@ -14,9 +14,9 @@ interface IIndexedGroupWriter extends IIndexedGroupReader {
 	 * @param string         $_group_key
 	 * @param IIndexedEntity $_entity
 	 *
+	 * @return IIndexedEntity  Entity identifier with created index identifier
 	 * @throws SetWriterException
 	 *
-	 * @return IIndexedEntity  Entity identifier with created index identifier
 	 */
 	function create( string $_group_key, IIndexedEntity $_entity ): IIndexedEntity;
 
@@ -26,31 +26,31 @@ interface IIndexedGroupWriter extends IIndexedGroupReader {
 	 * @param string         $_group_key
 	 * @param IIndexedEntity $_entity
 	 *
+	 * @return void
 	 * @throws
 	 *
-	 * @return void
 	 */
 	function delete( string $_group_key, IIndexedEntity $_entity ): void;
 
 	/**
 	 * Read a given Entity by system index identifier
 	 *
-	 * @param string         $_group_key
-	 * @param int $_index_identifier
+	 * @param string $_group_key
+	 * @param int    $_index_identifier
 	 *
-	 * @throws SetReaderException
 	 * @return ?IIndexedEntity
+	 * @throws SetReaderException
 	 */
 	function readByIndexIdentifier( string $_group_key, int $_index_identifier ): ?IIndexedEntity;
 
 	/**
 	 * Read a given Entity by shared Unique Identifier
 	 *
-	 * @param string         $_group_key
+	 * @param string $_group_key
 	 * @param string $_unique_identifier
 	 *
-	 * @throws SetReaderException
 	 * @return ?IIndexedEntity
+	 * @throws SetReaderException
 	 */
 	function readByUniqueIdentifier( string $_group_key, string $_unique_identifier ): ?IIndexedEntity;
 
@@ -60,9 +60,9 @@ interface IIndexedGroupWriter extends IIndexedGroupReader {
 	 * @param string         $_group_key
 	 * @param IIndexedEntity $_entity
 	 *
+	 * @return bool Success of update
 	 * @throws SetWriterException
 	 *
-	 * @return bool Success of update
 	 */
 	function update( string $_group_key, IIndexedEntity $_entity ): bool;
 }

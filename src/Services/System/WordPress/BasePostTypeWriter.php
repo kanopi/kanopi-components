@@ -16,14 +16,12 @@ abstract class BasePostTypeWriter implements IIndexedEntityWriter {
 	 * @var ISetWriter
 	 */
 	protected ISetWriter $entityRepository;
-
 	/**
 	 * Meta data repository
 	 *
 	 * @var ISetReader
 	 */
 	protected ISetReader $metaDataRepository;
-
 	/**
 	 * Taxonomy repository
 	 *
@@ -35,16 +33,16 @@ abstract class BasePostTypeWriter implements IIndexedEntityWriter {
 	 * Base constructor deliberately requests all trait requested repositories
 	 * Makes them available for implemented classes
 	 *
-	 * @param ISetWriter $_entity_repository
-	 * @param ISetReader $_meta_data_repository
+	 * @param ISetWriter                $_entity_repository
+	 * @param ISetReader                $_meta_data_repository
 	 * @param IIndexedEntityGroupWriter $_taxonomy_repository
 	 */
 	public function __construct(
-		ISetWriter $_entity_repository,
-		ISetReader $_meta_data_repository,
+		ISetWriter                $_entity_repository,
+		ISetReader                $_meta_data_repository,
 		IIndexedEntityGroupWriter $_taxonomy_repository
 	) {
-		$this->entityRepository       = $_entity_repository;
+		$this->entityRepository   = $_entity_repository;
 		$this->metaDataRepository = $_meta_data_repository;
 		$this->taxonomyRepository = $_taxonomy_repository;
 	}

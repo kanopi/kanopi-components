@@ -10,7 +10,7 @@ use Kanopi\Components\Repositories\ISetReader;
 
 class PostMeta implements ISetReader {
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function read( $_filter = 0 ): EntityIterator {
 		$meta = get_post_meta( $_filter );

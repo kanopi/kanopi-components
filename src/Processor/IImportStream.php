@@ -1,12 +1,14 @@
 <?php
-/**
- * Import data from an input stream
- */
 
 namespace Kanopi\Components\Processor;
 
 use Kanopi\Components\Model\Exception\ImportStreamException;
 
+/**
+ * Import data from an input stream
+ *
+ * @package kanopi/components
+ */
 interface IImportStream {
 	/**
 	 * Change whether to force overwriting any existing content
@@ -31,11 +33,10 @@ interface IImportStream {
 	/**
 	 * Completes the import process using the supplied data
 	 *
-	 * @param string $_input_stream_uri
-	 *
-	 * @throws ImportStreamException
+	 * @param string $_input_stream_uri URI of the input strea
 	 *
 	 * @return void
+	 * @throws ImportStreamException Failure to process import stream
 	 */
 	public function process( string $_input_stream_uri ): void;
 }

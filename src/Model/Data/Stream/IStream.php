@@ -2,14 +2,19 @@
 
 namespace Kanopi\Components\Model\Data\Stream;
 
+/**
+ * String data stream model
+ *
+ * @package kanopi/components
+ */
 interface IStream {
 	/**
 	 * @return IStreamProperties
 	 */
-	function properties(): IStreamProperties;
+	public function properties(): IStreamProperties;
 
 	/**
 	 * @return string
 	 */
-	function stream(): string;
+	public function stream(): string;
 }

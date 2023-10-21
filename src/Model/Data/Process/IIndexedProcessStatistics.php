@@ -2,119 +2,124 @@
 
 namespace Kanopi\Components\Model\Data\Process;
 
+/**
+ * Statistics model for import/update processes
+ *
+ * @package kanopi/components
+ */
 interface IIndexedProcessStatistics {
 	/**
 	 * Mark the provided identifier as created
 	 *
-	 * @param int $_identifier
+	 * @param int $_identifier Processed entity index identifier
 	 *
 	 * @return void
 	 */
-	function created( int $_identifier ): void;
+	public function created( int $_identifier ): void;
 
 	/**
 	 * Amount of indexed entities created
 	 *
 	 * @return int
 	 */
-	function createdAmount(): int;
+	public function createdAmount(): int;
 
 	/**
 	 * Index of entities created
 	 *
 	 * @return array
 	 */
-	function createdIndex(): array;
+	public function createdIndex(): array;
 
 	/**
 	 * Mark the provided identifier as deleted
 	 *
-	 * @param int $_identifier
+	 * @param int $_identifier Processed entity index identifier
 	 *
 	 * @return void
 	 */
-	function deleted( int $_identifier ): void;
+	public function deleted( int $_identifier ): void;
 
 	/**
 	 * Amount of indexed entities deleted
 	 *
 	 * @return int
 	 */
-	function deletedAmount(): int;
+	public function deletedAmount(): int;
 
 	/**
 	 * Index of entities deleted
 	 *
 	 * @return array
 	 */
-	function deletedIndex(): array;
+	public function deletedIndex(): array;
 
 	/**
 	 * Set amount of all incoming entities
 	 *
-	 * @param int $_total
+	 * @param int $_total Total entities to process
 	 *
 	 * @return void
 	 */
-	function incomingTotal( int $_total ): void;
+	public function incomingTotal( int $_total ): void;
 
 	/**
 	 * Amount of all entities
 	 *
 	 * @return int
 	 */
-	function incomingTotalAmount(): int;
+	public function incomingTotalAmount(): int;
 
 	/**
 	 * Amount of entities processed in the entire run (excludes deletions)
 	 *
 	 * @return int
 	 */
-	function processedTotalAmount(): int;
+	public function processedTotalAmount(): int;
 
 	/**
 	 * Amount of indexed entities skipped
 	 *
 	 * @return int
 	 */
-	function skippedAmount(): int;
+	public function skippedAmount(): int;
 
 	/**
 	 * Index of entities skipped
 	 *
 	 * @return array
 	 */
-	function skippedIndex(): array;
+	public function skippedIndex(): array;
 
 	/**
 	 * Mark the provided identifier as skipped
 	 *
-	 * @param int $_identifier
+	 * @param int $_identifier Processed entity index identifier
 	 *
 	 * @return void
 	 */
-	function skipped( int $_identifier ): void;
+	public function skipped( int $_identifier ): void;
 
 	/**
 	 * Mark the provided identifier as updated
 	 *
-	 * @param int $_identifier
+	 * @param int $_identifier Processed entity index identifier
 	 *
 	 * @return void
 	 */
-	function updated( int $_identifier ): void;
+	public function updated( int $_identifier ): void;
 
 	/**
 	 * Amount of indexed entities updated
 	 *
 	 * @return int
 	 */
-	function updatedAmount(): int;
+	public function updatedAmount(): int;
 
 	/**
 	 * Index of entities updated
 	 *
 	 * @return array
 	 */
-	function updatedIndex(): array;
+	public function updatedIndex(): array;
 }

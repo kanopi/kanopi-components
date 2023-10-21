@@ -17,34 +17,34 @@ use WP_Term;
 
 class Taxonomy implements IGroupSetWriter {
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function create( string $_group_key, IIndexedEntity $_entity ): IIndexedEntity {
 		$term_name = is_a( $_entity, ITaxonomyTermEntity::class ) ? $_entity->name() : $_entity->uniqueIdentifier();
-		$result = wp_insert_term(
+		$result    = wp_insert_term(
 			$term_name,
 			$_group_key,
 			$_entity->systemTransform()
 		);
 
-		if ( is_a( $result, WP_Error::class ) ) {
+		if (is_a( $result, WP_Error::class )) {
 			throw new SetWriterException( Arrays::from( $result->get_error_messages() )->join( ' | ' ) );
 		}
 
-		if ( empty( $result[ 'term_id' ] ) ) {
+		if (empty( $result['term_id'] )) {
 			throw new SetWriterException( 'Created term has no ID' );
 		}
 
-		return $_entity->updateIndexIdentifier( intval( $result[ 'term_id' ] ) );
+		return $_entity->updateIndexIdentifier( intval( $result['term_id'] ) );
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function delete( string $_group_key, IIndexedEntity $_entity ): bool {
 		$result = wp_delete_term( $_entity->indexIdentifier(), $_group_key );
 
-		if ( is_a( $result, WP_Error::class ) ) {
+		if (is_a( $result, WP_Error::class )) {
 			throw new SetWriterException( Arrays::from( $result->get_error_messages() )->join( ' | ' ) );
 		}
 
@@ -52,14 +52,14 @@ class Taxonomy implements IGroupSetWriter {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function read( string $_group_key, $_filter = [] ): EntityIterator {
-		$return_type = $_filter[ 'fields' ] ?? 'all';
+		$return_type = $_filter['fields'] ?? 'all';
 		$entity_type = 'ids' === $return_type ? 'integer' : WP_Term::class;
 
 		$taxonomy_query = Arrays::from( [
-			'taxonomy' => $_group_key
+			'taxonomy' => $_group_key,
 		] );
 		$taxonomy_query->appendMaybe( $_filter, is_array( $_filter ) );
 		$taxonomy_terms = get_terms( $taxonomy_query->toArray() );
@@ -68,7 +68,7 @@ class Taxonomy implements IGroupSetWriter {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function update( string $_group_key, IIndexedEntity $_entity ): bool {
 		$result = wp_update_term(
@@ -77,7 +77,7 @@ class Taxonomy implements IGroupSetWriter {
 			$_entity->systemTransform()
 		);
 
-		if ( is_a( $result, WP_Error::class ) ) {
+		if (is_a( $result, WP_Error::class )) {
 			throw new SetWriterException( Arrays::from( $result->get_error_messages() )->join( ' | ' ) );
 		}
 

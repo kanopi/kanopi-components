@@ -1,7 +1,7 @@
 <?php
 /**
  * Reader for a set of Indexed Entities in a group which is segmented in the system by a group key
- * 	- For instance, WordPress taxonomies are grouped by taxonomy slug
+ *    - For instance, WordPress taxonomies are grouped by taxonomy slug
  */
 
 namespace Kanopi\Components\Services;

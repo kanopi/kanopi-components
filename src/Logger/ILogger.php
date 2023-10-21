@@ -15,30 +15,30 @@ interface ILogger {
 	 *
 	 * @return void
 	 */
-	function enableVerboseLogging( bool $_is_enabled ): void;
-	
+	public function enableVerboseLogging( bool $_is_enabled ): void;
+
 	/**
 	 * Log an error message
 	 *
 	 * @param string $_message Message content
 	 */
-	function error( string $_message ): void;
-	
+	public function error( string $_message ): void;
+
 	/**
 	 * Log an informational message
 	 *
 	 * @param string $_message Message content
 	 */
-	function info( string $_message ): void;
-	
+	public function info( string $_message ): void;
+
 	/**
 	 * Show a listing/table of messages, if the implementation allows
 	 *
 	 * @param array $_header   Header row of labels
 	 * @param array $_messages Set of messages/items
 	 */
-	function table( array $_header, array $_messages ): void;
-	
+	public function table( array $_header, array $_messages ): void;
+
 	/**
 	 * Log a verbose message, up to implementation to filter these
 	 *
@@ -46,5 +46,5 @@ interface ILogger {
 	 *
 	 * @return void
 	 */
-	function verbose( string $_message ): void;
+	public function verbose( string $_message ): void;
 }

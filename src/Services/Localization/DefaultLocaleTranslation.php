@@ -19,14 +19,12 @@ class DefaultLocaleTranslation implements LocaleTranslation {
 	 * @var LocalizationProvider
 	 */
 	protected LocalizationProvider $systemProvider;
-
 	/**
 	 * External translation provider
 	 *
 	 * @var TranslationProvider
 	 */
 	protected TranslationProvider $translationProvider;
-
 	/**
 	 * Target language code
 	 *
@@ -42,7 +40,7 @@ class DefaultLocaleTranslation implements LocaleTranslation {
 	 */
 	public function __construct(
 		LocalizationProvider $_systemProvider,
-		TranslationProvider $_translationProvider
+		TranslationProvider  $_translationProvider
 	) {
 		$this->systemProvider      = $_systemProvider;
 		$this->translationProvider = $_translationProvider;
@@ -59,20 +57,20 @@ class DefaultLocaleTranslation implements LocaleTranslation {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function availableLanguageCodes(): array {
-		return $this->systemProvider->readLanguageCodes();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function changeLanguageCode( string $_code ): LocaleTranslation {
-		if ( in_array( $_code, $this->availableLanguageCodes(), true ) ) {
+		if (in_array( $_code, $this->availableLanguageCodes(), true )) {
 			$this->targetLanguageCode = $_code;
 			$this->translationProvider->changeTargetLanguage( $_code );
 		}
 
 		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function availableLanguageCodes(): array {
+		return $this->systemProvider->readLanguageCodes();
 	}
 
 	/**

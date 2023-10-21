@@ -58,8 +58,8 @@ interface LocaleTranslation {
 	/**
 	 * Translate text to the current target language
 	 *
-	 * @param string        $_text               Text to translate
-	 * @param string|null   $_sourceLanguageCode Optional source language code, default system language is assumed
+	 * @param string      $_text               Text to translate
+	 * @param string|null $_sourceLanguageCode Optional source language code, default system language is assumed
 	 *
 	 * @return TranslationText
 	 */

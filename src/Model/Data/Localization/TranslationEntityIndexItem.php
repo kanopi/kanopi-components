@@ -14,7 +14,6 @@ class TranslationEntityIndexItem implements TranslationIndexItem {
 	 * @var int
 	 */
 	protected int $entityIdentifier;
-
 	/**
 	 * ISO 639-1 Language code for the entity
 	 *

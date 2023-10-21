@@ -12,7 +12,7 @@ use Kanopi\Components\Model\Exception\SetReaderException;
  * @package kanopi/components
  */
 interface IGroupSetReader {
-	//phpcs:disable Squiz.Commenting.FunctionComment.TypeHintMissing -- Deliberate
+	//phpcs:disable Squiz.Commenting.FunctionComment.TypeHintMissing -- Deliberate type version compatability
 	/**
 	 * Read a set of values with an optional filter
 	 *
@@ -22,5 +22,5 @@ interface IGroupSetReader {
 	 * @return EntityIterator
 	 * @throws SetReaderException Grouped entity read exception
 	 */
-	function read( string $_group_key, $_filter = null ): EntityIterator;
+	public function read( string $_group_key, $_filter = null ): EntityIterator;
 }

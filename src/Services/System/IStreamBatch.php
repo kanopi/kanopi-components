@@ -23,13 +23,13 @@ interface IStreamBatch {
 	 * @param int               $_batch_size
 	 * @param IStreamProperties $_properties
 	 *
+	 * @return IStreamBatchConfiguration
 	 * @throws SetReaderException
 	 *
-	 * @return IStreamBatchConfiguration
 	 */
 	public function readCurrentByIdentifier(
-		string $_unique_identifier,
-		int $_batch_size,
+		string            $_unique_identifier,
+		int               $_batch_size,
 		IStreamProperties $_properties
 	): IStreamBatchConfiguration;
 
@@ -39,9 +39,9 @@ interface IStreamBatch {
 	 * @param string                    $_unique_identifier
 	 * @param IStreamBatchConfiguration $_configuration
 	 *
+	 * @return void
 	 * @throws SetWriterException
 	 *
-	 * @return void
 	 */
 	public function updateByIdentifier( string $_unique_identifier, IStreamBatchConfiguration $_configuration ): void;
 }

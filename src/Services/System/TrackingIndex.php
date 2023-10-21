@@ -18,18 +18,32 @@ class TrackingIndex implements ITrackingIndex {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function readTrackingIndexByIdentifier(
-		string $_unique_identifier,
+		string   $_unique_identifier,
 		callable $_read_fresh_identifier_index,
-		bool $_is_fresh_process
+		bool     $_is_fresh_process
 	): array {
 		$storedIndex = $this->readStoredTrackingIndex( $_unique_identifier );
 
 		return $_is_fresh_process || empty( $storedIndex )
 			? $this->readSystemTrackingIndex( $_read_fresh_identifier_index )
 			: $storedIndex;
+	}
+
+	/**
+	 * Reads any stored tracking index
+	 *
+	 * @param string $_unique_identifier
+	 *
+	 * @return array|null
+	 * @throws SetReaderException
+	 */
+	protected function readStoredTrackingIndex( string $_unique_identifier ): ?array {
+		$index = $this->_trackingStorageRepository->read( $_unique_identifier );
+
+		return $index->valid() ? $index->current()->systemTransform() : null;
 	}
 
 	/**
@@ -41,27 +55,13 @@ class TrackingIndex implements ITrackingIndex {
 		$index = [];
 		$fresh = call_user_func( $_read_fresh );
 
-		if ( is_iterable( $fresh ) ) {
-			foreach ( $fresh as $_id ) {
-				$index[ $_id ] = false;
+		if (is_iterable( $fresh )) {
+			foreach ($fresh as $_id) {
+				$index[$_id] = false;
 			}
 		}
 
 		return $index;
-	}
-
-	/**
-	 * Reads any stored tracking index
-	 *
-	 * @param string $_unique_identifier
-	 *
-	 * @throws SetReaderException
-	 * @return array|null
-	 */
-	protected function readStoredTrackingIndex( string $_unique_identifier ): ?array {
-		$index = $this->_trackingStorageRepository->read( $_unique_identifier );
-
-		return $index->valid() ? $index->current()->systemTransform() : null;
 	}
 
 	/**
@@ -70,8 +70,8 @@ class TrackingIndex implements ITrackingIndex {
 	 * @param string $_unique_identifier
 	 * @param array  $_tracking_index
 	 *
-	 * @throws SetWriterException
 	 * @return void
+	 * @throws SetWriterException
 	 */
 	function updateByIdentifier( string $_unique_identifier, array $_tracking_index ): void {
 		$this->_trackingStorageRepository->update(

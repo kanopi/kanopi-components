@@ -15,41 +15,22 @@ trait TaxonomyTermWriter {
 	 * @see IIndexedEntityWriter::hasEntities()
 	 */
 	function hasEntities( string $_group_key ): bool {
-		return !empty( $this->entityGroups[ $_group_key ] );
+		return !empty( $this->entityGroups[$_group_key] );
 	}
 
 	/**
+	 * @throws SetReaderException
 	 * @see IIndexedEntityWriter::readByIndexIdentifier()
 	 *
-	 * @throws SetReaderException
 	 */
 	function readByIndexIdentifier( string $_group_key, int $_index_identifier ): ?IIndexedEntity {
 		$term_cursor = $this->entityRepository()->read(
 			$_group_key,
 			[
-				'fields'  => 'all',
-				'include' => [ $_index_identifier ],
-				'number'  => 1,
-				'hide_empty' => false
-			]
-		);
-
-		return $term_cursor->valid() ? $this->readTaxonomyTerm( $term_cursor->current() ) : null;
-	}
-
-	/**
-	 * @see IIndexedEntityWriter::readByUniqueIdentifier()
-	 *
-	 * @throws SetReaderException
-	 */
-	function readByUniqueIdentifier( string $_group_key, string $_unique_identifier ): ?IIndexedEntity {
-		$term_cursor = $this->entityRepository()->read(
-			$_group_key,
-			[
-				'fields'  => 'all',
-				'slug' => [ $_unique_identifier ],
-				'number'  => 1,
-				'hide_empty' => false
+				'fields'     => 'all',
+				'include'    => [$_index_identifier],
+				'number'     => 1,
+				'hide_empty' => false,
 			]
 		);
 
@@ -66,12 +47,31 @@ trait TaxonomyTermWriter {
 	abstract function readTaxonomyTerm( $_term ): ITaxonomyTermEntity;
 
 	/**
+	 * @throws SetReaderException
+	 * @see IIndexedEntityWriter::readByUniqueIdentifier()
+	 *
+	 */
+	function readByUniqueIdentifier( string $_group_key, string $_unique_identifier ): ?IIndexedEntity {
+		$term_cursor = $this->entityRepository()->read(
+			$_group_key,
+			[
+				'fields'     => 'all',
+				'slug'       => [$_unique_identifier],
+				'number'     => 1,
+				'hide_empty' => false,
+			]
+		);
+
+		return $term_cursor->valid() ? $this->readTaxonomyTerm( $term_cursor->current() ) : null;
+	}
+
+	/**
 	 * @see IndexedEntityWriter::readIndexFilter()
 	 */
 	function readIndexFilter(): array {
 		return [
 			'fields'     => 'ids',
-			'hide_empty' => false
+			'hide_empty' => false,
 		];
 	}
 }

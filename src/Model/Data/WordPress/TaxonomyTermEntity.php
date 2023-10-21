@@ -14,35 +14,30 @@ trait TaxonomyTermEntity {
 	 * @var int|null
 	 */
 	protected ?int $_termId = null;
-
 	/**
 	 * Override system term description
 	 *
 	 * @var string|null
 	 */
 	protected ?string $_description = null;
-
 	/**
 	 * Override system term name
 	 *
 	 * @var string|null
 	 */
 	protected ?string $_name = null;
-
 	/**
 	 * System term parent identifier
 	 *
 	 * @var int|null
 	 */
 	protected ?int $_parentId = null;
-
 	/**
 	 * Override term slug
 	 *
 	 * @var string|null
 	 */
 	protected ?string $_slug = null;
-
 	/**
 	 * System term entity
 	 *
@@ -51,22 +46,32 @@ trait TaxonomyTermEntity {
 	protected ?WP_Term $_wpTerm = null;
 
 	/**
-	 * Read the effective Term name, in priority order:
-	 *  - Checks for an override in the entity model
-	 *  - Checks the underlying WP_Term
-	 *  - Returns a default of empty string
-	 *
-	 * @see ITaxonomyTermEntity::description()
-	 */
-	function description(): string {
-		return $this->_description ?? ( $this->hasWPTerm() ? $this->_wpTerm->description : '' );
-	}
-
-	/**
 	 * @see ITaxonomyTermEntity::fromWPTerm()
 	 */
 	static function fromWPTerm( WP_Term $_term ): ITaxonomyTermEntity {
-		return ( new static() )->updateWPTerm( $_term );
+		return (new static())->updateWPTerm( $_term );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see ITaxonomyTermEntity::changeWPTerm()
+	 */
+	function updateWPTerm( ?WP_Term $_term ): ITaxonomyTermEntity {
+		$this->_wpTerm = $_term;
+
+		return $this;
+	}
+
+	/**
+	 * Read the effective Index Identifier, in priority order:
+	 *  - Checks for an override in the entity model
+	 *  - Checks the underlying WP_Term
+	 *  - Returns a default of 0
+	 *
+	 * @see IIndexedEntity::indexIdentifier()
+	 */
+	function indexIdentifier(): int {
+		return $this->_termId ?? ($this->hasWPTerm() ? $this->_wpTerm->term_id : 0);
 	}
 
 	/**
@@ -79,54 +84,6 @@ trait TaxonomyTermEntity {
 	}
 
 	/**
-	 * Read the effective Index Identifier, in priority order:
-	 *  - Checks for an override in the entity model
-	 *  - Checks the underlying WP_Term
-	 *  - Returns a default of 0
-	 *
-	 * @see IIndexedEntity::indexIdentifier()
-	 */
-	function indexIdentifier(): int {
-		return $this->_termId ?? ( $this->hasWPTerm() ? $this->_wpTerm->term_id : 0 );
-	}
-
-	/**
-	 * Read the effective Term name, in priority order:
-	 *  - Checks for an override in the entity model
-	 *  - Checks the underlying WP_Term
-	 *  - Returns a default of empty string
-	 *
-	 * @see ITaxonomyTermEntity::name()
-	 */
-	function name(): string {
-		return $this->_name ?? ( $this->hasWPTerm() ? $this->_wpTerm->name : '' );
-	}
-
-	/**
-	 * Read the effective Parent ID, in priority order:
-	 *  - Checks for an override in the entity model
-	 *  - Checks the underlying WP_Term
-	 *  - Returns a default of 0
-	 *
-	 * @see ITaxonomyTermEntity::parentId()
-	 */
-	function parentId(): int {
-		return $this->_parentId ?? ( $this->hasWPTerm() ? $this->_wpTerm->parent_id : 0 ) ?? 0;
-	}
-
-	/**
-	 * Read the effective Slug, in priority order:
-	 *  - Checks for an override in the entity model
-	 *  - Checks the underlying WP_Term
-	 *  - Returns a default of empty string
-	 *
-	 * @see ITaxonomyTermEntity::slug()
-	 */
-	function slug(): string {
-		return $this->_slug ?? ( $this->hasWPTerm() ? $this->_wpTerm->slug : '' );
-	}
-
-	/**
 	 * @see IIndexedEntity::systemEntityName()
 	 */
 	function systemEntityName(): string {
@@ -135,7 +92,7 @@ trait TaxonomyTermEntity {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 * @see wp_insert_term
 	 * @see wp_update_term
 	 */
@@ -151,7 +108,55 @@ trait TaxonomyTermEntity {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Read the effective Term name, in priority order:
+	 *  - Checks for an override in the entity model
+	 *  - Checks the underlying WP_Term
+	 *  - Returns a default of empty string
+	 *
+	 * @see ITaxonomyTermEntity::description()
+	 */
+	function description(): string {
+		return $this->_description ?? ($this->hasWPTerm() ? $this->_wpTerm->description : '');
+	}
+
+	/**
+	 * Read the effective Term name, in priority order:
+	 *  - Checks for an override in the entity model
+	 *  - Checks the underlying WP_Term
+	 *  - Returns a default of empty string
+	 *
+	 * @see ITaxonomyTermEntity::name()
+	 */
+	function name(): string {
+		return $this->_name ?? ($this->hasWPTerm() ? $this->_wpTerm->name : '');
+	}
+
+	/**
+	 * Read the effective Parent ID, in priority order:
+	 *  - Checks for an override in the entity model
+	 *  - Checks the underlying WP_Term
+	 *  - Returns a default of 0
+	 *
+	 * @see ITaxonomyTermEntity::parentId()
+	 */
+	function parentId(): int {
+		return $this->_parentId ?? ($this->hasWPTerm() ? $this->_wpTerm->parent_id : 0) ?? 0;
+	}
+
+	/**
+	 * Read the effective Slug, in priority order:
+	 *  - Checks for an override in the entity model
+	 *  - Checks the underlying WP_Term
+	 *  - Returns a default of empty string
+	 *
+	 * @see ITaxonomyTermEntity::slug()
+	 */
+	function slug(): string {
+		return $this->_slug ?? ($this->hasWPTerm() ? $this->_wpTerm->slug : '');
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * @see ITaxonomyTermEntity::changeDescription()
 	 */
 	function updateDescription( string $_description ): ITaxonomyTermEntity {
@@ -170,7 +175,7 @@ trait TaxonomyTermEntity {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 * @see ITaxonomyTermEntity::changeDescription()
 	 */
 	function updateName( string $_name ): ITaxonomyTermEntity {
@@ -180,7 +185,7 @@ trait TaxonomyTermEntity {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 * @see ITaxonomyTermEntity::changeDescription()
 	 */
 	function updateParentId( int $_parentId ): ITaxonomyTermEntity {
@@ -190,21 +195,11 @@ trait TaxonomyTermEntity {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 * @see ITaxonomyTermEntity::changeDescription()
 	 */
 	function updateSlug( string $_slug ): ITaxonomyTermEntity {
 		$this->_slug = $_slug;
-
-		return $this;
-	}
-
-	/**
-	 * @inheritDoc
-	 * @see ITaxonomyTermEntity::changeWPTerm()
-	 */
-	function updateWPTerm( ?WP_Term $_term ): ITaxonomyTermEntity {
-		$this->_wpTerm = $_term;
 
 		return $this;
 	}

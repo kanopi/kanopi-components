@@ -41,17 +41,16 @@ class Arrays {
 		return $this;
 	}
 
-
 	/**
 	 * Maybe append an array segment to this array is $_should_append is true
 	 *
 	 * @param array $_addition
-	 * @param bool $_should_append
+	 * @param bool  $_should_append
 	 *
 	 * @return Arrays
 	 */
 	function appendMaybe( array $_addition, bool $_should_append ): Arrays {
-		if ( $_should_append ) {
+		if ($_should_append) {
 			$this->subject = array_merge( $this->subject, $_addition );
 		}
 
@@ -72,10 +71,17 @@ class Arrays {
 	}
 
 	/**
+	 * @return array
+	 */
+	function toArray(): array {
+		return $this->subject;
+	}
+
+	/**
 	 * Chainable wrapper for array_unique to sort and remove duplicate arrays values
-	 * 	- Sort regular to allow sorting/filtering of sub-arrays
+	 *    - Sort regular to allow sorting/filtering of sub-arrays
 	 *
-	 * @param int   $_sort_flags
+	 * @param int $_sort_flags
 	 *
 	 * @return Arrays
 	 */
@@ -94,12 +100,5 @@ class Arrays {
 	 */
 	function join( string $_separator = ',' ): string {
 		return implode( $_separator, $this->subject );
-	}
-
-	/**
-	 * @return array
-	 */
-	function toArray(): array {
-		return $this->subject;
 	}
 }

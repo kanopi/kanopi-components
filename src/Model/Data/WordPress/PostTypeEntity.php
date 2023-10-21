@@ -14,28 +14,24 @@ trait PostTypeEntity {
 	 * @var string|null
 	 */
 	protected ?string $_content = null;
-
 	/**
 	 * Override system post identifier
 	 *
 	 * @var int|null
 	 */
 	protected ?int $_postId = null;
-
 	/**
 	 * Override system post status
 	 *
 	 * @var string|null
 	 */
 	protected ?string $_status = null;
-
 	/**
 	 * Override system post title
 	 *
 	 * @var string|null
 	 */
 	protected ?string $_title = null;
-
 	/**
 	 * Wrapped WP_Post entity if read from the system
 	 *
@@ -44,17 +40,45 @@ trait PostTypeEntity {
 	protected ?WP_Post $_wpPost = null;
 
 	/**
-	 * @see IPostTypeEntity::content()
-	 */
-	function content(): string {
-		return $this->_content ?? ( $this->hasWPPost() ? $this->_wpPost->post_content : '' );
-	}
-
-	/**
 	 * @see IPostTypeEntity::fromWPPost()
 	 */
 	static function fromWPPost( WP_Post $_wpPost ): IPostTypeEntity {
-		return ( new static() )->updateWPPost( $_wpPost );
+		return (new static())->updateWPPost( $_wpPost );
+	}
+
+	/**
+	 * @see IPostTypeEntity::updateWPPost()
+	 */
+	function updateWPPost( ?WP_Post $_wpPost ): IPostTypeEntity {
+		$this->_wpPost = $_wpPost;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see wp_insert_post
+	 */
+	function systemTransform(): array {
+		return Arrays::from( [
+			'post_status'  => $this->status(),
+			'post_type'    => $this->systemEntityName(),
+			'post_content' => $this->content(),
+			'post_title'   => $this->title(),
+		] )
+			->appendMaybe( ['ID' => $this->indexIdentifier()], 0 < $this->indexIdentifier() )
+			->appendMaybe( ['tax_input' => $this->taxonomyTermMapping()], !empty( $this->taxonomyTermMapping() ) )
+			->appendMaybe( ['meta_input' => $this->metaFieldMapping()], !empty( $this->metaFieldMapping() ) )
+			->appendMaybe( $this->extraInsertFieldMapping(), !empty( $this->extraInsertFieldMapping() ) )
+			->filterUnique()
+			->toArray();
+	}
+
+	/**
+	 * @see IPostTypeEntity::status()
+	 */
+	function status(): string {
+		return $this->_status ?? ($this->hasWPPost() ? $this->_wpPost->post_status : 'publish');
 	}
 
 	/**
@@ -67,13 +91,6 @@ trait PostTypeEntity {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	function indexIdentifier(): int {
-		return $this->_postId ?? ( $this->hasWPPost() ? $this->_wpPost->ID : 0 );
-	}
-
-	/**
 	 * @see IIndexedEntity::systemEntityName()
 	 */
 	function systemEntityName(): string {
@@ -82,36 +99,24 @@ trait PostTypeEntity {
 	}
 
 	/**
-	 * @inheritDoc
-	 * @see wp_insert_post
+	 * @see IPostTypeEntity::content()
 	 */
-	function systemTransform(): array {
-		return Arrays::from( [
-			'post_status'  => $this->status(),
-			'post_type'    => $this->systemEntityName(),
-			'post_content' => $this->content(),
-			'post_title'   => $this->title(),
-		] )
-			->appendMaybe( [ 'ID' => $this->indexIdentifier() ], 0 < $this->indexIdentifier() )
-			->appendMaybe( [ 'tax_input' => $this->taxonomyTermMapping() ], !empty( $this->taxonomyTermMapping() ) )
-			->appendMaybe( [ 'meta_input' => $this->metaFieldMapping() ], !empty( $this->metaFieldMapping() ) )
-			->appendMaybe( $this->extraInsertFieldMapping(), !empty( $this->extraInsertFieldMapping() ) )
-			->filterUnique()
-			->toArray();
-	}
-
-	/**
-	 * @see IPostTypeEntity::status()
-	 */
-	function status(): string {
-		return $this->_status ?? ( $this->hasWPPost() ? $this->_wpPost->post_status : 'publish' );
+	function content(): string {
+		return $this->_content ?? ($this->hasWPPost() ? $this->_wpPost->post_content : '');
 	}
 
 	/**
 	 * @see IPostTypeEntity::title()
 	 */
 	function title(): string {
-		return $this->_title ?? ( $this->hasWPPost() ? $this->_wpPost->post_title : '' );
+		return $this->_title ?? ($this->hasWPPost() ? $this->_wpPost->post_title : '');
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	function indexIdentifier(): int {
+		return $this->_postId ?? ($this->hasWPPost() ? $this->_wpPost->ID : 0);
 	}
 
 	/**
@@ -146,15 +151,6 @@ trait PostTypeEntity {
 	 */
 	function updateTitle( string $_title ): IPostTypeEntity {
 		$this->_title = $_title;
-
-		return $this;
-	}
-
-	/**
-	 * @see IPostTypeEntity::updateWPPost()
-	 */
-	function updateWPPost( ?WP_Post $_wpPost ): IPostTypeEntity {
-		$this->_wpPost = $_wpPost;
 
 		return $this;
 	}

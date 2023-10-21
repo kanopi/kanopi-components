@@ -16,13 +16,6 @@ trait IndexedEntityWriter {
 	use Entities;
 
 	/**
-	 * System writable repository
-	 *
-	 * @returns ISetWriter
-	 */
-	abstract function entityRepository(): ISetWriter;
-
-	/**
 	 * Tracking flag tells if the location index is loaded
 	 *
 	 * @var bool
@@ -32,16 +25,16 @@ trait IndexedEntityWriter {
 	/**
 	 * Create a new entity
 	 *
-	 * @throws SetReaderException
+	 * @return IIndexedEntity Entity with created identifier
 	 * @throws SetWriterException
 	 *
-	 * @return IIndexedEntity Entity with created identifier
+	 * @throws SetReaderException
 	 * @see IIndexedEntityWriter::create()
 	 */
 	function create( IIndexedEntity $_entity ): IIndexedEntity {
 		$created_entity = $this->entityRepository()->create( $_entity );
 
-		if ( !$this->hasEntityByIndex( $created_entity->indexIdentifier() ) ) {
+		if (!$this->hasEntityByIndex( $created_entity->indexIdentifier() )) {
 			$this->entities->append( $created_entity->indexIdentifier() );
 		}
 
@@ -49,21 +42,18 @@ trait IndexedEntityWriter {
 	}
 
 	/**
-	 * Delete an entity from the system
+	 * System writable repository
 	 *
-	 * @throws SetWriterException
-	 * @see IIndexedEntityWriter::delete()
+	 * @returns ISetWriter
 	 */
-	function delete( IIndexedEntity $_entity ): void {
-		$this->entityRepository()->delete( $_entity );
-	}
+	abstract function entityRepository(): ISetWriter;
 
 	/**
 	 * @param int $_index_identifier
 	 *
+	 * @return bool
 	 * @throws SetReaderException
 	 *
-	 * @return bool
 	 */
 	protected function hasEntityByIndex( int $_index_identifier ): bool {
 		return in_array( $_index_identifier, $this->read()->getArrayCopy(), true );
@@ -72,12 +62,12 @@ trait IndexedEntityWriter {
 	/**
 	 * Stores and returns the currently indexed entity identifiers (not the models)
 	 *
-	 * @throws SetReaderException
 	 * @return EntityIterator
+	 * @throws SetReaderException
 	 * @see IIndexedEntityWriter::read()
 	 */
 	function read(): EntityIterator {
-		if ( !$this->isIndexLoaded ) {
+		if (!$this->isIndexLoaded) {
 			$this->entities      = $this->entityRepository()->read( $this->readIndexFilter() );
 			$this->isIndexLoaded = true;
 		}
@@ -94,11 +84,21 @@ trait IndexedEntityWriter {
 	abstract function readIndexFilter();
 
 	/**
-	 * Update an existing entity
+	 * Delete an entity from the system
 	 *
 	 * @throws SetWriterException
+	 * @see IIndexedEntityWriter::delete()
+	 */
+	function delete( IIndexedEntity $_entity ): void {
+		$this->entityRepository()->delete( $_entity );
+	}
+
+	/**
+	 * Update an existing entity
 	 *
 	 * @return bool Success of update
+	 * @throws SetWriterException
+	 *
 	 * @see IIndexedEntityWriter::update()
 	 */
 	function update( IIndexedEntity $_entity ): bool {

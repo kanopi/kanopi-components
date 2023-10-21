@@ -9,12 +9,12 @@ use Kanopi\Components\Repositories\IGroupSetWriter;
 
 class Options implements IGroupSetWriter {
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function create( string $_group_key, IIndexedEntity $_entity ): IIndexedEntity {
 		$result = update_option( $_group_key, $_entity );
 
-		if ( false === $result ) {
+		if (false === $result) {
 			throw new SetWriterException( "Cannot update the option {$_group_key}" );
 		}
 
@@ -22,7 +22,7 @@ class Options implements IGroupSetWriter {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function delete( string $_group_key, IIndexedEntity $_entity ): bool {
 		return delete_option( $_group_key );
@@ -31,15 +31,15 @@ class Options implements IGroupSetWriter {
 	/**
 	 * Use $_filter to define the set of entities
 	 *
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function read( string $_group_key, $_filter = IIndexedEntity::class ): EntityIterator {
 		$option = get_option( $_group_key );
-		return new EntityIterator( !empty( $option ) ? [ $option ] : [], IIndexedEntity::class );
+		return new EntityIterator( !empty( $option ) ? [$option] : [], IIndexedEntity::class );
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function update( string $_group_key, IIndexedEntity $_entity ): bool {
 		return update_option( $_group_key, $_entity );

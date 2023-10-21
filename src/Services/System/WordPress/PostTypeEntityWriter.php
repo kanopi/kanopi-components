@@ -11,14 +11,22 @@ trait PostTypeEntityWriter {
 	use IndexedEntityWriter;
 
 	/**
-	 * Maximum entity identifiers to retrieve during a read
-	 * 	- Index query returns IDs only, not full entities/posts
-	 *  - Override to change
+	 * Read a given Entity by system index identifier
 	 *
-	 * @return int
+	 * @param int $_index_identifier
+	 *
+	 * @return ?IPostTypeEntity
+	 * @throws SetReaderException
 	 */
-	protected function maximumIndexLength(): int {
-		return 10000;
+	function readByIndexIdentifier( int $_index_identifier ): ?IPostTypeEntity {
+		$post_cursor = $this->entityRepository()->read( [
+			'post_type'      => $this->systemEntityName(),
+			'p'              => $_index_identifier,
+			'posts_per_page' => 1,
+			'fields'         => 'all',
+		] );
+
+		return $post_cursor->valid() ? $this->readSystemEntity( $post_cursor->current() ) : null;
 	}
 
 	/**
@@ -29,23 +37,16 @@ trait PostTypeEntityWriter {
 	abstract function systemEntityName(): string;
 
 	/**
-	 * Read a given Entity by system index identifier
+	 * Implement this method to read a system entity with all meta fields and taxonomies
+	 *    - Pass the WP_Post retrieved from a WP_Query to build the PostTypeEntity
+	 *    - Use the Metadata and Taxonomy repositories to add additional data
 	 *
-	 * @param int $_index_identifier
+	 * @param WP_Post $_post_entity
 	 *
+	 * @return IPostTypeEntity|null
 	 * @throws SetReaderException
-	 * @return ?IPostTypeEntity
 	 */
-	function readByIndexIdentifier( int $_index_identifier ): ?IPostTypeEntity {
-		$post_cursor = $this->entityRepository()->read( [
-			'post_type'      => $this->systemEntityName(),
-			'p'              => $_index_identifier,
-			'posts_per_page' => 1,
-			'fields'         => 'all'
-		] );
-
-		return $post_cursor->valid() ? $this->readSystemEntity( $post_cursor->current() ) : null;
-	}
+	abstract function readSystemEntity( WP_Post $_post_entity ): ?IPostTypeEntity;
 
 	/**
 	 * Read an entity by a unique identifier
@@ -54,8 +55,8 @@ trait PostTypeEntityWriter {
 	 *
 	 * @param string $_unique_identifier
 	 *
-	 * @throws SetReaderException
 	 * @return IPostTypeEntity|null
+	 * @throws SetReaderException
 	 */
 	function readByUniqueIdentifier( string $_unique_identifier ): ?IPostTypeEntity {
 		$post_cursor = $this->entityRepository()->read( [
@@ -64,38 +65,14 @@ trait PostTypeEntityWriter {
 			'meta_query'     => [
 				[
 					'key'   => $this->uniqueIdentifierFieldName(),
-					'value' => $_unique_identifier
-				]
+					'value' => $_unique_identifier,
+				],
 			],
 			'posts_per_page' => 1,
-			'fields'         => 'all'
+			'fields'         => 'all',
 		] );
 
 		return $post_cursor->valid() ? $this->readSystemEntity( $post_cursor->current() ) : null;
-	}
-
-	/**
-	 * Implement this method to read a system entity with all meta fields and taxonomies
-	 * 	- Pass the WP_Post retrieved from a WP_Query to build the PostTypeEntity
-	 * 	- Use the Metadata and Taxonomy repositories to add additional data
-	 *
-	 * @param WP_Post $_post_entity
-	 *
-	 * @throws SetReaderException
-	 * @return IPostTypeEntity|null
-	 */
-	abstract function readSystemEntity( WP_Post $_post_entity ): ?IPostTypeEntity;
-
-	/**
-	 * @inheritDoc
-	 * @see IndexedEntityWriter::readIndexFilter()
-	 */
-	function readIndexFilter(): array {
-		return [
-			'post_type'      => $this->systemEntityName(),
-			'posts_per_page' => $this->maximumIndexLength(),
-			'fields'         => 'ids'
-		];
 	}
 
 	/**
@@ -104,4 +81,27 @@ trait PostTypeEntityWriter {
 	 * @return string
 	 */
 	abstract function uniqueIdentifierFieldName(): string;
+
+	/**
+	 * {@inheritDoc}
+	 * @see IndexedEntityWriter::readIndexFilter()
+	 */
+	function readIndexFilter(): array {
+		return [
+			'post_type'      => $this->systemEntityName(),
+			'posts_per_page' => $this->maximumIndexLength(),
+			'fields'         => 'ids',
+		];
+	}
+
+	/**
+	 * Maximum entity identifiers to retrieve during a read
+	 *    - Index query returns IDs only, not full entities/posts
+	 *  - Override to change
+	 *
+	 * @return int
+	 */
+	protected function maximumIndexLength(): int {
+		return 10000;
+	}
 }

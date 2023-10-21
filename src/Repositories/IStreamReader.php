@@ -1,22 +1,24 @@
 <?php
-/**
- * Data reader interface for streams of data
- */
 
 namespace Kanopi\Components\Repositories;
 
 use InvalidArgumentException;
 use Kanopi\Components\Model\Data\Stream\IStream;
 
+/**
+ * Data reader interface for streams of data
+ *
+ * @package kanopi/components
+ */
 interface IStreamReader {
 	/**
 	 * Read an input stream value from a requested stream location
 	 *
 	 * @param string $_stream_path Path to the input stream
 	 *
-	 * @throws InvalidArgumentException
-	 *
 	 * @return IStream
+	 * @throws InvalidArgumentException Invalid stream URI
+	 *
 	 */
-	function read( string $_stream_path ): IStream;
+	public function read( string $_stream_path ): IStream;
 }

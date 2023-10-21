@@ -2,123 +2,85 @@
 
 namespace Kanopi\Components\Model\Data\Process;
 
+/**
+ * Statistics model for import/update processes
+ *
+ * @package kanopi/components
+ */
 class IndexedProcessStatistics implements IIndexedProcessStatistics {
 	/**
 	 * Amount of indexed entities created
 	 *
 	 * @var int
 	 */
-	protected int $_created = 0;
-
+	protected int $created = 0;
 	/**
 	 * Indexed entities created
 	 *
 	 * @var array
 	 */
-	protected array $_created_index = [];
-
+	protected array $createdIndex = [];
 	/**
 	 * Amount of indexed entities deleted
 	 *
 	 * @var int
 	 */
-	protected int $_deleted = 0;
-
+	protected int $deleted = 0;
 	/**
 	 * Indexed entities deleted
 	 *
 	 * @var array
 	 */
-	protected array $_deleted_index = [];
-
+	protected array $deletedIndex = [];
 	/**
 	 * Amount of total incoming entities
 	 *
 	 * @var int
 	 */
-	protected int $_incoming_total = 0;
-
+	protected int $incomingTotal = 0;
 	/**
 	 * Amount of indexed entities skipped
 	 *
 	 * @var int
 	 */
-	protected int $_skipped = 0;
-
+	protected int $skipped = 0;
 	/**
 	 * Indexed entities skipped
 	 *
 	 * @var array
 	 */
-	protected array $_skipped_index = [];
-
+	protected array $skippedIndex = [];
 	/**
 	 * Amount of indexed entities updated
 	 *
 	 * @var int
 	 */
-	protected int $_updated = 0;
-
+	protected int $updated = 0;
 	/**
 	 * Indexed entities updated
 	 *
 	 * @var array
 	 */
-	protected array $_updated_index = [];
+	protected array $updatedIndex = [];
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public function created( int $_identifier ): void {
 		$this->increment_type( '_created', $_identifier );
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	public function createdAmount(): int {
-		return $this->_created;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function createdIndex(): array {
-		return $this->_created_index;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function deleted( int $_identifier ): void {
-		$this->increment_type( '_deleted', $_identifier );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function deletedAmount(): int {
-		return $this->_deleted;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function deletedIndex(): array {
-		return $this->_deleted_index;
-	}
-
-	/**
 	 * Increment the count for a property type at a given identifier
 	 *
-	 * @param string $_type
-	 * @param int    $_identifier
+	 * @param string $_type       Property type
+	 * @param int    $_identifier Unique index identifier
 	 *
 	 * @return void
 	 */
 	protected function increment_type( string $_type, int $_identifier ): void {
 		$property = "{$_type}_index";
-		if ( !isset( $this->{$property}[ $_identifier ] ) ) {
+		if ( ! isset( $this->{$property}[ $_identifier ] ) ) {
 			$this->{$property}[ $_identifier ] = 0;
 		}
 
@@ -127,65 +89,100 @@ class IndexedProcessStatistics implements IIndexedProcessStatistics {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
+	 */
+	public function createdAmount(): int {
+		return $this->created;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function createdIndex(): array {
+		return $this->createdIndex;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function deleted( int $_identifier ): void {
+		$this->increment_type( '_deleted', $_identifier );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function deletedAmount(): int {
+		return $this->deleted;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function deletedIndex(): array {
+		return $this->deletedIndex;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public function skippedAmount(): int {
-		return $this->_skipped;
+		return $this->skipped;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public function skippedIndex(): array {
-		return $this->_skipped_index;
+		return $this->skippedIndex;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public function skipped( int $_identifier ): void {
 		$this->increment_type( '_skipped', $_identifier );
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public function updated( int $_identifier ): void {
 		$this->increment_type( '_updated', $_identifier );
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public function updatedAmount(): int {
-		return $this->_updated;
+		return $this->updated;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public function updatedIndex(): array {
-		return $this->_updated_index;
+		return $this->updatedIndex;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function incomingTotal( int $_total ): void {
-		$this->_incoming_total = $_total;
+	public function incomingTotal( int $_total ): void {
+		$this->incomingTotal = $_total;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function incomingTotalAmount(): int {
-		return $this->_incoming_total;
+	public function incomingTotalAmount(): int {
+		return $this->incomingTotal;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	function processedTotalAmount(): int {
-		return $this->_created + $this->_skipped + $this->_updated;
+	public function processedTotalAmount(): int {
+		return $this->created + $this->skipped + $this->updated;
 	}
 }

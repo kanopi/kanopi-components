@@ -15,11 +15,11 @@ use WP_Query;
 
 class PostQuery implements ISetWriter {
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function create( IIndexedEntity $_entity ): IIndexedEntity {
 		$post_id = wp_insert_post( $_entity->systemTransform() );
-		if ( is_a( $post_id, WP_Error::class ) || 1 > $post_id ) {
+		if (is_a( $post_id, WP_Error::class ) || 1 > $post_id) {
 			throw new SetWriterException(
 				"Unable to create entity of type {$_entity->systemEntityName()} "
 				. "with Unique Identifier {$_entity->uniqueIdentifier()}"
@@ -30,11 +30,11 @@ class PostQuery implements ISetWriter {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function delete( IIndexedEntity $_entity ): bool {
 		$result = wp_delete_post( $_entity->indexIdentifier() );
-		if ( empty( $result ) ) {
+		if (empty( $result )) {
 			throw new SetWriterException(
 				"Cannot delete entity of type {$_entity->systemEntityName()} "
 				. "with Unique Identifier {$_entity->uniqueIdentifier()} "
@@ -46,20 +46,20 @@ class PostQuery implements ISetWriter {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public function read( $_filter = [] ): EntityIterator {
-		$return_type = $_filter[ 'fields' ] ?? 'all';
+		$return_type = $_filter['fields'] ?? 'all';
 		$entity_type = 'ids' === $return_type ? 'integer' : WP_Post::class;
-		return new EntityIterator( ( new WP_Query( $_filter ) )->posts, $entity_type );
+		return new EntityIterator( (new WP_Query( $_filter ))->posts, $entity_type );
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function update( IIndexedEntity $_entity ): bool {
 		$post_id = wp_insert_post( $_entity->systemTransform() );
-		if ( is_a( $post_id, WP_Error::class ) || 1 > $post_id ) {
+		if (is_a( $post_id, WP_Error::class ) || 1 > $post_id) {
 			throw new SetWriterException(
 				"Unable to update entity of type {$_entity->systemEntityName()} "
 				. "with Unique Identifier {$_entity->uniqueIdentifier()} "

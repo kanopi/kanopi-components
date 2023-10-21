@@ -20,16 +20,25 @@
 	<include-pattern>/src/**/*</include-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 
-	<!-- Default tab width for indentation fixes and such. -->
-	<arg name="tab-width" value="4"/>
+	<!-- Include WordPress rule sets with the following Exceptions -->
+	<rule ref="WordPress">
+		<!-- Disables the conversion of short array to long array -->
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+		<!-- Disables a few WordPress Core opinionated comment related rules, like requiring punctuation -->
+		<exclude name="Generic.Commenting.DocComment"/>
+		<exclude name="Squiz.Commenting.FileComment"/>
+		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+		<exclude name="Squiz.Commenting.FunctionComment.ThrowsNoFullStop"/>
+		<!-- Allows camel-case variable names instead of enforcing snake case -->
+		<exclude name="WordPress.NamingConventions.ValidVariableName"/>
+	</rule>
 
 	<!-- Use {@inheritDoc} for inheriting function parameter and return descriptions from ancestor classes -->
 	<rule ref="Squiz.Commenting.FunctionComment">
 		<properties>
 			<property name="skipIfInheritdoc" value="true"/>
 		</properties>
-		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
-		<exclude name="Squiz.Commenting.FunctionComment.ThrowsNoFullStop"/>
 	</rule>
 
 	<!-- Convert all long arrays to short array syntax -->
@@ -45,4 +54,14 @@
 
 	<!-- Use WordPress-VIP-Go as the base PHPCS ruleset -->
 	<rule ref="WordPress-VIP-Go"/>
+
+	<!-- Ignore WordPress Function Naming for PSR-4 code -->
+	<rule ref="WordPress.NamingConventions.ValidFunctionName">
+		<exclude-pattern>/src/**/*</exclude-pattern>
+	</rule>
+
+	<!-- Ignore WordPress File Naming for PSR-4 Namespaces -->
+	<rule ref="WordPress.Files">
+		<exclude-pattern>/src/**/*</exclude-pattern>
+	</rule>
 </ruleset>

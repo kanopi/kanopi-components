@@ -2,16 +2,20 @@
 
 namespace Kanopi\Components\Model\Data\Stream;
 
+/**
+ * String data stream model implementation
+ *
+ * @package kanopi/components
+ */
 class Stream implements IStream {
 	/**
 	 * @var IStreamProperties
 	 */
-	protected IStreamProperties $_properties;
-
+	protected IStreamProperties $properties;
 	/**
 	 * @var string
 	 */
-	protected string $_stream;
+	protected string $stream;
 
 	/**
 	 * Build a stream data entity
@@ -23,21 +27,21 @@ class Stream implements IStream {
 		string $_stream,
 		IStreamProperties $_properties
 	) {
-		$this->_properties = $_properties;
-		$this->_stream     = $_stream;
+		$this->properties = $_properties;
+		$this->stream     = $_stream;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public function properties(): IStreamProperties {
-		return $this->_properties;
+		return $this->properties;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public function stream(): string {
-		return $this->_stream;
+		return $this->stream;
 	}
 }

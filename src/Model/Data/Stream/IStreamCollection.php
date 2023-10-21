@@ -2,18 +2,23 @@
 
 namespace Kanopi\Components\Model\Data\Stream;
 
+/**
+ * String data stream processed collection
+ *
+ * @package kanopi/components
+ */
 interface IStreamCollection {
 	/**
 	 * Iterable collection read from the stream
 	 *
 	 * @return iterable
 	 */
-	function collection(): iterable;
+	public function collection(): iterable;
 
 	/**
 	 * The original stream source for the collection
 	 *
 	 * @return IStream
 	 */
-	function stream(): IStream;
+	public function stream(): IStream;
 }
