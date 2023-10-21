@@ -1,15 +1,17 @@
 <?php
-/**
- * Standard echo and error logging
- */
 
 namespace Kanopi\Components\Logger;
 
+/**
+ * Standard echo and error logging
+ *
+ * @package kanopi/components
+ */
 class Standard implements ILogger {
 	use VerboseLogging;
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function error( string $_message ): void {
 		// phpcs:ignore -- Intentionally writes to the error log
@@ -17,7 +19,7 @@ class Standard implements ILogger {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function info( string $_message ): void {
 		// phpcs:ignore -- Console output only, doesn't need sophisticated sanitization
@@ -25,7 +27,7 @@ class Standard implements ILogger {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function table( array $_header, array $_messages ): void {
 		if ( $this->verbose_enabled ) {
@@ -37,7 +39,7 @@ class Standard implements ILogger {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	function verbose( string $_message ): void {
 		if ( $this->verbose_enabled ) {

@@ -1,18 +1,48 @@
 <?xml version="1.0"?>
-<ruleset
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    name="PSR-4-PHP-7-4"
-    xsi:noNamespaceSchemaLocation="phpcs.xsd"
->
-    <description>PSR-4 PHP Rules</description>
+<ruleset name="Kanopi Components" namespace="Kanopi\Components">
+	<description>Kanopi Components Core PHPCS Ruleset</description>
 
-	<arg name="basepath" value="./"/>
+	<!-- Enable progress bar -->
+	<arg value="ps"/>
+
+	<!-- Limits scope to PHP files only -->
 	<arg name="extensions" value="php"/>
-	<arg name="parallel" value="8"/>
 
-	<file>.</file>
-	<include-pattern>*/src/**/*</include-pattern>
+	<!-- Enables parallel processing, when available, for faster results. -->
+	<arg name="parallel" value="1024"/>
+
+	<!--
+	Suppress errors thrown by WordPress Coding Standards when run on PHP 8.0+.
+	See https://github.com/WordPress/WordPress-Coding-Standards/issues/2035
+	-->
+	<ini name="error_reporting" value="E_ALL &#38; ~E_DEPRECATED"/>
+
+	<include-pattern>/src/**/*</include-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
-	
+
+	<!-- Default tab width for indentation fixes and such. -->
+	<arg name="tab-width" value="4"/>
+
+	<!-- Use {@inheritDoc} for inheriting function parameter and return descriptions from ancestor classes -->
+	<rule ref="Squiz.Commenting.FunctionComment">
+		<properties>
+			<property name="skipIfInheritdoc" value="true"/>
+		</properties>
+		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+		<exclude name="Squiz.Commenting.FunctionComment.ThrowsNoFullStop"/>
+	</rule>
+
+	<!-- Convert all long arrays to short array syntax -->
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+	<!-- Ignore white-space in Comments and Inline HTML -->
+	<rule ref="Universal.WhiteSpace.PrecisionAlignment">
+		<properties>
+			<property name="ignoreAlignmentTokens" type="array"
+					  value="T_COMMENT,T_INLINE_HTML,T_DOC_COMMENT_WHITESPACE"/>
+		</properties>
+	</rule>
+
+	<!-- Use WordPress-VIP-Go as the base PHPCS ruleset -->
 	<rule ref="WordPress-VIP-Go"/>
 </ruleset>

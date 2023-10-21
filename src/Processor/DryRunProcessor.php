@@ -6,6 +6,9 @@ trait DryRunProcessor {
 	protected bool $_isDryRunEnabled = false;
 
 	/**
+	 * @param boolean $_is_enabled Next enabled state
+	 *
+	 * @return void
 	 * @see IDryRunProcessor::enableDryRun()
 	 */
 	public function enableDryRun( bool $_is_enabled ): void {
@@ -13,6 +16,7 @@ trait DryRunProcessor {
 	}
 
 	/**
+	 * @return boolean Current dry run state
 	 * @see IDryRunProcessor::isDryRunEnabled()
 	 */
 	public function isDryRunEnabled(): bool {

@@ -15,13 +15,14 @@
     }
   },
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.0",
     "ext-json": "*"
   },
   "require-dev": {
-    "automattic/vipwpcs": "^2.3",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
-    "phpunit/phpunit": "^9.5"
+    "automattic/vipwpcs": "~3.0.0",
+    "dealerdirect/phpcodesniffer-composer-installer": "~0.7.2",
+    "phpcompatibility/php-compatibility": "10.x-dev",
+    "phpunit/phpunit": "~9.6.13"
   },
   "config": {
     "allow-plugins": {
@@ -29,7 +30,10 @@
     }
   },
   "scripts": {
-    "phpcs": "./vendor/bin/phpcs --standard=\"./.phpcs.xml.dist\"",
+    "phpcbf": "./vendor/bin/phpcbf",
+    "phpcs": "./vendor/bin/phpcs",
+    "phpcbf-latest": "./vendor/bin/phpcbf -standard=\"./.phpcs-8.2.xml.dist\" ./",
+    "phpcs-latest": "./vendor/bin/phpcs --standard=\"./.phpcs-8.2.xml.dist\" ./",
     "phpunit": "./vendor/bin/phpunit -c \"./phpunit.xml.dist\""
   }
 }
