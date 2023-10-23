@@ -40,7 +40,7 @@ class DefaultLocaleTranslation implements LocaleTranslation {
 	 */
 	public function __construct(
 		LocalizationProvider $_systemProvider,
-		TranslationProvider  $_translationProvider
+		TranslationProvider $_translationProvider
 	) {
 		$this->systemProvider      = $_systemProvider;
 		$this->translationProvider = $_translationProvider;
@@ -58,7 +58,7 @@ class DefaultLocaleTranslation implements LocaleTranslation {
 	 * {@inheritDoc}
 	 */
 	public function changeLanguageCode( string $_code ): LocaleTranslation {
-		if (in_array( $_code, $this->availableLanguageCodes(), true )) {
+		if ( in_array( $_code, $this->availableLanguageCodes(), true ) ) {
 			$this->targetLanguageCode = $_code;
 			$this->translationProvider->changeTargetLanguage( $_code );
 		}

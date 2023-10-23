@@ -7,23 +7,33 @@ use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Model\Exception\SetWriterException;
 use Kanopi\Components\Repositories\IGroupSetWriter;
 
+/**
+ * Common service to track processed entities
+ *
+ * @package kanopi/components
+ */
 class TrackingIndex implements ITrackingIndex {
 	/**
-	 * @return IGroupSetWriter
+	 * @var IGroupSetWriter
 	 */
-	protected IGroupSetWriter $_trackingStorageRepository;
+	protected IGroupSetWriter $trackingRepository;
 
+	/**
+	 * Build the tracking service
+	 *
+	 * @param IGroupSetWriter $_tracking_repository Tracking storage
+	 */
 	public function __construct( IGroupSetWriter $_tracking_repository ) {
-		$this->_trackingStorageRepository = $_tracking_repository;
+		$this->trackingRepository = $_tracking_repository;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	function readTrackingIndexByIdentifier(
-		string   $_unique_identifier,
+	public function readTrackingIndexByIdentifier(
+		string $_unique_identifier,
 		callable $_read_fresh_identifier_index,
-		bool     $_is_fresh_process
+		bool $_is_fresh_process
 	): array {
 		$storedIndex = $this->readStoredTrackingIndex( $_unique_identifier );
 
@@ -35,13 +45,13 @@ class TrackingIndex implements ITrackingIndex {
 	/**
 	 * Reads any stored tracking index
 	 *
-	 * @param string $_unique_identifier
+	 * @param string $_unique_identifier Tacking index unique identifier
 	 *
 	 * @return array|null
-	 * @throws SetReaderException
+	 * @throws SetReaderException Unable to read existing tracking index
 	 */
 	protected function readStoredTrackingIndex( string $_unique_identifier ): ?array {
-		$index = $this->_trackingStorageRepository->read( $_unique_identifier );
+		$index = $this->trackingRepository->read( $_unique_identifier );
 
 		return $index->valid() ? $index->current()->systemTransform() : null;
 	}
@@ -50,14 +60,16 @@ class TrackingIndex implements ITrackingIndex {
 	 * Read a new tracking index from the system service
 	 *    - All current system index identifiers as keys
 	 *    - Value of each index is false, not processed
+	 *
+	 * @param callable $_read_fresh Method to generate a new tracking index
 	 */
 	protected function readSystemTrackingIndex( callable $_read_fresh ): array {
 		$index = [];
 		$fresh = call_user_func( $_read_fresh );
 
-		if (is_iterable( $fresh )) {
-			foreach ($fresh as $_id) {
-				$index[$_id] = false;
+		if ( is_iterable( $fresh ) ) {
+			foreach ( $fresh as $_id ) {
+				$index[ $_id ] = false;
 			}
 		}
 
@@ -67,14 +79,14 @@ class TrackingIndex implements ITrackingIndex {
 	/**
 	 * Update the stored version of the tracking index
 	 *
-	 * @param string $_unique_identifier
-	 * @param array  $_tracking_index
+	 * @param string $_unique_identifier Tacking index unique identifer
+	 * @param array  $_tracking_index    New tracking index state
 	 *
 	 * @return void
-	 * @throws SetWriterException
+	 * @throws SetWriterException Unable to update tracking index
 	 */
-	function updateByIdentifier( string $_unique_identifier, array $_tracking_index ): void {
-		$this->_trackingStorageRepository->update(
+	public function updateByIdentifier( string $_unique_identifier, array $_tracking_index ): void {
+		$this->trackingRepository->update(
 			$_unique_identifier,
 			new TrackingIndexStorage( $_unique_identifier, $_tracking_index )
 		);

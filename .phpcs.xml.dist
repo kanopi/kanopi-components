@@ -55,13 +55,24 @@
 	<!-- Use WordPress-VIP-Go as the base PHPCS ruleset -->
 	<rule ref="WordPress-VIP-Go"/>
 
+	<!-- Ignore WordPress File Naming for PSR-4 Namespaces -->
+	<rule ref="WordPress.Files">
+		<exclude-pattern>/src/**/*</exclude-pattern>
+		<exclude-pattern>/tests/**/*</exclude-pattern>
+	</rule>
+
 	<!-- Ignore WordPress Function Naming for PSR-4 code -->
 	<rule ref="WordPress.NamingConventions.ValidFunctionName">
 		<exclude-pattern>/src/**/*</exclude-pattern>
+		<exclude-pattern>/tests/**/*</exclude-pattern>
 	</rule>
 
-	<!-- Ignore WordPress File Naming for PSR-4 Namespaces -->
-	<rule ref="WordPress.Files">
+	<!-- Only process WordPress output security for WordPress specific classes  -->
+	<rule ref="WordPress.Security">
+		<include-pattern>/src/Logger/WordPress/**/*</include-pattern>
+		<include-pattern>/src/Model/Data/WordPress/**/*</include-pattern>
+		<include-pattern>/src/Repositories/WordPress/**/*</include-pattern>
+		<include-pattern>/src/Services/System/WordPress/**/*</include-pattern>
 		<exclude-pattern>/src/**/*</exclude-pattern>
 	</rule>
 </ruleset>

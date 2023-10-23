@@ -7,24 +7,31 @@ use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Services\System\IndexedEntityWriter;
 use WP_Post;
 
+/**
+ * Common methods to read/write for post type repositories
+ *
+ * @package kanopi/components
+ */
 trait PostTypeEntityWriter {
 	use IndexedEntityWriter;
 
 	/**
 	 * Read a given Entity by system index identifier
 	 *
-	 * @param int $_index_identifier
+	 * @param int $_index_identifier Entity index identifier
 	 *
 	 * @return ?IPostTypeEntity
-	 * @throws SetReaderException
+	 * @throws SetReaderException Unable to read entity
 	 */
-	function readByIndexIdentifier( int $_index_identifier ): ?IPostTypeEntity {
-		$post_cursor = $this->entityRepository()->read( [
-			'post_type'      => $this->systemEntityName(),
-			'p'              => $_index_identifier,
-			'posts_per_page' => 1,
-			'fields'         => 'all',
-		] );
+	public function readByIndexIdentifier( int $_index_identifier ): ?IPostTypeEntity {
+		$post_cursor = $this->entityRepository()->read(
+			[
+				'post_type'      => $this->systemEntityName(),
+				'p'              => $_index_identifier,
+				'posts_per_page' => 1,
+				'fields'         => 'all',
+			]
+		);
 
 		return $post_cursor->valid() ? $this->readSystemEntity( $post_cursor->current() ) : null;
 	}
@@ -34,43 +41,45 @@ trait PostTypeEntityWriter {
 	 *
 	 * @return string
 	 */
-	abstract function systemEntityName(): string;
+	abstract public function systemEntityName(): string;
 
 	/**
 	 * Implement this method to read a system entity with all meta fields and taxonomies
 	 *    - Pass the WP_Post retrieved from a WP_Query to build the PostTypeEntity
 	 *    - Use the Metadata and Taxonomy repositories to add additional data
 	 *
-	 * @param WP_Post $_post_entity
+	 * @param WP_Post $_post_entity Source post entity
 	 *
 	 * @return IPostTypeEntity|null
-	 * @throws SetReaderException
+	 * @throws SetReaderException Unable to read or invalid system entity
 	 */
-	abstract function readSystemEntity( WP_Post $_post_entity ): ?IPostTypeEntity;
+	abstract public function readSystemEntity( WP_Post $_post_entity ): ?IPostTypeEntity;
 
 	/**
 	 * Read an entity by a unique identifier
 	 *    - Assumes the Unique Identifier is in a meta field named by uniqueIdentifierFieldName
 	 *    - Override this function if it does not fit the use case
 	 *
-	 * @param string $_unique_identifier
+	 * @param string $_unique_identifier Entity index identifier
 	 *
 	 * @return IPostTypeEntity|null
-	 * @throws SetReaderException
+	 * @throws SetReaderException Unable to read system entity
 	 */
-	function readByUniqueIdentifier( string $_unique_identifier ): ?IPostTypeEntity {
-		$post_cursor = $this->entityRepository()->read( [
-			'post_type'      => $this->systemEntityName(),
-			// phpcs:ignore -- Intentional meta data query
-			'meta_query'     => [
-				[
-					'key'   => $this->uniqueIdentifierFieldName(),
-					'value' => $_unique_identifier,
+	public function readByUniqueIdentifier( string $_unique_identifier ): ?IPostTypeEntity {
+		$post_cursor = $this->entityRepository()->read(
+			[
+				'post_type'      => $this->systemEntityName(),
+				// phpcs:ignore -- Intentional meta data query
+				'meta_query'     => [
+					[
+						'key'   => $this->uniqueIdentifierFieldName(),
+						'value' => $_unique_identifier,
+					],
 				],
-			],
-			'posts_per_page' => 1,
-			'fields'         => 'all',
-		] );
+				'posts_per_page' => 1,
+				'fields'         => 'all',
+			]
+		);
 
 		return $post_cursor->valid() ? $this->readSystemEntity( $post_cursor->current() ) : null;
 	}
@@ -80,13 +89,13 @@ trait PostTypeEntityWriter {
 	 *
 	 * @return string
 	 */
-	abstract function uniqueIdentifierFieldName(): string;
+	abstract public function uniqueIdentifierFieldName(): string;
 
 	/**
 	 * {@inheritDoc}
 	 * @see IndexedEntityWriter::readIndexFilter()
 	 */
-	function readIndexFilter(): array {
+	public function readIndexFilter(): array {
 		return [
 			'post_type'      => $this->systemEntityName(),
 			'posts_per_page' => $this->maximumIndexLength(),

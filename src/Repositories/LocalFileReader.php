@@ -13,7 +13,6 @@ use Kanopi\Components\Model\Data\Stream\StreamProperties;
  * @package kanopi/components
  */
 class LocalFileReader implements IStreamReader {
-	//phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- No actual output, exception messages
 	/**
 	 * {@inheritDoc}
 	 * @throws InvalidArgumentException File not found

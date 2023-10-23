@@ -1,13 +1,15 @@
 <?php
-/**
- * Data writer interface for sets of indexed content in a target repository
- */
 
 namespace Kanopi\Components\Repositories;
 
 use Kanopi\Components\Model\Data\IIndexedEntity;
 use Kanopi\Components\Model\Exception\SetWriterException;
 
+/**
+ * Data writer interface for sets of indexed content in a target repository
+ *
+ * @package kanopi/components
+ */
 interface ISetWriter extends ISetReader {
 	/**
 	 * Create a new indexed entity in the repository
@@ -17,7 +19,6 @@ interface ISetWriter extends ISetReader {
 	 *
 	 * @return IIndexedEntity
 	 * @throws SetWriterException Unable to create entity
-	 *
 	 */
 	public function create( IIndexedEntity $_entity ): IIndexedEntity;
 
@@ -28,7 +29,6 @@ interface ISetWriter extends ISetReader {
 	 *
 	 * @return bool
 	 * @throws SetWriterException Unable to delete entity
-	 *
 	 */
 	public function delete( IIndexedEntity $_entity ): bool;
 
@@ -39,7 +39,6 @@ interface ISetWriter extends ISetReader {
 	 *
 	 * @return bool
 	 * @throws SetWriterException Unable to update entity
-	 *
 	 */
 	public function update( IIndexedEntity $_entity ): bool;
 }

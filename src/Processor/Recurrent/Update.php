@@ -27,7 +27,6 @@ use Kanopi\Components\Services\System\IIndexedEntityWriter;
 abstract class Update implements IDryRunProcessor {
 	use DryRunProcessor;
 
-	// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- No direct output, only exception messaging
 	/**
 	 * External data import source service
 	 *

@@ -7,6 +7,11 @@ use Kanopi\Components\Repositories\ISetReader;
 use Kanopi\Components\Repositories\ISetWriter;
 use Kanopi\Components\Services\System\IIndexedEntityWriter;
 
+/**
+ * Base class for read/write to post type repositories
+ *
+ * @package kanopi/components
+ */
 abstract class BasePostTypeWriter implements IIndexedEntityWriter {
 	use PostTypeEntityWriter;
 
@@ -33,13 +38,13 @@ abstract class BasePostTypeWriter implements IIndexedEntityWriter {
 	 * Base constructor deliberately requests all trait requested repositories
 	 * Makes them available for implemented classes
 	 *
-	 * @param ISetWriter                $_entity_repository
-	 * @param ISetReader                $_meta_data_repository
-	 * @param IIndexedEntityGroupWriter $_taxonomy_repository
+	 * @param ISetWriter                $_entity_repository    Entity repository
+	 * @param ISetReader                $_meta_data_repository Entity meta data repository
+	 * @param IIndexedEntityGroupWriter $_taxonomy_repository  Entity taxonomy term repository
 	 */
 	public function __construct(
-		ISetWriter                $_entity_repository,
-		ISetReader                $_meta_data_repository,
+		ISetWriter $_entity_repository,
+		ISetReader $_meta_data_repository,
 		IIndexedEntityGroupWriter $_taxonomy_repository
 	) {
 		$this->entityRepository   = $_entity_repository;
@@ -50,7 +55,7 @@ abstract class BasePostTypeWriter implements IIndexedEntityWriter {
 	/**
 	 * @return ISetWriter
 	 */
-	function entityRepository(): ISetWriter {
+	public function entityRepository(): ISetWriter {
 		return $this->entityRepository;
 	}
 }

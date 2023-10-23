@@ -7,62 +7,66 @@ use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Model\Exception\SetWriterException;
 use Kanopi\Components\Services\IIndexedGroupReader;
 
+/**
+ * Service interface to read/write grouped system entities
+ *
+ * @package kanopi/components
+ */
 interface IIndexedGroupWriter extends IIndexedGroupReader {
 	/**
 	 * Create a new entity
 	 *
-	 * @param string         $_group_key
-	 * @param IIndexedEntity $_entity
+	 * @param string         $_group_key Group key
+	 * @param IIndexedEntity $_entity    New system entity
 	 *
 	 * @return IIndexedEntity  Entity identifier with created index identifier
-	 * @throws SetWriterException
-	 *
+	 * @throws SetWriterException Unable to create system entity
 	 */
-	function create( string $_group_key, IIndexedEntity $_entity ): IIndexedEntity;
+	public function create( string $_group_key, IIndexedEntity $_entity ): IIndexedEntity;
 
 	/**
 	 * Delete an entity of the given identifier
 	 *
-	 * @param string         $_group_key
-	 * @param IIndexedEntity $_entity
+	 * @param string         $_group_key Group key
+	 * @param IIndexedEntity $_entity    Existing entity to delete
 	 *
 	 * @return void
-	 * @throws
+	 * @throws SetWriterException Unable to delete system entity
 	 *
 	 */
-	function delete( string $_group_key, IIndexedEntity $_entity ): void;
+	public function delete( string $_group_key, IIndexedEntity $_entity ): void;
 
 	/**
 	 * Read a given Entity by system index identifier
 	 *
-	 * @param string $_group_key
-	 * @param int    $_index_identifier
+	 * @param string $_group_key        Group key
+	 * @param int    $_index_identifier System index identifier
 	 *
 	 * @return ?IIndexedEntity
-	 * @throws SetReaderException
+	 * @throws SetReaderException Unable to read system entity
 	 */
-	function readByIndexIdentifier( string $_group_key, int $_index_identifier ): ?IIndexedEntity;
+	public function readByIndexIdentifier( string $_group_key, int $_index_identifier ): ?IIndexedEntity;
 
 	/**
 	 * Read a given Entity by shared Unique Identifier
 	 *
-	 * @param string $_group_key
-	 * @param string $_unique_identifier
+	 * @param string $_group_key         Group key
+	 * @param string $_unique_identifier Cross-system entity unique identifier
 	 *
 	 * @return ?IIndexedEntity
-	 * @throws SetReaderException
+	 * @throws SetReaderException Unable to read system entity
 	 */
-	function readByUniqueIdentifier( string $_group_key, string $_unique_identifier ): ?IIndexedEntity;
+	public function readByUniqueIdentifier( string $_group_key, string $_unique_identifier ): ?IIndexedEntity;
 
 	/**
 	 * Update an existing entity
 	 *
-	 * @param string         $_group_key
-	 * @param IIndexedEntity $_entity
+	 * @param string         $_group_key Group key
+	 * @param IIndexedEntity $_entity    Updated system entity
 	 *
 	 * @return bool Success of update
-	 * @throws SetWriterException
+	 * @throws SetWriterException Unable to update system entity
 	 *
 	 */
-	function update( string $_group_key, IIndexedEntity $_entity ): bool;
+	public function update( string $_group_key, IIndexedEntity $_entity ): bool;
 }

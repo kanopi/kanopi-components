@@ -7,15 +7,20 @@ use Kanopi\Components\Model\Exception\SetStreamException;
 use Kanopi\Components\Model\Transform\IEntitySet;
 use Kanopi\Components\Services\IIndexedEntityReader;
 
+/**
+ * Read an external input stream into a set of system entities for processing
+ *
+ * @package kanopi/components
+ */
 interface IExternalStreamReader extends IIndexedEntityReader {
 	/**
 	 * Read a set of IIndexedEntity entities from an input stream
 	 *
-	 * @param string     $_stream_path
-	 * @param IEntitySet $_transform
+	 * @param string     $_stream_path URI of input stream
+	 * @param IEntitySet $_transform   Transform for input entities to system entities
 	 *
 	 * @returns IStreamProperties
-	 * @throws SetStreamException
+	 * @throws SetStreamException Unable to process stream
 	 */
-	function readStream( string $_stream_path, IEntitySet $_transform ): IStreamProperties;
+	public function readStream( string $_stream_path, IEntitySet $_transform ): IStreamProperties;
 }

@@ -4,20 +4,30 @@ namespace Transformers;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Array test cases
+ *
+ * @package kanopi/components
+ */
 class ArraysTest extends TestCase {
 	/**
 	 * @dataProvider provider
+	 *
+	 * @param bool $data Incoming data
 	 */
-	public function testMethod($data)
-	{
-		$this->assertTrue($data);
+	public function testMethod( bool $data ) {
+		$this->assertTrue( $data );
 	}
 
-	public function provider()
-	{
+	/**
+	 * Test data provider
+	 *
+	 * @return array[]
+	 */
+	public function provider(): array {
 		return [
-			'my named data' => [true],
-			'my data'       => [true]
+			'my named data' => [ true ],
+			'my data'       => [ true ],
 		];
 	}
 }

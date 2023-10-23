@@ -4,6 +4,8 @@ namespace Kanopi\Components\Model\Data\WordPress;
 
 /**
  * Base indexed entity model for processing WordPress Taxonomy Terms
+ *
+ * @deprecated Use the TaxonomyTermEntity directly instead of this abstract
  *    To use:
  *      - Implement any remaining interface methods, mapping methods can return an empty array([]) if unused
  *      - System ID is set to 0, defaults for insert mode, it can be externally set with updateIndexIdentifier

@@ -15,7 +15,6 @@ use Kanopi\Components\Model\Exception\SetStreamException;
  * @package kanopi/components
  */
 class JsonSetStream implements ISetStream {
-	//phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- No actual output, exception messages
 	const ERROR_REFERENCE = [
 		JSON_ERROR_DEPTH            => 'The maximum stack depth has been exceeded.',
 		JSON_ERROR_STATE_MISMATCH   => 'Invalid or malformed JSON.',
