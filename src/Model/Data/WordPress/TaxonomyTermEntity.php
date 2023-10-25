@@ -7,75 +7,67 @@ use Kanopi\Components\Transformers\Arrays;
 use Kanopi\Components\Transformers\Strings;
 use WP_Term;
 
+/**
+ * Starting implementation for the ITaxonomyTermEntity interface
+ *
+ * @package kanopi/components
+ */
 trait TaxonomyTermEntity {
 	/**
 	 * Override system term identifier
 	 *
 	 * @var int|null
 	 */
-	protected ?int $_termId = null;
-
+	protected ?int $termId = null;
 	/**
 	 * Override system term description
 	 *
 	 * @var string|null
 	 */
-	protected ?string $_description = null;
-
+	protected ?string $description = null;
 	/**
 	 * Override system term name
 	 *
 	 * @var string|null
 	 */
-	protected ?string $_name = null;
-
+	protected ?string $name = null;
 	/**
 	 * System term parent identifier
 	 *
 	 * @var int|null
 	 */
-	protected ?int $_parentId = null;
-
+	protected ?int $parentId = null;
 	/**
 	 * Override term slug
 	 *
 	 * @var string|null
 	 */
-	protected ?string $_slug = null;
-
+	protected ?string $slug = null;
 	/**
 	 * System term entity
 	 *
 	 * @var WP_Term|null
 	 */
-	protected ?WP_Term $_wpTerm = null;
+	protected ?WP_Term $wpTerm = null;
 
 	/**
-	 * Read the effective Term name, in priority order:
-	 *  - Checks for an override in the entity model
-	 *  - Checks the underlying WP_Term
-	 *  - Returns a default of empty string
+	 * @param WP_Term $_term WordPress term entity
 	 *
-	 * @see ITaxonomyTermEntity::description()
-	 */
-	function description(): string {
-		return $this->_description ?? ( $this->hasWPTerm() ? $this->_wpTerm->description : '' );
-	}
-
-	/**
 	 * @see ITaxonomyTermEntity::fromWPTerm()
+	 *
 	 */
-	static function fromWPTerm( WP_Term $_term ): ITaxonomyTermEntity {
+	public static function fromWPTerm( WP_Term $_term ): ITaxonomyTermEntity {
 		return ( new static() )->updateWPTerm( $_term );
 	}
 
 	/**
-	 * Human-readable term check
-	 *
-	 * @return bool
+	 * {@inheritDoc}
+	 * @see ITaxonomyTermEntity::changeWPTerm()
 	 */
-	protected function hasWPTerm(): bool {
-		return !empty( $this->_wpTerm );
+	public function updateWPTerm( ?WP_Term $_term ): ITaxonomyTermEntity {
+		$this->wpTerm = $_term;
+
+		return $this;
 	}
 
 	/**
@@ -86,8 +78,55 @@ trait TaxonomyTermEntity {
 	 *
 	 * @see IIndexedEntity::indexIdentifier()
 	 */
-	function indexIdentifier(): int {
-		return $this->_termId ?? ( $this->hasWPTerm() ? $this->_wpTerm->term_id : 0 );
+	public function indexIdentifier(): int {
+		return $this->termId ?? ( $this->hasWPTerm() ? $this->wpTerm->term_id : 0 );
+	}
+
+	/**
+	 * Human-readable term check
+	 *
+	 * @return bool
+	 */
+	protected function hasWPTerm(): bool {
+		return ! empty( $this->wpTerm );
+	}
+
+	/**
+	 * @see IIndexedEntity::systemEntityName()
+	 */
+	public function systemEntityName(): string {
+		$shortName = explode( '\\', static::class );
+		return Strings::from( end( $shortName ) )->pascalToSeparate()->toString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see wp_insert_term
+	 * @see wp_update_term
+	 */
+	public function systemTransform(): array {
+		return Arrays::from(
+			[
+				'description' => $this->description(),
+				'name'        => $this->name(),
+				'parent'      => $this->parentId(),
+				'slug'        => $this->slug(),
+			]
+		)
+			->filterUnique()
+			->toArray();
+	}
+
+	/**
+	 * Read the effective Term name, in priority order:
+	 *  - Checks for an override in the entity model
+	 *  - Checks the underlying WP_Term
+	 *  - Returns a default of empty string
+	 *
+	 * @see ITaxonomyTermEntity::description()
+	 */
+	public function description(): string {
+		return $this->description ?? ( $this->hasWPTerm() ? $this->wpTerm->description : '' );
 	}
 
 	/**
@@ -98,8 +137,8 @@ trait TaxonomyTermEntity {
 	 *
 	 * @see ITaxonomyTermEntity::name()
 	 */
-	function name(): string {
-		return $this->_name ?? ( $this->hasWPTerm() ? $this->_wpTerm->name : '' );
+	public function name(): string {
+		return $this->name ?? ( $this->hasWPTerm() ? $this->wpTerm->name : '' );
 	}
 
 	/**
@@ -110,8 +149,8 @@ trait TaxonomyTermEntity {
 	 *
 	 * @see ITaxonomyTermEntity::parentId()
 	 */
-	function parentId(): int {
-		return $this->_parentId ?? ( $this->hasWPTerm() ? $this->_wpTerm->parent_id : 0 ) ?? 0;
+	public function parentId(): int {
+		return $this->parentId ?? ( $this->hasWPTerm() ? $this->wpTerm->parent_id : 0 ) ?? 0;
 	}
 
 	/**
@@ -122,89 +161,58 @@ trait TaxonomyTermEntity {
 	 *
 	 * @see ITaxonomyTermEntity::slug()
 	 */
-	function slug(): string {
-		return $this->_slug ?? ( $this->hasWPTerm() ? $this->_wpTerm->slug : '' );
+	public function slug(): string {
+		return $this->slug ?? ( $this->hasWPTerm() ? $this->wpTerm->slug : '' );
 	}
 
 	/**
-	 * @see IIndexedEntity::systemEntityName()
-	 */
-	function systemEntityName(): string {
-		$shortName = explode( '\\', static::class );
-		return Strings::from( end( $shortName ) )->pascalToSeparate()->toString();
-	}
-
-	/**
-	 * @inheritDoc
-	 * @see wp_insert_term
-	 * @see wp_update_term
-	 */
-	function systemTransform(): array {
-		return Arrays::from( [
-			'description' => $this->description(),
-			'name'        => $this->name(),
-			'parent'      => $this->parentId(),
-			'slug'        => $this->slug(),
-		] )
-			->filterUnique()
-			->toArray();
-	}
-
-	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 * @see ITaxonomyTermEntity::changeDescription()
 	 */
-	function updateDescription( string $_description ): ITaxonomyTermEntity {
-		$this->_description = $_description;
+	public function updateDescription( string $_description ): ITaxonomyTermEntity {
+		$this->description = $_description;
 
 		return $this;
 	}
 
 	/**
+	 * @param int $_index Term system identifier
+	 *
 	 * @see IIndexedEntity::updateIndexIdentifier()
+	 *
 	 */
-	function updateIndexIdentifier( int $_index ): IIndexedEntity {
-		$this->_termId = $_index;
+	public function updateIndexIdentifier( int $_index ): IIndexedEntity {
+		$this->termId = $_index;
 
 		return $this;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 * @see ITaxonomyTermEntity::changeDescription()
 	 */
-	function updateName( string $_name ): ITaxonomyTermEntity {
-		$this->_name = $_name;
+	public function updateName( string $_name ): ITaxonomyTermEntity {
+		$this->name = $_name;
 
 		return $this;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 * @see ITaxonomyTermEntity::changeDescription()
 	 */
-	function updateParentId( int $_parentId ): ITaxonomyTermEntity {
-		$this->_parentId = $_parentId;
+	public function updateParentId( int $_parentId ): ITaxonomyTermEntity {
+		$this->parentId = $_parentId;
 
 		return $this;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 * @see ITaxonomyTermEntity::changeDescription()
 	 */
-	function updateSlug( string $_slug ): ITaxonomyTermEntity {
-		$this->_slug = $_slug;
-
-		return $this;
-	}
-
-	/**
-	 * @inheritDoc
-	 * @see ITaxonomyTermEntity::changeWPTerm()
-	 */
-	function updateWPTerm( ?WP_Term $_term ): ITaxonomyTermEntity {
-		$this->_wpTerm = $_term;
+	public function updateSlug( string $_slug ): ITaxonomyTermEntity {
+		$this->slug = $_slug;
 
 		return $this;
 	}

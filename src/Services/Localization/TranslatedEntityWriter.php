@@ -14,7 +14,7 @@ interface TranslatedEntityWriter extends IIndexedEntityWriter {
 	/**
 	 * Update the association between multiple translated entities
 	 *
-	 * @param EntityIterator $_entities
+	 * @param EntityIterator $_entities Set of associated entities
 	 *
 	 * @return void
 	 */

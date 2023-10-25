@@ -9,18 +9,16 @@ use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Model\Exception\SetWriterException;
 use Kanopi\Components\Repositories\ISetWriter;
 
+/**
+ * Common methods for a service to read/write indexed entities
+ *
+ * @package kanopi/component
+ */
 trait IndexedEntityWriter {
 	/**
 	 * The internal entity set, from read() is an index of integers
 	 */
 	use Entities;
-
-	/**
-	 * System writable repository
-	 *
-	 * @returns ISetWriter
-	 */
-	abstract function entityRepository(): ISetWriter;
 
 	/**
 	 * Tracking flag tells if the location index is loaded
@@ -30,18 +28,15 @@ trait IndexedEntityWriter {
 	protected bool $isIndexLoaded = false;
 
 	/**
-	 * Create a new entity
+	 * {@inheritDoc}
 	 *
-	 * @throws SetReaderException
-	 * @throws SetWriterException
-	 *
-	 * @return IIndexedEntity Entity with created identifier
+	 * @throws SetReaderException Unable to create system entity
 	 * @see IIndexedEntityWriter::create()
 	 */
-	function create( IIndexedEntity $_entity ): IIndexedEntity {
+	public function create( IIndexedEntity $_entity ): IIndexedEntity {
 		$created_entity = $this->entityRepository()->create( $_entity );
 
-		if ( !$this->hasEntityByIndex( $created_entity->indexIdentifier() ) ) {
+		if ( ! $this->hasEntityByIndex( $created_entity->indexIdentifier() ) ) {
 			$this->entities->append( $created_entity->indexIdentifier() );
 		}
 
@@ -49,35 +44,33 @@ trait IndexedEntityWriter {
 	}
 
 	/**
-	 * Delete an entity from the system
+	 * System writable repository
 	 *
-	 * @throws SetWriterException
-	 * @see IIndexedEntityWriter::delete()
+	 * @returns ISetWriter
 	 */
-	function delete( IIndexedEntity $_entity ): void {
-		$this->entityRepository()->delete( $_entity );
-	}
+	abstract public function entityRepository(): ISetWriter;
 
 	/**
-	 * @param int $_index_identifier
+	 * Check if there is an existing entity with a given index
 	 *
-	 * @throws SetReaderException
+	 * @param int $_index_identifier System index identifier
 	 *
 	 * @return bool
+	 * @throws SetReaderException Unable to read from system index
+	 *
 	 */
 	protected function hasEntityByIndex( int $_index_identifier ): bool {
 		return in_array( $_index_identifier, $this->read()->getArrayCopy(), true );
 	}
 
 	/**
-	 * Stores and returns the currently indexed entity identifiers (not the models)
+	 * {@inheritDoc}
+	 * @throws SetReaderException Unable to read from system index
 	 *
-	 * @throws SetReaderException
-	 * @return EntityIterator
 	 * @see IIndexedEntityWriter::read()
 	 */
-	function read(): EntityIterator {
-		if ( !$this->isIndexLoaded ) {
+	public function read(): EntityIterator {
+		if ( ! $this->isIndexLoaded ) {
 			$this->entities      = $this->entityRepository()->read( $this->readIndexFilter() );
 			$this->isIndexLoaded = true;
 		}
@@ -91,17 +84,25 @@ trait IndexedEntityWriter {
 	 *
 	 * @return mixed
 	 */
-	abstract function readIndexFilter();
+	abstract public function readIndexFilter();
 
 	/**
-	 * Update an existing entity
+	 * {@inheritDoc}
 	 *
-	 * @throws SetWriterException
+	 * @see IIndexedEntityWriter::delete()
+	 */
+	public function delete( IIndexedEntity $_entity ): void {
+		$this->entityRepository()->delete( $_entity );
+	}
+
+	/**
+	 * {@inheritDoc}
 	 *
-	 * @return bool Success of update
+	 * @throws SetWriterException Unable to update system entity
+	 *
 	 * @see IIndexedEntityWriter::update()
 	 */
-	function update( IIndexedEntity $_entity ): bool {
+	public function update( IIndexedEntity $_entity ): bool {
 		return $this->entityRepository()->update( $_entity );
 	}
 }

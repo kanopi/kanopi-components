@@ -5,13 +5,27 @@ namespace Kanopi\Components\Model\Data\WordPress;
 use Kanopi\Components\Model\Data\IIndexedEntity;
 use WP_Post;
 
-interface IPostTypeEntity extends IIndexedEntity  {
+/**
+ * Indexed entity with common WordPress post type properties
+ *
+ * @package kanopi/components
+ */
+interface IPostTypeEntity extends IIndexedEntity {
+	/**
+	 * Create entity model form WordPress specific WP_Post object
+	 *
+	 * @param WP_Post $_post Source post entity
+	 *
+	 * @return IPostTypeEntity
+	 */
+	public static function fromWPPost( WP_Post $_post ): IPostTypeEntity;
+
 	/**
 	 * Effective post content
 	 *
 	 * @return string
 	 */
-	function content(): string;
+	public function content(): string;
 
 	/**
 	 * Any extra fields needed for the post type as wp_insert_post array arguments
@@ -19,16 +33,7 @@ interface IPostTypeEntity extends IIndexedEntity  {
 	 * @return array
 	 * @see wp_insert_post
 	 */
-	function extraInsertFieldMapping(): array;
-
-	/**
-	 * Create entity model form WordPress specific WP_Post object
-	 *
-	 * @param WP_Post $_post
-	 *
-	 * @return IPostTypeEntity
-	 */
-	static function fromWPPost( WP_Post $_post ): IPostTypeEntity;
+	public function extraInsertFieldMapping(): array;
 
 	/**
 	 * Mapping from meta_key => meta_value
@@ -36,14 +41,14 @@ interface IPostTypeEntity extends IIndexedEntity  {
 	 *
 	 * @return array
 	 */
-	function metaFieldMapping(): array;
+	public function metaFieldMapping(): array;
 
 	/**
 	 * Effective post status
 	 *
 	 * @return string
 	 */
-	function status(): string;
+	public function status(): string;
 
 	/**
 	 * Mapping from taxonomy => term_list_or_array
@@ -51,48 +56,48 @@ interface IPostTypeEntity extends IIndexedEntity  {
 	 *
 	 * @return array
 	 */
-	function taxonomyTermMapping(): array;
+	public function taxonomyTermMapping(): array;
 
 	/**
 	 * Effective post title
 	 *
 	 * @return string
 	 */
-	function title(): string;
+	public function title(): string;
 
 	/**
 	 * Update the entity content
 	 *
-	 * @param string $_content
+	 * @param string $_content New content
 	 *
 	 * @return IPostTypeEntity
 	 */
-	function updateContent( string $_content ): IPostTypeEntity;
+	public function updateContent( string $_content ): IPostTypeEntity;
 
 	/**
 	 * Update the entity status
 	 *
-	 * @param string $_content
+	 * @param string $_status New status
 	 *
 	 * @return IPostTypeEntity
 	 */
-	function updateStatus( string $_content ): IPostTypeEntity;
+	public function updateStatus( string $_status ): IPostTypeEntity;
 
 	/**
 	 * Update the entity title
 	 *
-	 * @param string $_content
+	 * @param string $_title New title
 	 *
 	 * @return IPostTypeEntity
 	 */
-	function updateTitle( string $_content ): IPostTypeEntity;
+	public function updateTitle( string $_title ): IPostTypeEntity;
 
 	/**
 	 * Change/remove and underlying WP_Term instance for the term entity
 	 *
-	 * @param ?WP_Post $_post
+	 * @param ?WP_Post $_post Source post entity
 	 *
 	 * @return IPostTypeEntity
 	 */
-	function updateWPPost( ?WP_Post $_post ): IPostTypeEntity;
+	public function updateWPPost( ?WP_Post $_post ): IPostTypeEntity;
 }

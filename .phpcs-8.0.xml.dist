@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset name="Kanopi Components PHP 8.0" namespace="Kanopi\Components">
+	<description>Kanopi Components PHP 8.0 PHPCS Ruleset</description>
+
+	<!-- Use the common set of rules for this package -->
+	<rule ref="./.phpcs.xml.dist"/>
+
+	<!-- Test for PHP version compatibility, uses custom rules phpcompatibility/php-compatibility -->
+	<!-- Change "testVersion" to match the target PHP version of the site -->
+	<config name="testVersion" value="8.0"/>
+	<rule ref="PHPCompatibility"/>
+</ruleset>

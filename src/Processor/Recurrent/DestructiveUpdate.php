@@ -15,6 +15,8 @@ use Kanopi\Components\Transformers\Arrays;
  * Builds on patterns from Update processor
  *    - Creates/Updates entities in the incoming, external stream against the target system
  *    - Tracks and removes system entities missing in the incoming stream
+ *
+ * @package kanopi/components
  */
 abstract class DestructiveUpdate extends Update {
 	/**
@@ -22,15 +24,20 @@ abstract class DestructiveUpdate extends Update {
 	 *
 	 * @var ITrackingIndex
 	 */
-	protected ITrackingIndex $_trackingService;
-
+	protected ITrackingIndex $trackingService;
 	/**
 	 * Tracking index of (ID => Processed Boolean Flag)
 	 *
 	 * @var array
 	 */
-	protected array $_trackingIndex = [];
+	protected array $trackingIndex = [];
 
+	/**
+	 * @param ILogger               $_logger           Logging service
+	 * @param IExternalStreamReader $_external_service External source data service
+	 * @param IIndexedEntityWriter  $_system_service   Internal target data service
+	 * @param ITrackingIndex        $_tracking_service Process status tracking service
+	 */
 	public function __construct(
 		ILogger $_logger,
 		IExternalStreamReader $_external_service,
@@ -38,7 +45,45 @@ abstract class DestructiveUpdate extends Update {
 		ITrackingIndex $_tracking_service
 	) {
 		parent::__construct( $_logger, $_external_service, $_system_service );
-		$this->_trackingService = $_tracking_service;
+		$this->trackingService = $_tracking_service;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function postProcessingBannerDataRow(): array {
+		return Arrays::from( parent::postProcessingBannerDataRow() )
+			->append(
+				[
+					'Deleted' => $this->processStatistics->deletedAmount(),
+				]
+			)->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function postProcessingBannerHeader(): array {
+		return Arrays::from( parent::postProcessingBannerHeader() )
+			->append(
+				[
+					'Deleted',
+				]
+			)->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @throws SetWriterException
+	 */
+	protected function postProcessingEvents(): void {
+		$this->logger()->info( 'Updating the stored tracking index' );
+		$this->trackingService()->updateByIdentifier(
+			$this->trackingStorageUniqueIdentifier(),
+			$this->trackingIndex
+		);
+
+		$this->deleteAllUnprocessedEntities();
 	}
 
 	/**
@@ -47,7 +92,7 @@ abstract class DestructiveUpdate extends Update {
 	 * @return ITrackingIndex
 	 */
 	protected function trackingService(): ITrackingIndex {
-		return $this->_trackingService;
+		return $this->trackingService;
 	}
 
 	/**
@@ -58,19 +103,12 @@ abstract class DestructiveUpdate extends Update {
 	abstract protected function trackingStorageUniqueIdentifier(): string;
 
 	/**
-	 * Create a new system entity, used as a proxy for the delete action
-	 *
-	 * @return IIndexedEntity
-	 */
-	abstract protected function createSystemEntity(): IIndexedEntity;
-
-	/**
 	 * Delete all unprocessed entities
 	 *
 	 * @return void
 	 */
 	protected function deleteAllUnprocessedEntities(): void {
-		foreach ( $this->_trackingIndex as $_id => $_was_processed ) {
+		foreach ( $this->trackingIndex as $_id => $_was_processed ) {
 			if ( $_was_processed || 0 === $_id ) {
 				continue;
 			}
@@ -83,59 +121,32 @@ abstract class DestructiveUpdate extends Update {
 				$this->systemService()->delete( $proxyEntity );
 			}
 
-			$this->_processStatistics->deleted( $proxyEntity->indexIdentifier() );
+			$this->processStatistics->deleted( $proxyEntity->indexIdentifier() );
 		}
 	}
 
 	/**
-	 * @inheritDoc
+	 * Create a new system entity, used as a proxy for the delete action
+	 *
+	 * @return IIndexedEntity
 	 */
-	protected function postProcessingBannerDataRow(): array {
-		return Arrays::from( parent::postProcessingBannerDataRow() )
-			->append( [
-				'Deleted' => $this->_processStatistics->deletedAmount()
-			] )->toArray();
-	}
+	abstract protected function createSystemEntity(): IIndexedEntity;
 
 	/**
-	 * @inheritDoc
-	 */
-	protected function postProcessingBannerHeader(): array {
-		return Arrays::from( parent::postProcessingBannerHeader() )
-			->append( [
-				'Deleted'
-			] )->toArray();
-	}
-
-	/**
-	 * @inheritDoc
-	 * @throws SetWriterException
-	 */
-	protected function postProcessingEvents(): void {
-		$this->logger()->info( "Updating the stored tracking index" );
-		$this->trackingService()->updateByIdentifier(
-			$this->trackingStorageUniqueIdentifier(),
-			$this->_trackingIndex
-		);
-
-		$this->deleteAllUnprocessedEntities();
-	}
-
-	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	protected function postSystemEntityProcessedEvent( IIndexedEntity $_entity ): void {
 		if ( 0 < $_entity->indexIdentifier() ) {
-			$this->_trackingIndex[ $_entity->indexIdentifier() ] = true;
+			$this->trackingIndex[ $_entity->indexIdentifier() ] = true;
 		}
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 * @throws SetReaderException
 	 */
 	protected function preProcessEvents(): void {
-		$this->_trackingIndex = $this->trackingService()->readTrackingIndexByIdentifier(
+		$this->trackingIndex = $this->trackingService()->readTrackingIndexByIdentifier(
 			$this->trackingStorageUniqueIdentifier(),
 			function () {
 				return $this->systemService()->read();

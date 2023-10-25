@@ -2,9 +2,9 @@
 
 namespace Kanopi\Components\Repositories\WordPress\Localization;
 
-use Kanopi\Components\Model\Data\Localization\{TranslatableEntity, TranslationEntityIndexItem};
 use Kanopi\Components\Model\Collection\EntityIterator;
 use Kanopi\Components\Model\Data\IIndexedEntity;
+use Kanopi\Components\Model\Data\Localization\{TranslatableEntity, TranslationEntityIndexItem};
 use Kanopi\Components\Repositories\Localization\LocalizationEntity;
 
 /**
@@ -19,7 +19,7 @@ class PolylangEntity implements LocalizationEntity {
 	public function readAssociatedEntities( IIndexedEntity $_entity ): EntityIterator {
 		$languagePairs    = pll_get_post_translations( $_entity->indexIdentifier() );
 		$languageEntities = [];
-
+		
 		foreach ( $languagePairs as $code => $id ) {
 			$languageEntities[ $code ] = new TranslationEntityIndexItem( $id, $code );
 		}

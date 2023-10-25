@@ -16,11 +16,10 @@ class PolylangProvider implements LocalizationProvider {
 	 * @var array
 	 */
 	protected array $additionalSupportedLanguages;
-
 	/**
 	 * Default ISO 639-1 language code for new content
 	 *
-	 * @return string
+	 * @var string
 	 */
 	protected string $defaultLanguage;
 
@@ -30,9 +29,11 @@ class PolylangProvider implements LocalizationProvider {
 	public function __construct() {
 		$this->defaultLanguage = pll_default_language();
 
-		$allLanguageCodes = pll_languages_list( [
-			'hide_empty' => false
-		] );
+		$allLanguageCodes = pll_languages_list(
+			[
+				'hide_empty' => false,
+			]
+		);
 
 		$this->additionalSupportedLanguages = array_filter(
 			$allLanguageCodes,

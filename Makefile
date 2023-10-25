@@ -2,32 +2,69 @@ CWD = $(shell pwd)
 
 .EXPORT_ALL_VARIABLES:
 
-default: test
+default: complete
 
-phptest:
+phpcs:
 	@docker run -it --rm -v $(CWD):/home/circleci/source cimg/php:$(VERSION) \
 		bash -c 'set -ex; cp -R ~/source/. ./; composer --quiet install; \
-		composer -n phpcs' > results-$(VERSION).txt
+		composer -n phpcs -- --standard="./.phpcs-$(VERSION).xml.dist" ./'
 
-.PHONY: php74
+phpunit:
+	@docker run -it --rm -v $(CWD):/home/circleci/source cimg/php:$(VERSION) \
+		bash -c 'set -ex; cp -R ~/source/. ./; composer --quiet install; \
+		composer -n phpunit'
 
-php74:
-	$(MAKE) phptest VERSION=7.4
+phpcsreport:
+	@docker run -it --rm -v $(CWD):/home/circleci/source cimg/php:$(VERSION) \
+		bash -c 'set -ex; cp -R ~/source/. ./; composer --quiet install; \
+		composer -n phpcs -- --standard="./.phpcs-$(VERSION).xml.dist" ./' > results-$(VERSION).txt
+
+phpunitreport:
+	@docker run -it --rm -v $(CWD):/home/circleci/source cimg/php:$(VERSION) \
+		bash -c 'set -ex; cp -R ~/source/. ./; composer --quiet install; \
+		composer -n phpunit' > results-unit-$(VERSION).txt
 
 .PHONY: php80
 
 php80:
-	$(MAKE) phptest VERSION=8.0
+	$(MAKE) phpcsreport VERSION=8.0
+
+.PHONY: unitphp80
+
+unitphp80:
+	$(MAKE) phpunitreport VERSION=8.0
 
 .PHONY: php81
 
 php81:
-	$(MAKE) phptest VERSION=8.1
+	$(MAKE) phpcsreport VERSION=8.1
+
+.PHONY: unitphp81
+
+unitphp81:
+	$(MAKE) phpunitreport VERSION=8.1
+
+.PHONY: php82
+
+php82:
+	$(MAKE) phpcsreport VERSION=8.2
+
+.PHONY: unitphp82
+
+unitphp82:
+	$(MAKE) phpunitreport VERSION=8.2
 
 .PHONY: test
 
 test:
-	$(MAKE) -j 2 php74 php80
+	$(MAKE) -j 3 php80 php81 php82
 
-test-experimental:
-	$(MAKE) -j 3 php74 php80 php81
+.PHONY: unit
+
+unit:
+	$(MAKE) -j 3 unitphp80 unitphp81 unitphp82
+
+complete:
+	$(MAKE) -j 2 unit test
+
+.PHONY: complete

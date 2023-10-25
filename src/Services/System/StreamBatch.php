@@ -8,12 +8,14 @@ use Kanopi\Components\Model\Data\Stream\IStreamProperties;
 use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Repositories\IGroupSetWriter;
 
+/**
+ * @package kanopi/components
+ */
 class StreamBatch implements IStreamBatch {
 	/**
 	 * @var IGroupSetWriter
 	 */
-	protected IGroupSetWriter $_batchStorageRepository;
-
+	protected IGroupSetWriter $batchStorageRepository;
 	/**
 	 * When enabled, forces the next requested batch to restart
 	 *
@@ -22,14 +24,16 @@ class StreamBatch implements IStreamBatch {
 	protected bool $restartNextBatch = false;
 
 	/**
-	 * @param IGroupSetWriter $_batch_storage_repository
+	 * @param IGroupSetWriter $_batch_storage_repository Batch information storage
 	 */
 	public function __construct( IGroupSetWriter $_batch_storage_repository ) {
-		$this->_batchStorageRepository = $_batch_storage_repository;
+		$this->batchStorageRepository = $_batch_storage_repository;
 	}
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws SetReaderException Unable to read the batch information
 	 */
 	public function readCurrentByIdentifier(
 		string $_unique_identifier,
@@ -40,8 +44,7 @@ class StreamBatch implements IStreamBatch {
 
 		try {
 			$storedBatch = $this->readStoredBatchConfiguration( $_unique_identifier );
-		}
-		catch ( SetReaderException $_exception ) {
+		} catch ( SetReaderException $_exception ) {
 			throw new SetReaderException( "Error reading batch storage | {$_exception->getMessage()}" );
 		}
 
@@ -61,15 +64,15 @@ class StreamBatch implements IStreamBatch {
 	/**
 	 * Read any system stored/tracked batch configuration
 	 *
-	 * @param string $_unique_identifier
-	 *
-	 * @throws SetReaderException
+	 * @param string $_unique_identifier Batch unique identifier
 	 *
 	 * @return IStreamBatchConfiguration|null
+	 * @throws SetReaderException Unable to read batch configuration
+	 *
 	 */
 	protected function readStoredBatchConfiguration( string $_unique_identifier ): ?IStreamBatchConfiguration {
 		// Find the stored batch if a restart is not requested
-		$resumeBatch = $this->restartNextBatch ? null : $this->_batchStorageRepository->read( $_unique_identifier );
+		$resumeBatch = $this->restartNextBatch ? null : $this->batchStorageRepository->read( $_unique_identifier );
 
 		// Clear the one-shot restart flag
 		$this->restartNextBatch = false;
@@ -91,6 +94,6 @@ class StreamBatch implements IStreamBatch {
 		string $_unique_identifier,
 		IStreamBatchConfiguration $_configuration
 	): void {
-		$this->_batchStorageRepository->update( $_unique_identifier, $_configuration );
+		$this->batchStorageRepository->update( $_unique_identifier, $_configuration );
 	}
 }

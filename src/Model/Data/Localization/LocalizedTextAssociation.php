@@ -14,7 +14,6 @@ class LocalizedTextAssociation implements LocalizedText {
 	 * @var string
 	 */
 	protected string $code;
-
 	/**
 	 * Text contents
 	 *
@@ -36,6 +35,13 @@ class LocalizedTextAssociation implements LocalizedText {
 	/**
 	 * {@inheritDoc}
 	 */
+	public static function fromText( string $_text, string $_code ): LocalizedText {
+		return new static( $_text, $_code );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function languageCode(): string {
 		return $this->code;
 	}
@@ -45,12 +51,5 @@ class LocalizedTextAssociation implements LocalizedText {
 	 */
 	public function text(): string {
 		return $this->text;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function fromText( string $_text, string $_code ): LocalizedText {
-		return new static( $_text, $_code );
 	}
 }
