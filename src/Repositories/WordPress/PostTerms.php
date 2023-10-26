@@ -28,9 +28,10 @@ class PostTerms implements IIndexedEntityGroupWriter {
 	 * {@inheritDoc}
 	 */
 	public function read( int $_identifier, string $_group_key ): EntityIterator {
-		$terms = wp_get_object_terms( $_identifier, $_group_key );
+		$terms   = wp_get_object_terms( $_identifier, $_group_key );
+		$isValid = false !== $terms && ! is_a( $terms, WP_Error::class );
 
-		return new EntityIterator( false !== $terms ? $terms : [], WP_Term::class );
+		return new EntityIterator( $isValid ? $terms : [], WP_Term::class );
 	}
 
 	/**

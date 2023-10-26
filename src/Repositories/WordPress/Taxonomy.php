@@ -73,8 +73,9 @@ class Taxonomy implements IGroupSetWriter {
 		);
 		$taxonomy_query->appendMaybe( $_filter, is_array( $_filter ) );
 		$taxonomy_terms = get_terms( $taxonomy_query->toArray() );
+		$isValid        = false !== $taxonomy_terms && ! is_a( $taxonomy_terms, WP_Error::class );
 
-		return new EntityIterator( false !== $taxonomy_terms ? $taxonomy_terms : [], $entity_type );
+		return new EntityIterator( $isValid ? $taxonomy_terms : [], $entity_type );
 	}
 
 	/**
