@@ -80,6 +80,29 @@ class Arrays {
 	}
 
 	/**
+	 * Ensure an Arrays instance exists at the provided index and returns a reference to the sub array for chaining
+	 *  - WARNING: Destructive - If the index is not an array or Arrays, the index is replaced with an Arrays instance
+	 *
+	 * @param int|string $_index Index to ensure
+	 * @return Arrays
+	 */
+	public function ensureSubArray( int|string $_index ): Arrays {
+		$isSet    = isset( $this->subject[ $_index ] );
+		$isArray  = is_array( $this->subject[ $_index ] );
+		$isArrays = is_a( $this->subject[ $_index ], self::class );
+
+		if ( ! $isSet || ! ( $isArray || $isArrays ) ) {
+			$this->subject[ $_index ] = new Arrays( [] );
+		}
+
+		if ( $isArray ) {
+			$this->subject[ $_index ] = new Arrays( $this->subject[ $_index ] );
+		}
+
+		return $this->subject[ $_index ];
+	}
+
+	/**
 	 * Chainable wrapper to run array_filter on the internal subject
 	 *
 	 * @param ?callable $_function Optional function to filter items (item) => bool
