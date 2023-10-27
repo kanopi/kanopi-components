@@ -25,6 +25,15 @@ class Arrays {
 	}
 
 	/**
+	 * Build a fresh/new, empty Arrays structure
+	 *
+	 * @return Arrays
+	 */
+	public static function fresh(): Arrays {
+		return new Arrays( [] );
+	}
+
+	/**
 	 * Factory to build an Arrays structure
 	 *
 	 * @param array $_subject Initial array
@@ -45,6 +54,7 @@ class Arrays {
 	 */
 	public function add( mixed $_addition ): Arrays {
 		$this->subject[] = $_addition;
+
 		return $this;
 	}
 
@@ -84,6 +94,7 @@ class Arrays {
 	 *  - WARNING: Destructive - If the index is not an array or Arrays, the index is replaced with an Arrays instance
 	 *
 	 * @param int|string $_index Index to ensure
+	 *
 	 * @return Arrays
 	 */
 	public function ensureSubArray( int|string $_index ): Arrays {
@@ -92,11 +103,11 @@ class Arrays {
 		$isArrays = is_a( $this->subject[ $_index ], self::class );
 
 		if ( ! $isSet || ! ( $isArray || $isArrays ) ) {
-			$this->subject[ $_index ] = new Arrays( [] );
+			$this->subject[ $_index ] = self::fresh();
 		}
 
 		if ( $isArray ) {
-			$this->subject[ $_index ] = new Arrays( $this->subject[ $_index ] );
+			$this->subject[ $_index ] = self::from( $this->subject[ $_index ] );
 		}
 
 		return $this->subject[ $_index ];
@@ -140,6 +151,16 @@ class Arrays {
 		return implode( $_separator, $this->subject );
 	}
 
+	/**
+	 * Read the value stored at a given index, null if it does not exist
+	 *
+	 * @param int|string $_index Index to read
+	 *
+	 * @return mixed
+	 */
+	public function readIndex( int|string $_index ): mixed {
+		return $this->subject[ $_index ] ?? null;
+	}
 
 	/**
 	 * Current inner subject returned to the standard array type
@@ -148,5 +169,21 @@ class Arrays {
 	 */
 	public function toArray(): array {
 		return $this->subject;
+	}
+
+	/**
+	 * Write (add/update) a single value at a given index
+	 *  - Not type-safe, does not validate type against the rest of the array, mixed types can occur
+	 *  - Overwrites any existing value at the index
+	 *
+	 * @param int|string $_index    Index to write value
+	 * @param mixed      $_addition Written value
+	 *
+	 * @return Arrays
+	 */
+	public function writeIndex( int|string $_index, mixed $_addition ): Arrays {
+		$this->subject[ $_index ] = $_addition;
+
+		return $this;
 	}
 }
