@@ -99,10 +99,10 @@ class Arrays {
 	 */
 	public function ensureSubArray( int|string $_index ): Arrays {
 		$isSet    = isset( $this->subject[ $_index ] );
-		$isArray  = is_array( $this->subject[ $_index ] );
-		$isArrays = is_a( $this->subject[ $_index ], self::class );
+		$isArray  = $isSet && is_array( $this->subject[ $_index ] );
+		$isArrays = $isSet && is_a( $this->subject[ $_index ], self::class );
 
-		if ( ! $isSet || ! ( $isArray || $isArrays ) ) {
+		if ( ! ( $isArray || $isArrays ) ) {
 			$this->subject[ $_index ] = self::fresh();
 		}
 
