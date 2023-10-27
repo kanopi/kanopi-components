@@ -36,6 +36,19 @@ class Arrays {
 	}
 
 	/**
+	 * Add a single value to the end of the inner subject
+	 *  - Not type-safe, does not validate type against the rest of the array, mixed types can occur
+	 *
+	 * @param mixed $_addition Added value
+	 *
+	 * @return Arrays
+	 */
+	public function add( mixed $_addition ): Arrays {
+		$this->subject[] = $_addition;
+		return $this;
+	}
+
+	/**
 	 * Append an array segment to the inner subject
 	 *
 	 * @param array $_addition Array segment to append
@@ -80,15 +93,6 @@ class Arrays {
 	}
 
 	/**
-	 * Current inner subject returned to the standard array type
-	 *
-	 * @return array
-	 */
-	public function toArray(): array {
-		return $this->subject;
-	}
-
-	/**
 	 * Chainable wrapper for array_unique to sort and remove duplicate arrays values
 	 *    - Default of SORT_REGULAR to allow sorting/filtering of sub-arrays
 	 *
@@ -111,5 +115,15 @@ class Arrays {
 	 */
 	public function join( string $_separator = ',' ): string {
 		return implode( $_separator, $this->subject );
+	}
+
+
+	/**
+	 * Current inner subject returned to the standard array type
+	 *
+	 * @return array
+	 */
+	public function toArray(): array {
+		return $this->subject;
 	}
 }
