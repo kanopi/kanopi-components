@@ -116,12 +116,12 @@ class Arrays {
 	/**
 	 * Chainable wrapper to run array_filter on the internal subject
 	 *
-	 * @param ?callable $_function Optional function to filter items (item) => bool
+	 * @param ?callable $_function Optional function to filter items (item, key) => bool
 	 *
 	 * @return Arrays
 	 */
 	public function filter( ?callable $_function ): Arrays {
-		$this->subject = array_filter( $this->toArray(), $_function );
+		$this->subject = array_filter( $this->toArray(), $_function, ARRAY_FILTER_USE_BOTH );
 
 		return $this;
 	}
@@ -160,6 +160,29 @@ class Arrays {
 	 */
 	public function readIndex( int|string $_index ): mixed {
 		return $this->subject[ $_index ] ?? null;
+	}
+
+	/**
+	 * Read all sub-Arrays beneath a given index (nothing for all) into a standard array structure
+	 *
+	 * @param int|string|null $_index (Optional) starting index
+	 *
+	 * @return array
+	 */
+	public function readSubArrays( int|string|null $_index = null ): array {
+		// Isolate the index or root subject
+		$start = null !== $_index ? $this->readIndex( $_index ) : $this->subject;
+
+		// Unwrap any direct Arrays entity
+		$subject = is_a( $start, self::class ) ? $start->readSubArrays() : $start;
+
+		// Iterate through all internal indices
+		$nested = [];
+		foreach ( $subject ?? [] as $key => $value ) {
+			$nested[ $key ] = is_a( $value, self::class ) ? $value->readSubArrays() : $value;
+		}
+
+		return $nested;
 	}
 
 	/**
