@@ -25,6 +25,15 @@ class Arrays {
 	}
 
 	/**
+	 * Build a fresh/new, empty Arrays structure
+	 *
+	 * @return Arrays
+	 */
+	public static function fresh(): Arrays {
+		return new Arrays( [] );
+	}
+
+	/**
 	 * Factory to build an Arrays structure
 	 *
 	 * @param array $_subject Initial array
@@ -33,6 +42,20 @@ class Arrays {
 	 */
 	public static function from( array $_subject ): Arrays {
 		return new Arrays( $_subject );
+	}
+
+	/**
+	 * Add a single value to the end of the inner subject
+	 *  - Not type-safe, does not validate type against the rest of the array, mixed types can occur
+	 *
+	 * @param mixed $_addition Added value
+	 *
+	 * @return Arrays
+	 */
+	public function add( mixed $_addition ): Arrays {
+		$this->subject[] = $_addition;
+
+		return $this;
 	}
 
 	/**
@@ -67,25 +90,40 @@ class Arrays {
 	}
 
 	/**
+	 * Ensure an Arrays instance exists at the provided index and returns a reference to the sub array for chaining
+	 *  - WARNING: Destructive - If the index is not an array or Arrays, the index is replaced with an Arrays instance
+	 *
+	 * @param int|string $_index Index to ensure
+	 *
+	 * @return Arrays
+	 */
+	public function ensureSubArray( int|string $_index ): Arrays {
+		$isSet    = isset( $this->subject[ $_index ] );
+		$isArray  = $isSet && is_array( $this->subject[ $_index ] );
+		$isArrays = $isSet && is_a( $this->subject[ $_index ], self::class );
+
+		if ( ! ( $isArray || $isArrays ) ) {
+			$this->subject[ $_index ] = self::fresh();
+		}
+
+		if ( $isArray ) {
+			$this->subject[ $_index ] = self::from( $this->subject[ $_index ] );
+		}
+
+		return $this->subject[ $_index ];
+	}
+
+	/**
 	 * Chainable wrapper to run array_filter on the internal subject
 	 *
-	 * @param ?callable $_function Optional function to filter items (item) => bool
+	 * @param ?callable $_function Optional function to filter items (item, key) => bool
 	 *
 	 * @return Arrays
 	 */
 	public function filter( ?callable $_function ): Arrays {
-		$this->subject = array_filter( $this->toArray(), $_function );
+		$this->subject = array_filter( $this->toArray(), $_function, ARRAY_FILTER_USE_BOTH );
 
 		return $this;
-	}
-
-	/**
-	 * Current inner subject returned to the standard array type
-	 *
-	 * @return array
-	 */
-	public function toArray(): array {
-		return $this->subject;
 	}
 
 	/**
@@ -111,5 +149,64 @@ class Arrays {
 	 */
 	public function join( string $_separator = ',' ): string {
 		return implode( $_separator, $this->subject );
+	}
+
+	/**
+	 * Read the value stored at a given index, null if it does not exist
+	 *
+	 * @param int|string $_index Index to read
+	 *
+	 * @return mixed
+	 */
+	public function readIndex( int|string $_index ): mixed {
+		return $this->subject[ $_index ] ?? null;
+	}
+
+	/**
+	 * Read all sub-Arrays beneath a given index (nothing for all) into a standard array structure
+	 *
+	 * @param int|string|null $_index (Optional) starting index
+	 *
+	 * @return array
+	 */
+	public function readSubArrays( int|string|null $_index = null ): array {
+		// Isolate the index or root subject
+		$start = null !== $_index ? $this->readIndex( $_index ) : $this->subject;
+
+		// Unwrap any direct Arrays entity
+		$subject = is_a( $start, self::class ) ? $start->readSubArrays() : $start;
+
+		// Iterate through all internal indices
+		$nested = [];
+		foreach ( $subject ?? [] as $key => $value ) {
+			$nested[ $key ] = is_a( $value, self::class ) ? $value->readSubArrays() : $value;
+		}
+
+		return $nested;
+	}
+
+	/**
+	 * Current inner subject returned to the standard array type
+	 *
+	 * @return array
+	 */
+	public function toArray(): array {
+		return $this->subject;
+	}
+
+	/**
+	 * Write (add/update) a single value at a given index
+	 *  - Not type-safe, does not validate type against the rest of the array, mixed types can occur
+	 *  - Overwrites any existing value at the index
+	 *
+	 * @param int|string $_index    Index to write value
+	 * @param mixed      $_addition Written value
+	 *
+	 * @return Arrays
+	 */
+	public function writeIndex( int|string $_index, mixed $_addition ): Arrays {
+		$this->subject[ $_index ] = $_addition;
+
+		return $this;
 	}
 }
