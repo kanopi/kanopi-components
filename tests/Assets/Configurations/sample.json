@@ -1,0 +1,45 @@
+{
+	"assets": {
+		"inlineFileTypes": "svg"
+	},
+	"devServer": {
+		"sockHost": "theme-assets.sample.docksal.site",
+		"sockPort": 443,
+		"useSslProxy": true,
+		"useProxy": true,
+		"watchOptions": {
+			"poll": true
+		}
+	},
+	"environment": {
+		"dotenvEnable": false
+	},
+	"filePatterns": {
+		"cssOutputPath": "css/[name].[contenthash].css",
+		"entryPoints": {
+			"accordion-standard": "./assets/src/css/blocks/standard/accordion.css",
+			"accordion-theme": "./assets/src/css/blocks/acf/accordion.css",
+			"block-editor": "./assets/src/ts/block-editor.ts",
+			"editor": "./assets/src/css/editor/editor.css",
+			"side-by-side-theme": "./assets/src/css/blocks/acf/side-by-side.css",
+			"hero-theme": "./assets/src/css/blocks/acf/hero.css",
+			"tabs-theme": "./assets/src/css/blocks/acf/tabs.css",
+			"struts": "./assets/src/css/template/struts.css",
+			"cards-repeater-theme": "./blocks/acf/cards-repeater/index.css",
+			"struts-site": "./assets/src/js/struts-site.js",
+			"carousel-block-style": "./blocks/acf/carousel/index.css",
+			"carousel-block-script": "./blocks/acf/carousel/script.js"
+		},
+		"jsOutputPath": "js/[name].[contenthash].js"
+	},
+	"styles": {
+		"devHeadSelectorInsertBefore": "#global-styles-inline-css",
+		"styleLintConfigFile": "./assets/configuration/tools/.stylelintrc.js",
+		"styleLintIgnorePath": "./assets/configuration/tools/.stylelintignore",
+		"useSass": false
+	},
+	"scripts": {
+		"esLintFileTypes": "js,jsx,ts,tsx",
+		"useJsxSyntax": true
+	}
+}
