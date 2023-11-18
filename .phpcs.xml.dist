@@ -34,6 +34,10 @@
 		<exclude name="WordPress.NamingConventions.ValidVariableName"/>
 	</rule>
 
+	<rule ref="Squiz.ControlStructures.ControlSignature">
+		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace" />
+	</rule>
+
 	<!-- Use {@inheritDoc} for inheriting function parameter and return descriptions from ancestor classes -->
 	<rule ref="Squiz.Commenting.FunctionComment">
 		<properties>
