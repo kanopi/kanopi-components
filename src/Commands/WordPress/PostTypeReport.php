@@ -11,7 +11,7 @@ use Kanopi\Components\Model\Configuration;
 use Kanopi\Components\Model\Data\Process\IndexedProcessStatistics;
 use Kanopi\Components\Model\Data\WordPress\{GenericWordPressEntity, WordPressEntityFilters};
 use Kanopi\Components\Repositories\IGroupSetWriter;
-use Kanopi\Components\Repositories\WordPress\{PostQuery, PostTerms, Taxonomy};
+use Kanopi\Components\Repositories\WordPress\{PostQuery, PostMetaKeys, PostTerms, Taxonomy};
 use Kanopi\Components\Services\External\LeagueCsv;
 use Kanopi\Components\Services\System\WordPress\GenericWordPressEntityWriter;
 use Kanopi\Components\Transformers\Arrays;
@@ -106,7 +106,7 @@ class PostTypeReport extends WP_CLI_Command {
 	 * default: false
 	 * ---
 	 *
-	 * [--replace-site-url]
+	 * [--replace-site-url[=<replacementSiteUrl>]]
 	 *   : Rewrite the local domain and protocol in URLs, i.e. turn http://test.docksal.site into https://www.test.com
 	 *  ---
 	 *  default: ''
