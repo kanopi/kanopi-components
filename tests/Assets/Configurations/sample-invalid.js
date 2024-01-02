@@ -28,16 +28,16 @@ module.exports = {
 		}
 	],
 	"filePatterns": {
-		"cssOutputPath": "css/[name].[contenthash].css",
+		cssOutputPath: "css/[name].[contenthash].css",
 		"entryPoints": {
 			"accordion-standard": "./assets/src/css/blocks/standard/accordion.css",
 			"accordion-theme": "./assets/src/css/blocks/acf/accordion.css",
 			"block-editor": "./assets/src/ts/block-editor.ts",
-			"editor": "./assets/src/css/editor/editor.css",
+			editor: "./assets/src/css/editor/editor.css",
 			"logo-grid-theme": "./assets/src/css/blocks/acf/logo-grid.css",
 			"hero-theme": "./assets/src/css/blocks/acf/hero.css",
 			"tabs-theme": "./assets/src/css/blocks/acf/tabs.css",
-			"struts": "./assets/src/css/template/struts.css",
+			struts: "./assets/src/css/template/struts.css",
 			"cards-repeater-theme": "./assets/src/css/blocks/acf/cards.css",
 			"struts-site": "./assets/src/js/struts-site.js",
 			"carousel-block-style": "./blocks/acf/carousel/index.css",

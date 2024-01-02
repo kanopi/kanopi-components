@@ -2,12 +2,16 @@
 
 namespace Kanopi\Components\Transformers;
 
+use ArrayIterator;
+use IteratorAggregate;
+use Traversable;
+
 /**
  * Common array manipulation in a state machine with a fluent interface
  *
  * @package kanopi/components
  */
-class Arrays {
+class Arrays implements IteratorAggregate {
 	/**
 	 * Current inner state
 	 *
@@ -138,6 +142,15 @@ class Arrays {
 		$this->subject = array_unique( $this->subject, $_sort_flags );
 
 		return $this;
+	}
+
+	/**
+	 * Interface compliance to allow iteration in compliant structures like foreach loops
+	 *
+	 * @return Traversable
+	 */
+	public function getIterator(): Traversable {
+		return new ArrayIterator( $this->subject );
 	}
 
 	/**

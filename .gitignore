@@ -3,8 +3,6 @@
 .idea
 *.sql
 *.log
-package.xml
-.phpunit.result.cache
 
 # Composer Installations
 /vendor
@@ -13,4 +11,7 @@ package.xml
 # Makefile Results
 /phpcs*.txt
 /phpunit*.txt
-/results*.txt
+
+# Local Tooling Files
+/.phpunit.result.cache
+/package.xml

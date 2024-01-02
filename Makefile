@@ -17,12 +17,12 @@ phpunit:
 phpcsreport:
 	@docker run -it --rm -v $(CWD):/home/circleci/source cimg/php:$(VERSION) \
 		bash -c 'set -ex; cp -R ~/source/. ./; composer --quiet install; \
-		composer -n phpcs -- --standard="./.phpcs-$(VERSION).xml.dist" ./' > results-$(VERSION).txt
+		composer -n phpcs -- --standard="./.phpcs-$(VERSION).xml.dist" ./' >> phpcs-$(VERSION).txt ~/source/
 
 phpunitreport:
 	@docker run -it --rm -v $(CWD):/home/circleci/source cimg/php:$(VERSION) \
 		bash -c 'set -ex; cp -R ~/source/. ./; composer --quiet install; \
-		composer -n phpunit' > results-unit-$(VERSION).txt
+		composer -n phpunit' >> phpunit-$(VERSION).txt
 
 .PHONY: php80
 
