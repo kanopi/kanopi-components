@@ -72,7 +72,7 @@ class JavaScriptConfigurationParserTest extends TestCase {
 		$this->assertIsArray( $configuration['filePatterns'] );
 		$this->assertEquals( $_devServerError, isset( $configuration['devServer']['error'] ), 'devServer invalid' );
 		$this->assertEquals( $_filePatternsError, isset( $configuration['filePatterns']['error'] ), 'filePatterns invalid' );
-		$this->assertFalse( $isReadLong, 'Read longer than 1 ms: ' . $readLength->format( 'h:i:s.u' ) );
-		$this->assertFalse( $isParseLong, 'Parse longer than 1 ms: ' . $parseLength->format( 'h:i:s.u' ) );
+		$this->assertFalse( $isReadLong, 'Read longer than 1 ms: ' . $readLength->format( '%h:%i:%s.%f' ) );
+		$this->assertFalse( $isParseLong, 'Parse longer than 1 ms: ' . $parseLength->format( '%h:%i:%s.%f' ) );
 	}
 }

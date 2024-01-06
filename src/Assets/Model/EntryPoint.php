@@ -74,7 +74,7 @@ class EntryPoint {
 	 * @return string
 	 */
 	private function autoDetectType( string $_path ): string {
-		$styleTypeMatchCount = preg_match( '/\.(sass|css)$/', $_path );
+		$styleTypeMatchCount = preg_match( '/\.(scss|sass|css)$/', $_path );
 
 		return empty( $styleTypeMatchCount ) ? 'script' : 'style';
 	}

@@ -16,7 +16,7 @@ class ConfigurationReader {
 	private IStreamReader $reader;
 
 	/**
-	 * Setup a ConfigurationReader service
+	 * Set up a ConfigurationReader service
 	 *
 	 * @param IStreamReader $_reader Configuration source reader
 	 */

@@ -8,8 +8,8 @@
 	<!-- Limits scope to PHP files only -->
 	<arg name="extensions" value="php"/>
 
-	<!-- Enables parallel processing, when available, for faster results. -->
-	<arg name="parallel" value="1024"/>
+	<!-- Enables reporting of all warnings and errors -->
+	<arg name="severity" value="1"/>
 
 	<!--
 	Suppress errors thrown by WordPress Coding Standards when run on PHP 8.0+.

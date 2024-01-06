@@ -55,6 +55,7 @@ class EntryPointTest extends TestCase {
 			'JS File'   => [ 'sample-js', './path/to/whatever.js', 'script' ],
 			'JSX File'  => [ 'sample-jsx', './path/to/whatever.jsx', 'script' ],
 			'SASS File' => [ 'sample-sass', './path/to/whatever.sass', 'style' ],
+			'SCSS File' => [ 'sample-scss', './path/to/whatever.scss', 'style' ],
 			'TSX File'  => [ 'sample-tsx', './path/to/whatever.tsc', 'script' ],
 		];
 	}

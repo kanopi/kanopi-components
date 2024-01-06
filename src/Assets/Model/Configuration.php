@@ -14,9 +14,9 @@ class Configuration {
 	/**
 	 * Incoming JSON configuration
 	 *
-	 * @var array
+	 * @var iterable
 	 */
-	private array $rawJsonConfiguration;
+	private iterable $rawJsonConfiguration;
 	/**
 	 * Set of validated entry point models
 	 *
@@ -27,19 +27,19 @@ class Configuration {
 	/**
 	 * Build a Configuration model
 	 *
-	 * @param array $_rawJson Raw JSON configuration
+	 * @param iterable $_rawJson Raw JSON configuration
 	 */
-	public function __construct( array $_rawJson ) {
+	public function __construct( iterable $_rawJson ) {
 		$this->rawJsonConfiguration = $_rawJson;
 		$this->entryPoints          = $this->buildEntryPoints( $_rawJson['filePatterns']['entryPoints'] ?? [] );
 	}
 
 	/**
-	 * @param array $_entryPoints Set of entry points
+	 * @param iterable $_entryPoints Set of entry points
 	 *
 	 * @return EntityIterator
 	 */
-	private function buildEntryPoints( array $_entryPoints ): EntityIterator {
+	private function buildEntryPoints( iterable $_entryPoints ): EntityIterator {
 		$entryPoints = Arrays::fresh();
 
 		foreach ( $_entryPoints as $_handle => $entryPoint ) {
@@ -61,20 +61,20 @@ class Configuration {
 	/**
 	 * Raw Asset configuration
 	 *
-	 * @return array
+	 * @return iterable
 	 */
-	public function rawConfiguration(): array {
+	public function rawConfiguration(): iterable {
 		return $this->rawJsonConfiguration;
 	}
 
 	/**
 	 * Fluent method to build a Configuration model
 	 *
-	 * @param array $_rawJson Raw JSON configuration
+	 * @param iterable $_rawJson Raw JSON configuration
 	 *
 	 * @returns Configuration
 	 */
-	public static function fromJson( array $_rawJson ): Configuration {
+	public static function fromJson( iterable $_rawJson ): Configuration {
 		return new static( $_rawJson );
 	}
 }
