@@ -3,10 +3,14 @@
 .idea
 *.sql
 *.log
+package.xml
+.phpunit.result.cache
 
 # Composer Installations
 /vendor
 /composer.lock
 
 # Makefile Results
+/phpcs*.txt
+/phpunit*.txt
 /results*.txt

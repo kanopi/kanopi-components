@@ -14,9 +14,9 @@ final class Registration {
 	 * Register all bundled WP-CLI commands
 	 */
 	public static function WPCLICommands(): void {
-		CLIPrefix::prefix( 'kanopi-' )->commandsInNamespaceDirectory(
-			'\\Kanopi\\Components\\Commands\\WordPress\\',
-			__DIR__ . '/WordPress'
+		CLIPrefix::prefix( 'kanopi-report-' )->commandsInNamespaceDirectory(
+			'\\Kanopi\\Components\\Commands\\WordPress\\Report\\',
+			__DIR__ . '/WordPress/Report'
 		);
 	}
 }

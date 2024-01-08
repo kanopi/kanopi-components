@@ -1,16 +1,16 @@
 <?php
 
-namespace Kanopi\Components\Commands\WordPress;
+namespace Kanopi\Components\Commands\WordPress\Report;
 
 use Exception;
 use InvalidArgumentException;
-use Kanopi\Components\Model\Configuration;
-use Kanopi\Components\Model\Data\WordPress\Acf\FlexContentMetaColumns;
-use Kanopi\Components\Repositories\WordPress\Acf\FlexContentAreas;
-use Kanopi\Components\Services\External\LeagueCsv;
 use Kanopi\Components\Logger\ILogger;
 use Kanopi\Components\Logger\WordPress\CLI;
+use Kanopi\Components\Model\Configuration;
+use Kanopi\Components\Model\Data\WordPress\Acf\FlexContentMetaColumns;
 use Kanopi\Components\Repositories\ISetReader;
+use Kanopi\Components\Repositories\WordPress\Acf\FlexContentAreas;
+use Kanopi\Components\Services\External\LeagueCsv;
 use Kanopi\Components\Transformers\Arrays;
 use WP_CLI_Command;
 use WP_Post_Type;
@@ -20,7 +20,7 @@ use WP_Post_Type;
  *
  * @package kanopi-components
  */
-class FlexContentReport extends WP_CLI_Command {
+class FlexContent extends WP_CLI_Command {
 	/**
 	 * Standard logger interface
 	 *
@@ -41,7 +41,7 @@ class FlexContentReport extends WP_CLI_Command {
 	private ISetReader $columnReader;
 
 	/**
-	 * Legacy Rewrites constructor
+	 * Flex Content constructor
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -75,7 +75,7 @@ class FlexContentReport extends WP_CLI_Command {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *        wp pen-flex-content-report audit ./ pen- page_flex_content,report_flex_content
+	 *        wp kanopi-report-flex-content audit ./ report- page_flex_content,report_flex_content
 	 *
 	 * @subcommand audit
 	 */

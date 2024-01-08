@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanopi\Components\Commands\WordPress;
+namespace Kanopi\Components\Commands\WordPress\Report;
 
 use DateTime;
 use Exception;
@@ -11,7 +11,7 @@ use Kanopi\Components\Model\Configuration;
 use Kanopi\Components\Model\Data\Process\IndexedProcessStatistics;
 use Kanopi\Components\Model\Data\WordPress\{GenericWordPressEntity, WordPressEntityFilters};
 use Kanopi\Components\Repositories\IGroupSetWriter;
-use Kanopi\Components\Repositories\WordPress\{PostQuery, PostMetaKeys, PostTerms, Taxonomy};
+use Kanopi\Components\Repositories\WordPress\{PostMetaKeys, PostQuery, PostTerms, Taxonomy};
 use Kanopi\Components\Services\External\LeagueCsv;
 use Kanopi\Components\Services\System\WordPress\GenericWordPressEntityWriter;
 use Kanopi\Components\Transformers\Arrays;
@@ -25,7 +25,7 @@ use WP_Term;
  *
  * @package kanopi-components
  */
-class PostTypeReport extends WP_CLI_Command {
+class PostType extends WP_CLI_Command {
 	/**
 	 * Standard logger interface
 	 *
@@ -114,7 +114,7 @@ class PostTypeReport extends WP_CLI_Command {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *        wp kanopi-post-type-report audit ./ audit-
+	 *        wp kanopi-report-post-type audit ./ audit-
 	 *
 	 * @subcommand audit
 	 */
