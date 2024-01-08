@@ -62,9 +62,6 @@ class FlexContent extends WP_CLI_Command {
 	 * ## OPTIONS
 	 *
 	 * <directory>
-	 *    : Directory to write the audit exports
-	 *
-	 * <directory>
 	 *   : Directory to write the audit exports
 	 *
 	 * <filePrefix>
