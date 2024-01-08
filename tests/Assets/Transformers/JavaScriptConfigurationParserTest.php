@@ -3,7 +3,6 @@
 namespace Assets\Transformers;
 
 use DateTime;
-use DateInterval;
 use Kanopi\Components\Assets\Transformers\JavaScriptConfigurationParser;
 use Kanopi\Components\Repositories\LocalFileReader;
 use PHPUnit\Framework\TestCase;
@@ -53,7 +52,6 @@ class JavaScriptConfigurationParserTest extends TestCase {
 		bool $_filePatternsError
 	): void {
 		$start = new DateTime( 'now' );
-		$ms    = DateInterval::createFromDateString( '1 ms' );
 
 		// Test
 		$localFile     = ( new LocalFileReader() )->read( $_filePath );

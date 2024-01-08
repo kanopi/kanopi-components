@@ -1,0 +1,57 @@
+<?php
+
+namespace Assets\Services;
+
+use Kanopi\Components\Assets\Model\EntryPoint;
+use Kanopi\Components\Assets\Model\WebpackConfiguration;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Configuration reader test cases
+ *
+ * @package kanopi/components
+ */
+class ConfigurationReaderTest extends TestCase {
+	/**
+	 * Test data provider for array versions
+	 *
+	 * @return array[]
+	 */
+	public function providerConfiguration(): array {
+		return [
+			'Missing Entry Points'  => [
+				[
+					'error' => 'Some error',
+				],
+				0
+			],
+			'Entry Points' => [
+				[
+					'filePatterns' => [
+						'entryPoints' => [
+							'sample-css' => [ 'path' => './path/to/whatever.css', 'type' => 'style' ],
+							'sample-js' => [ 'path' => './path/to/whatever.js', 'type' => 'script' ],
+							'sample-jsx' => [ 'path' => './path/to/whatever.jsx', 'type' => 'script' ],
+							'sample-sass' => [ 'path' => './path/to/whatever.sass', 'type' => 'style' ],
+							'sample-scss' => [ 'path' => './path/to/whatever.scss', 'type' => 'style' ],
+							'sample-tsx' => [ 'path' => './path/to/whatever.tsc', 'type' => 'script' ],
+						]
+					]
+				],
+				6
+			]
+		];
+	}
+
+	/**
+	 * @dataProvider providerConfiguration
+	 *
+	 * @param iterable $source      Source configuration
+	 * @param int      $handleCount Count of valid handles
+	 */
+	public function testRead( iterable $source, int $handleCount ): void {
+		$configuration = WebpackConfiguration::fromJson( $source );
+		$this->assertEquals( $handleCount, $configuration->entryPoints()->count() );
+		$this->assertContainsOnlyInstancesOf( EntryPoint::class, $configuration->entryPoints() );
+	}
+}
