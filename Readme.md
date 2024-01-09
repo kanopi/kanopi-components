@@ -27,6 +27,15 @@ PHP library to provide common model and service patterns for building other appl
 
 All structures are stored under the PSR-4 namespace `Kanopi\Components`.
 
+### Commands
+
+**Namespace**: `Kanopi\Components\Commands`
+
+Group of commonly used CLI Commands available to register and use on WordPress, and in the future Drupal. 
+
+For WordPress, all commands are for WPCLI, and can be registered from this library by calling 
+`Kanopi\Components\Commands\Registration::WPCLICommands()`.
+
 ### Logger
 
 **Namespace**: `Kanopi\Components\Logger`

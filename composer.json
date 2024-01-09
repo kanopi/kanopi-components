@@ -15,6 +15,7 @@
     }
   },
   "require": {
+	"league/csv": "~9.8.0",
     "php": ">=8.0",
     "ext-json": "*"
   },
