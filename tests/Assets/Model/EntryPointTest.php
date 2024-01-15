@@ -2,7 +2,7 @@
 
 namespace Assets\Model;
 
-use Kanopi\Components\Assets\Model\EntryPoint;
+use Kanopi\Components\Assets\Model\EntryAsset;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,69 +16,61 @@ class EntryPointTest extends TestCase {
 	 *
 	 * @return array[]
 	 */
-	public function providerArrayType(): array {
+	public function providerScriptPath(): array {
 		return [
-			'Invalid Type - Is a script'  => [
-				'sample-default',
-				[
-					'path' => './path/to/register-only.css',
-					'type' => 'something-invalid',
-				],
-				'script',
+			'Invalid - No Script Path' => [
+				[],
+				null,
 			],
-			'Missing Type - Auto-detects' => [
-				'sample-default',
+			'Valid - Script Path'      => [
 				[
-					'path' => './path/to/not-a-script.css',
+					'js' => 'js/editor.1b08d747a2b3b1a1e1ad.js',
 				],
-				'style',
-			],
-			'Valid Type'                  => [
-				'sample-default',
-				[
-					'path' => './path/to/register-only.css',
-					'type' => 'register-only-style',
-				],
-				'register-only-style',
+				'js/editor.1b08d747a2b3b1a1e1ad.js',
 			],
 		];
 	}
 
 	/**
-	 * Test data provider for string versions
+	 * Test data provider for style paths
 	 *
 	 * @return array[]
 	 */
-	public function providerStringType(): array {
+	public function providerStylePath(): array {
 		return [
-			'CSS File'  => [ 'sample-css', './path/to/whatever.css', 'style' ],
-			'JS File'   => [ 'sample-js', './path/to/whatever.js', 'script' ],
-			'JSX File'  => [ 'sample-jsx', './path/to/whatever.jsx', 'script' ],
-			'SASS File' => [ 'sample-sass', './path/to/whatever.sass', 'style' ],
-			'SCSS File' => [ 'sample-scss', './path/to/whatever.scss', 'style' ],
-			'TSX File'  => [ 'sample-tsx', './path/to/whatever.tsc', 'script' ],
+			'Invalid - No Style Path' => [
+				[
+					'js' => 'js/editor.1b08d747a2b3b1a1e1ad.js',
+				],
+				null,
+			],
+			'Valid - Style Path'      => [
+				[
+					'css' => 'css/editor.5a1c48eeabe59064833c.css',
+					'js'  => 'js/editor.1b08d747a2b3b1a1e1ad.js',
+				],
+				'css/editor.5a1c48eeabe59064833c.css',
+			],
 		];
 	}
 
 	/**
-	 * @dataProvider providerArrayType
+	 * @dataProvider providerScriptPath
 	 *
-	 * @param string $handle       Entry point handle
-	 * @param array  $entry        Entry configuration array
-	 * @param string $expectedType Expected entry type
+	 * @param array       $manifestPaths Entry manifest path array
+	 * @param string|null $expected      Expected path
 	 */
-	public function testCheckArrayBuiltType( string $handle, array $entry, string $expectedType ): void {
-		$this->assertEquals( $expectedType, EntryPoint::fromArray( $handle, $entry )->type() );
+	public function testScriptPath( array $manifestPaths, ?string $expected ): void {
+		$this->assertEquals( $expected, EntryAsset::fromArray( $manifestPaths )->script() );
 	}
 
 	/**
-	 * @dataProvider providerStringType
+	 * @dataProvider providerStylePath
 	 *
-	 * @param string $handle       Entry point handle
-	 * @param string $path         Source file path
-	 * @param string $expectedType Expected entry type
+	 * @param array       $manifestPaths Entry manifest path array
+	 * @param string|null $expected      Expected path
 	 */
-	public function testCheckStringBuiltType( string $handle, string $path, string $expectedType ): void {
-		$this->assertEquals( $expectedType, EntryPoint::fromString( $handle, $path )->type() );
+	public function testStylePath( array $manifestPaths, ?string $expected ): void {
+		$this->assertEquals( $expected, EntryAsset::fromArray( $manifestPaths )->style() );
 	}
 }

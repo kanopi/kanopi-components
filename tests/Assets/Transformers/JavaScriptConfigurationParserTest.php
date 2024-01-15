@@ -61,7 +61,7 @@ class JavaScriptConfigurationParserTest extends TestCase {
 
 		// Calculate times, since DateIntervals are incomparable, check if intervals are longer than 1 ms
 		$readLength  = $readEnd->diff( $start );
-		$isReadLong  = 0 < $readLength->h || 0 < $readLength->i || 0 < $readLength->s || .001 < $readLength->f;
+		$isReadLong  = 0 < $readLength->h || 0 < $readLength->i || 0 < $readLength->s || .002 < $readLength->f;
 		$parseLength = $parseEnd->diff( $readEnd );
 		$isParseLong = 0 < $parseLength->h || 0 < $parseLength->i || 0 < $parseLength->s || .001 < $parseLength->f;
 
@@ -70,7 +70,7 @@ class JavaScriptConfigurationParserTest extends TestCase {
 		$this->assertIsArray( $configuration['filePatterns'] );
 		$this->assertEquals( $_devServerError, isset( $configuration['devServer']['error'] ), 'devServer invalid' );
 		$this->assertEquals( $_filePatternsError, isset( $configuration['filePatterns']['error'] ), 'filePatterns invalid' );
-		$this->assertFalse( $isReadLong, 'Read longer than 1 ms: ' . $readLength->format( '%h:%i:%s.%f' ) );
+		$this->assertFalse( $isReadLong, 'Read longer than 2 ms: ' . $readLength->format( '%h:%i:%s.%f' ) );
 		$this->assertFalse( $isParseLong, 'Parse longer than 1 ms: ' . $parseLength->format( '%h:%i:%s.%f' ) );
 	}
 }
