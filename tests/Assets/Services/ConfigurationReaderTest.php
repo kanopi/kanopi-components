@@ -19,27 +19,49 @@ class ConfigurationReaderTest extends TestCase {
 	 */
 	public function providerConfiguration(): array {
 		return [
-			'Missing Entry Points'  => [
+			'Missing Entry Points' => [
 				[
 					'error' => 'Some error',
 				],
-				0
+				0,
 			],
-			'Entry Points' => [
+			'Entry Points'         => [
 				[
 					'filePatterns' => [
 						'entryPoints' => [
-							'sample-css' => [ 'path' => './path/to/whatever.css', 'type' => 'style' ],
-							'sample-js' => [ 'path' => './path/to/whatever.js', 'type' => 'script' ],
-							'sample-jsx' => [ 'path' => './path/to/whatever.jsx', 'type' => 'script' ],
-							'sample-sass' => [ 'path' => './path/to/whatever.sass', 'type' => 'style' ],
-							'sample-scss' => [ 'path' => './path/to/whatever.scss', 'type' => 'style' ],
-							'sample-tsx' => [ 'path' => './path/to/whatever.tsc', 'type' => 'script' ],
-						]
-					]
+							'sample-app'  => [
+								'path' => './path/to/application.tsc',
+								'type' => 'combined',
+							],
+							'sample-css'  => [
+								'path' => './path/to/whatever.css',
+								'type' => 'style',
+							],
+							'sample-js'   => [
+								'path' => './path/to/whatever.js',
+								'type' => 'script',
+							],
+							'sample-jsx'  => [
+								'path' => './path/to/whatever.jsx',
+								'type' => 'script',
+							],
+							'sample-sass' => [
+								'path' => './path/to/whatever.sass',
+								'type' => 'style',
+							],
+							'sample-scss' => [
+								'path' => './path/to/whatever.scss',
+								'type' => 'style',
+							],
+							'sample-tsx'  => [
+								'path' => './path/to/whatever.tsc',
+								'type' => 'script',
+							],
+						],
+					],
 				],
-				6
-			]
+				7,
+			],
 		];
 	}
 

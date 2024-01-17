@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 class EntryPointTest extends TestCase {
 	/**
 	 * Test data provider for array versions
+	 *  - Parameters are: Entry handle name, Entry configuration array, Expected entry type
 	 *
 	 * @return array[]
 	 */
@@ -46,7 +47,7 @@ class EntryPointTest extends TestCase {
 
 	/**
 	 * Test data provider for string versions
-	 *
+	 *  - Parameters are: Entry handle name, Entry file path, Expected entry type
 	 * @return array[]
 	 */
 	public function providerStringType(): array {

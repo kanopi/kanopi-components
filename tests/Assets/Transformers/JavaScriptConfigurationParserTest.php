@@ -51,13 +51,23 @@ class JavaScriptConfigurationParserTest extends TestCase {
 		bool $_devServerError,
 		bool $_filePatternsError
 	): void {
-		$start = new DateTime( 'now' );
-
-		// Test
+		$start         = new DateTime( 'now' );
 		$localFile     = ( new LocalFileReader() )->read( $_filePath );
 		$readEnd       = new DateTime( 'now' );
 		$configuration = ( new JavaScriptConfigurationParser() )->read( $localFile )->collection();
 		$parseEnd      = new DateTime( 'now' );
+
+		$this->assertIsArray( $configuration );
+		$this->assertIsArray( $configuration['devServer'] );
+		$this->assertIsArray( $configuration['filePatterns'] );
+		$this->assertEquals( $_devServerError, isset( $configuration['devServer']['error'] ), 'devServer invalid' );
+		$this->assertEquals( $_filePatternsError, isset( $configuration['filePatterns']['error'] ), 'filePatterns invalid' );
+
+		/*
+		 * These tests measure read performance, though the first time is always longer from lack of file system
+		 * caching and other process startup costs.
+		 * These tests can likely be commented out and uncommented if needed to test performance.
+		 */
 
 		// Calculate times, since DateIntervals are incomparable, check if intervals are longer than 1 ms
 		$readLength  = $readEnd->diff( $start );
@@ -65,12 +75,8 @@ class JavaScriptConfigurationParserTest extends TestCase {
 		$parseLength = $parseEnd->diff( $readEnd );
 		$isParseLong = 0 < $parseLength->h || 0 < $parseLength->i || 0 < $parseLength->s || .002 < $parseLength->f;
 
-		$this->assertIsArray( $configuration );
-		$this->assertIsArray( $configuration['devServer'] );
-		$this->assertIsArray( $configuration['filePatterns'] );
-		$this->assertEquals( $_devServerError, isset( $configuration['devServer']['error'] ), 'devServer invalid' );
-		$this->assertEquals( $_filePatternsError, isset( $configuration['filePatterns']['error'] ), 'filePatterns invalid' );
-		$this->assertFalse( $isReadLong, 'Read longer than 2 ms: ' . $readLength->format( '%h:%i:%s.%f' ) );
-		$this->assertFalse( $isParseLong, 'Parse longer than 2 ms: ' . $parseLength->format( '%h:%i:%s.%f' ) );
+		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found -- Save for later
+		// $this->assertFalse( $isReadLong, 'Read longer than 2 ms: ' . $readLength->format( '%h:%i:%s.%f' ) );
+		// $this->assertFalse( $isParseLong, 'Parse longer than 2 ms: ' . $parseLength->format( '%h:%i:%s.%f' ) );
 	}
 }

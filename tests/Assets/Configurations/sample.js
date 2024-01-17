@@ -21,7 +21,7 @@ module.exports = {
 		"dotenvEnable": false
 	},
 	"externals": [
-		function ({ request }, callback) {
+		function ({request}, callback) {
 			let externalRequest = defaultRequestToExternal(request);
 
 			return externalRequest ? callback(null, externalRequest) : callback();
@@ -30,18 +30,52 @@ module.exports = {
 	"filePatterns": {
 		"cssOutputPath": "css/[name].[contenthash].css",
 		"entryPoints": {
-			"accordion-standard": "./assets/src/css/blocks/standard/accordion.css",
-			"accordion-theme": "./assets/src/css/blocks/acf/accordion.css",
+			"accordion-standard": {
+				"path": "./assets/src/css/blocks/standard/accordion.css",
+				"type": "register-only-style"
+			},
+			"accordion-theme": {
+				"path": "./assets/src/css/blocks/acf/accordion.css",
+				"type": "register-only-style"
+			},
 			"block-editor": "./assets/src/ts/block-editor.ts",
-			"editor": "./assets/src/css/editor/editor.css",
-			"logo-grid-theme": "./assets/src/css/blocks/acf/logo-grid.css",
-			"hero-theme": "./assets/src/css/blocks/acf/hero.css",
-			"tabs-theme": "./assets/src/css/blocks/acf/tabs.css",
-			"struts": "./assets/src/css/template/struts.css",
-			"cards-repeater-theme": "./assets/src/css/blocks/acf/cards.css",
-			"struts-site": "./assets/src/js/struts-site.js",
-			"carousel-block-style": "./blocks/acf/carousel/index.css",
-			"carousel-block-script": "./blocks/acf/carousel/script.js"
+			"editor": {
+				"path": "./assets/src/css/editor/editor.css",
+				"type": "style"
+			},
+			"logo-grid-theme": {
+				"path": "./assets/src/css/blocks/acf/logo-grid.css",
+				"type": "register-only-style"
+			},
+			"hero-theme": {
+				"path": "./assets/src/css/blocks/acf/hero.css",
+				"type": "register-only-style"
+			},
+			"tabs-theme": {
+				"path": "./assets/src/css/blocks/acf/tabs.css",
+				"type": "register-only-style"
+			},
+			"struts": {
+				"path": "./assets/src/css/template/struts.css",
+				"type": "register-only-style"
+			},
+			"cards-repeater-theme": {
+				"path": "./assets/src/css/blocks/acf/cards.css",
+				"type": "register-only-style"
+			},
+			"struts-site": {
+				"dependencies": ["jquery"],
+				"path": "./assets/src/js/struts-site.js",
+				"type": "script"
+			},
+			"carousel-block-style": {
+				"path": "./blocks/acf/carousel/index.css",
+				"type": "register-only-style"
+			},
+			"carousel-block-script": {
+				"path": "./blocks/acf/carousel/script.js",
+				"type": "register-only-script"
+			}
 		},
 		"jsOutputPath": "js/[name].[contenthash].js"
 	},
