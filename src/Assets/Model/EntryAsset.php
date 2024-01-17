@@ -9,6 +9,10 @@ namespace Kanopi\Components\Assets\Model;
  */
 class EntryAsset {
 	/**
+	 * @var string
+	 */
+	private string $entryName;
+	/**
 	 * Entry point script path
 	 *
 	 * @var string|null
@@ -24,11 +28,22 @@ class EntryAsset {
 	/**
 	 * Build an entry asset path model
 	 *
-	 * @param array $_assetPaths Asset entry array
+	 * @param string $_entryName  Entry point name
+	 * @param array  $_assetPaths Asset entry array
 	 */
-	public function __construct( array $_assetPaths ) {
-		$this->script = $_assetPaths['js'] ?? null;
-		$this->style  = $_assetPaths['css'] ?? null;
+	public function __construct( string $_entryName, array $_assetPaths ) {
+		$this->entryName = $_entryName;
+		$this->script    = $_assetPaths['js'] ?? null;
+		$this->style     = $_assetPaths['css'] ?? null;
+	}
+
+	/**
+	 * Entry point name
+	 *
+	 * @return string
+	 */
+	public function entry(): string {
+		return $this->entryName;
 	}
 
 	/**
@@ -56,11 +71,12 @@ class EntryAsset {
 	 *      - css: Relative path to style file
 	 *      - js: Relative path to script file
 	 *
-	 * @param array $_assetPaths Asset manifest paths
+	 * @param string $_entryName  Entry point name
+	 * @param array  $_assetPaths Asset manifest paths
 	 *
 	 * @return EntryAsset
 	 */
-	public static function fromArray( array $_assetPaths ): EntryAsset {
-		return new static( $_assetPaths );
+	public static function fromArray( string $_entryName, array $_assetPaths ): EntryAsset {
+		return new static( $_entryName, $_assetPaths );
 	}
 }
