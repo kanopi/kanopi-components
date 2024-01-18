@@ -3,6 +3,7 @@
 namespace Kanopi\Components\Transformers;
 
 use ArrayIterator;
+use Countable;
 use IteratorAggregate;
 use Traversable;
 
@@ -11,7 +12,7 @@ use Traversable;
  *
  * @package kanopi/components
  */
-class Arrays implements IteratorAggregate {
+class Arrays implements IteratorAggregate, Countable {
 	/**
 	 * Current inner state
 	 *
@@ -91,6 +92,13 @@ class Arrays implements IteratorAggregate {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function count(): int {
+		return count( $this->subject ) ?? 0;
 	}
 
 	/**

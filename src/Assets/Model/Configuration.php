@@ -23,4 +23,11 @@ interface Configuration {
 	 * @return iterable
 	 */
 	public function rawConfiguration(): iterable;
+
+	/**
+	 * Set of expected, system-generated entry point models
+	 *
+	 * @returns EntityIterator
+	 */
+	public function systemEntryPoints(): EntityIterator;
 }

@@ -23,14 +23,22 @@ class WebpackConfiguration implements Configuration {
 	 * @var EntityIterator
 	 */
 	private EntityIterator $entryPoints;
+	/**
+	 * Set of expected, system generated entry point models
+	 *
+	 * @var EntityIterator
+	 */
+	private EntityIterator $systemEntryPoints;
 
 	/**
 	 * Build a Configuration model
 	 *
-	 * @param iterable $_rawJson Raw JSON configuration
+	 * @param iterable       $_rawJson           Raw JSON configuration
+	 * @param EntityIterator $_systemEntryPoints Optional set of Webpack generated entry points
 	 */
-	public function __construct( iterable $_rawJson ) {
+	public function __construct( iterable $_rawJson, EntityIterator $_systemEntryPoints ) {
 		$this->rawJsonConfiguration = $_rawJson;
+		$this->systemEntryPoints    = $_systemEntryPoints;
 		$this->entryPoints          = $this->buildEntryPoints( $_rawJson['filePatterns']['entryPoints'] ?? [] );
 	}
 
@@ -67,13 +75,21 @@ class WebpackConfiguration implements Configuration {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function systemEntryPoints(): EntityIterator {
+		return $this->systemEntryPoints;
+	}
+
+	/**
 	 * Fluent method to build a Configuration model
 	 *
-	 * @param iterable $_rawJson Raw JSON configuration
+	 * @param iterable       $_rawJson           Raw JSON configuration
+	 * @param EntityIterator $_systemEntryPoints Optional set of Webpack generated entry points
 	 *
 	 * @returns Configuration
 	 */
-	public static function fromJson( iterable $_rawJson ): WebpackConfiguration {
-		return new static( $_rawJson );
+	public static function fromJson( iterable $_rawJson, EntityIterator $_systemEntryPoints ): WebpackConfiguration {
+		return new static( $_rawJson, $_systemEntryPoints );
 	}
 }

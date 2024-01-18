@@ -5,15 +5,17 @@ namespace Kanopi\Components\Assets\Model;
 use Kanopi\Components\Transformers\Arrays;
 
 /**
- * Asset loader entry point model
+ * Asset loader system entry point model
+ *  - System entry points are considered dependencies for all other entry points, unless optional
+ *  - Mark a system entry point Optional if it may not always be present and should not be a dependency
  *
  * @package kanopi/components
  */
-class EntryPoint {
+class SystemEntryPoint {
 	/**
 	 * Allowed Entry Point Types (replace with Enum when we support only 8.1+)
 	 */
-	const ALLOWED_ENTRY_TYPES = [ 'combined', 'register-only-style', 'register-only-script', 'style', 'script' ];
+	const ALLOWED_ENTRY_TYPES = [ 'combined', 'style', 'script' ];
 	/**
 	 * Default entry type to assign
 	 */
@@ -31,11 +33,11 @@ class EntryPoint {
 	 */
 	private string $handle;
 	/**
-	 * Path to asset
+	 * Mark if the entry point is optional (i.e. might exist conditionally in Development mode)
 	 *
-	 * @var string
+	 * @var bool
 	 */
-	private string $path;
+	private bool $optional;
 	/**
 	 * Type of asset
 	 *
@@ -47,49 +49,32 @@ class EntryPoint {
 	 * Build an entry point model
 	 *
 	 * @param string $_handle       Entry point handle
-	 * @param string $_path         Source asset path
 	 * @param array  $_dependencies List of dependency handles
 	 * @param string $_type         Asset file type
+	 * @param bool   $_optional     Whether the entry point is optional/conditional (default false)
 	 */
 	public function __construct(
 		string $_handle,
-		string $_path,
 		array $_dependencies,
-		string $_type
+		string $_type,
+		bool $_optional = false
 	) {
-		$type = ! empty( $_type ) ? strtolower( $_type ) : $this->autoDetectType( $_path );
-		if ( ! in_array( $type, self::ALLOWED_ENTRY_TYPES, true ) ) {
-			$type = self::DEFAULT_ENTRY_TYPE;
-		}
-
 		$this->dependencies = Arrays::from( $_dependencies )->filterUnique();
 		$this->handle       = $_handle;
-		$this->path         = $_path;
-		$this->type         = $type;
+		$this->optional     = $_optional;
+		$this->type         = in_array( $_type, self::ALLOWED_ENTRY_TYPES, true ) ? $_type : self::DEFAULT_ENTRY_TYPE;
 	}
+
 	/**
-	 * Register an additional dependency
+	 * Register an additional dependency (prevents duplicates)
 	 *
 	 * @param string $_dependencyHandle Added dependency
-	 * @return EntryPoint
+	 * @return SystemEntryPoint
 	 */
-	public function addDependency( string $_dependencyHandle ): EntryPoint {
+	public function addDependency( string $_dependencyHandle ): SystemEntryPoint {
 		$this->dependencies->add( $_dependencyHandle )->filterUnique();
 
 		return $this;
-	}
-
-	/**
-	 * Auto-detects the file type based on file path
-	 *
-	 * @param string $_path Source file path
-	 *
-	 * @return string
-	 */
-	private function autoDetectType( string $_path ): string {
-		$styleTypeMatchCount = preg_match( '/\.(scss|sass|css)$/', $_path );
-
-		return empty( $styleTypeMatchCount ) ? 'script' : 'style';
 	}
 
 	/**
@@ -111,12 +96,12 @@ class EntryPoint {
 	}
 
 	/**
-	 * Source path of asset
+	 * Show if the entry point is declared optional (for instance Development only)
 	 *
-	 * @return string
+	 * @return bool
 	 */
-	public function path(): string {
-		return $this->path;
+	public function optional(): bool {
+		return $this->optional;
 	}
 
 	/**
@@ -133,6 +118,7 @@ class EntryPoint {
 	 *
 	 * Configuration array expected key/value pairs:
 	 *      - dependencies: Set of required prior entry point handles
+	 *      - optional: Sets whether the entry point is optional/conditional
 	 *      - path: Source file path
 	 *      - type: Entry point type
 	 *
@@ -142,28 +128,14 @@ class EntryPoint {
 	 * @param string $_handle             Entry point handle (without prefix)
 	 * @param array  $_entryConfiguration Entry point configuration
 	 *
-	 * @return EntryPoint
+	 * @return SystemEntryPoint
 	 */
-	public static function fromArray( string $_handle, array $_entryConfiguration ): EntryPoint {
+	public static function fromArray( string $_handle, array $_entryConfiguration ): SystemEntryPoint {
 		return new static(
 			$_handle,
-			$_entryConfiguration['path'] ?? '',
 			$_entryConfiguration['dependencies'] ?? [],
-			$_entryConfiguration['type'] ?? ''
+			$_entryConfiguration['type'] ?? self::DEFAULT_ENTRY_TYPE,
+			$_entryConfiguration['optional'] ?? false
 		);
-	}
-
-	/**
-	 * Build an entry point from a file path, auto-detects SASS/CSS files as styles, otherwise as a script
-	 *  - For legacy configuration file usage, the array method is preferred
-	 *  - Will be deprecated in the future
-	 *
-	 * @param string $_handle Entry point handle (without prefix)
-	 * @param string $_path   Source file path
-	 *
-	 * @return EntryPoint
-	 */
-	public static function fromString( string $_handle, string $_path ): EntryPoint {
-		return new static( $_handle, $_path, [], '' );
 	}
 }

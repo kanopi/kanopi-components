@@ -3,7 +3,9 @@
 namespace Assets\Services;
 
 use Kanopi\Components\Assets\Model\EntryPoint;
+use Kanopi\Components\Assets\Model\SystemEntryPoint;
 use Kanopi\Components\Assets\Model\WebpackConfiguration;
+use Kanopi\Components\Model\Collection\EntityIterator;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -72,8 +74,19 @@ class ConfigurationReaderTest extends TestCase {
 	 * @param int      $handleCount Count of valid handles
 	 */
 	public function testRead( iterable $source, int $handleCount ): void {
-		$configuration = WebpackConfiguration::fromJson( $source );
+		$configuration = WebpackConfiguration::fromJson(
+			$source,
+			EntityIterator::fromArray(
+				[
+					SystemEntryPoint::fromArray( 'vendor', [ 'type' => 'script' ] ),
+					SystemEntryPoint::fromArray( 'runtime', [ 'type' => 'script' ] ),
+					SystemEntryPoint::fromArray( 'central', [ 'type' => 'script' ] ),
+				],
+				EntryPoint::class
+			)
+		);
 		$this->assertEquals( $handleCount, $configuration->entryPoints()->count() );
+		$this->assertEquals( 3, $configuration->systemEntryPoints()->count() );
 		$this->assertContainsOnlyInstancesOf( EntryPoint::class, $configuration->entryPoints() );
 	}
 }
