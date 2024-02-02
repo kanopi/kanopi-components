@@ -73,11 +73,22 @@ class RegisteredAssets {
 		return $assetsByType;
 	}
 
+	// phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+
+	/**
+	 * Process a script name
+	 *
+	 * @param string     $_type  Type of asset
+	 * @param EntryAsset $_asset Incoming asset
+	 * @return string|null
+	 */
 	private function processScript( string $_type, EntryAsset $_asset ): ?string {
 		$isScript = in_array( strtolower( $_type ), self::SCRIPT_TYPES, true );
 
 		return '';
 	}
+
+	// phpcs:enable Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 	/**
 	 * Full set of sorted assets with system dependencies for a give type
