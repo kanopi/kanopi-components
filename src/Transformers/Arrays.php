@@ -64,6 +64,23 @@ class Arrays implements IteratorAggregate, Countable {
 	}
 
 	/**
+	 * Conditionally append an array to the inner subject
+	 *
+	 * @param mixed         $_addition      Array segment to append
+	 * @param callable|bool $_should_append Function returns a bool of whether to append $_addition to the array
+	 *
+	 * @return Arrays
+	 */
+	public function addMaybe( mixed $_addition, callable|bool $_should_append ): Arrays {
+		$isAppended = is_callable( $_should_append ) ? call_user_func( $_should_append ) : $_should_append;
+		if ( $isAppended ) {
+			$this->subject[] = $_addition;
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Append an array segment to the inner subject
 	 *
 	 * @param array $_addition Array segment to append

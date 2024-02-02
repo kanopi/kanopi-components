@@ -15,12 +15,14 @@ use Kanopi\Components\Transformers\Arrays;
 class EntryAssetSet implements IEntitySet {
 	/**
 	 * {@inheritDoc}
+	 *
+	 * Adds an index of the entry name to each EntryAsset model in the iterator
 	 */
 	public function transform( iterable $_input_set ): EntityIterator {
 		$mapping = Arrays::fresh();
 
 		foreach ( $_input_set as $entryName => $assets ) {
-			$mapping->add( EntryAsset::fromArray( $entryName, $assets ) );
+			$mapping->writeIndex( $entryName, EntryAsset::fromArray( $entryName, $assets ) );
 		}
 
 		return EntityIterator::fromArray( $mapping->toArray(), EntryAsset::class );

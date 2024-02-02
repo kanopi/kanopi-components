@@ -93,6 +93,15 @@ class EntryPoint {
 	}
 
 	/**
+	 * Whether the entry point ready for registration, has a handle/name and path
+	 *
+	 * @return bool
+	 */
+	public function canRegister(): bool {
+		return ! empty( $this->handle ) && ! empty( $this->path );
+	}
+
+	/**
 	 * Set of handles on which this entry point depends
 	 *
 	 * @returns array

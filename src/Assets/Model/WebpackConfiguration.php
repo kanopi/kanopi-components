@@ -11,6 +11,7 @@ use Kanopi\Components\Transformers\Arrays;
  * @package kanopi/components
  */
 class WebpackConfiguration implements Configuration {
+	const DEFAULT_REGISTERED_HANDLE_PREFIX = 'kanopi-pack-';
 	/**
 	 * Incoming JSON configuration
 	 *
@@ -23,6 +24,12 @@ class WebpackConfiguration implements Configuration {
 	 * @var EntityIterator
 	 */
 	private EntityIterator $entryPoints;
+	/**
+	 * Prefix added before registered handles
+	 *
+	 * @var string
+	 */
+	private string $registeredHandlePrefix;
 	/**
 	 * Set of expected, system generated entry point models
 	 *
@@ -37,12 +44,16 @@ class WebpackConfiguration implements Configuration {
 	 * @param EntityIterator $_systemEntryPoints Optional set of Webpack generated entry points
 	 */
 	public function __construct( iterable $_rawJson, EntityIterator $_systemEntryPoints ) {
-		$this->rawJsonConfiguration = $_rawJson;
-		$this->systemEntryPoints    = $_systemEntryPoints;
-		$this->entryPoints          = $this->buildEntryPoints( $_rawJson['filePatterns']['entryPoints'] ?? [] );
+		$this->rawJsonConfiguration   = $_rawJson;
+		$this->systemEntryPoints      = $_systemEntryPoints;
+		$this->entryPoints            = $this->buildEntryPoints( $_rawJson['filePatterns']['entryPoints'] ?? [] );
+		$this->registeredHandlePrefix = $_rawJson['filePatterns']['registeredHandlePrefix']
+			?? self::DEFAULT_REGISTERED_HANDLE_PREFIX;
 	}
 
 	/**
+	 * Assemble the configuration files set of entry points
+	 *
 	 * @param iterable $_entryPoints Set of entry points
 	 *
 	 * @return EntityIterator
@@ -72,6 +83,13 @@ class WebpackConfiguration implements Configuration {
 	 */
 	public function rawConfiguration(): iterable {
 		return $this->rawJsonConfiguration;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function prefixRegisteredHandle( string $_handle ): string {
+		return $this->registeredHandlePrefix . $_handle;
 	}
 
 	/**
