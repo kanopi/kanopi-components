@@ -2,12 +2,17 @@
 
 namespace Kanopi\Components\Transformers;
 
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
+use Traversable;
+
 /**
  * Common array manipulation in a state machine with a fluent interface
  *
  * @package kanopi/components
  */
-class Arrays {
+class Arrays implements IteratorAggregate, Countable {
 	/**
 	 * Current inner state
 	 *
@@ -59,6 +64,23 @@ class Arrays {
 	}
 
 	/**
+	 * Conditionally append an array to the inner subject
+	 *
+	 * @param mixed         $_addition      Array segment to append
+	 * @param callable|bool $_should_append Function returns a bool of whether to append $_addition to the array
+	 *
+	 * @return Arrays
+	 */
+	public function addMaybe( mixed $_addition, callable|bool $_should_append ): Arrays {
+		$isAppended = is_callable( $_should_append ) ? call_user_func( $_should_append ) : $_should_append;
+		if ( $isAppended ) {
+			$this->subject[] = $_addition;
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Append an array segment to the inner subject
 	 *
 	 * @param array $_addition Array segment to append
@@ -87,6 +109,13 @@ class Arrays {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function count(): int {
+		return count( $this->subject ) ?? 0;
 	}
 
 	/**
@@ -138,6 +167,15 @@ class Arrays {
 		$this->subject = array_unique( $this->subject, $_sort_flags );
 
 		return $this;
+	}
+
+	/**
+	 * Interface compliance to allow iteration in compliant structures like foreach loops
+	 *
+	 * @return Traversable
+	 */
+	public function getIterator(): Traversable {
+		return new ArrayIterator( $this->subject );
 	}
 
 	/**

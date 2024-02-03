@@ -1,70 +1,33 @@
-CWD = $(shell pwd)
+CWD := $(shell pwd)
+VERSIONS := 8.0 8.1 8.2
 
-.EXPORT_ALL_VARIABLES:
+.PHONY: complete test unit $(addprefix php, $(VERSIONS)) $(addprefix unitphp, $(VERSIONS))
 
-default: complete
+complete: unit test
+
+define run_docker_command
+	@docker run -it --rm -v ./:/home/circleci/source cimg/php:$(1) \
+		bash -c 'set -e; cp -R ~/source/. ./; composer --quiet install; $(2)'
+endef
 
 phpcs:
-	@docker run -it --rm -v $(CWD):/home/circleci/source cimg/php:$(VERSION) \
-		bash -c 'set -ex; cp -R ~/source/. ./; composer --quiet install; \
-		composer -n phpcs -- --standard="./.phpcs-$(VERSION).xml.dist" ./'
+	$(call run_docker_command,$(VERSION),composer -n phpcs -- --standard="./.phpcs-$(VERSION).xml.dist" ./)
 
 phpunit:
-	@docker run -it --rm -v $(CWD):/home/circleci/source cimg/php:$(VERSION) \
-		bash -c 'set -ex; cp -R ~/source/. ./; composer --quiet install; \
-		composer -n phpunit'
+	$(call run_docker_command,$(VERSION),composer -n phpunit)
 
 phpcsreport:
-	@docker run -it --rm -v $(CWD):/home/circleci/source cimg/php:$(VERSION) \
-		bash -c 'set -ex; cp -R ~/source/. ./; composer --quiet install; \
-		composer -n phpcs -- --standard="./.phpcs-$(VERSION).xml.dist" ./' > results-$(VERSION).txt
+	$(call run_docker_command,$(VERSION),composer -n phpcs -- --standard="./.phpcs-$(VERSION).xml.dist" ./ | tee ~/source/phpcs-$(VERSION).txt)
 
 phpunitreport:
-	@docker run -it --rm -v $(CWD):/home/circleci/source cimg/php:$(VERSION) \
-		bash -c 'set -ex; cp -R ~/source/. ./; composer --quiet install; \
-		composer -n phpunit' > results-unit-$(VERSION).txt
+	$(call run_docker_command,$(VERSION),composer -n phpunit | tee ~/source/phpunit-$(VERSION).txt)
 
-.PHONY: php80
+$(addprefix php, $(VERSIONS)): php%:
+	$(MAKE) phpcsreport VERSION=$*
 
-php80:
-	$(MAKE) phpcsreport VERSION=8.0
+$(addprefix unitphp, $(VERSIONS)): unitphp%:
+	$(MAKE) phpunitreport VERSION=$*
 
-.PHONY: unitphp80
+test: $(addprefix php, $(VERSIONS))
 
-unitphp80:
-	$(MAKE) phpunitreport VERSION=8.0
-
-.PHONY: php81
-
-php81:
-	$(MAKE) phpcsreport VERSION=8.1
-
-.PHONY: unitphp81
-
-unitphp81:
-	$(MAKE) phpunitreport VERSION=8.1
-
-.PHONY: php82
-
-php82:
-	$(MAKE) phpcsreport VERSION=8.2
-
-.PHONY: unitphp82
-
-unitphp82:
-	$(MAKE) phpunitreport VERSION=8.2
-
-.PHONY: test
-
-test:
-	$(MAKE) -j 3 php80 php81 php82
-
-.PHONY: unit
-
-unit:
-	$(MAKE) -j 3 unitphp80 unitphp81 unitphp82
-
-complete:
-	$(MAKE) -j 2 unit test
-
-.PHONY: complete
+unit: $(addprefix unitphp, $(VERSIONS))
