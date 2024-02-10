@@ -475,6 +475,7 @@ class PostType extends WP_CLI_Command {
 				foreach ( $siteMedia as $media ) {
 					// Track if the file is inside or outside the Media Library
 					$inMediaLibrary = str_starts_with( $media, $baseMediaUrl );
+
 					$nonUploadMedia->addMaybe( $media, ! $inMediaLibrary );
 
 					// Find the image size and base file
@@ -482,6 +483,11 @@ class PostType extends WP_CLI_Command {
 					$hasSize    = 0 < $matchCount;
 					$fileUrl    = $hasSize ? $mediaUrlSizes[1] . '.' . $mediaUrlSizes[3] : $media;
 					$fileSize   = $hasSize ? $mediaUrlSizes[2] : 'Default';
+
+					// Check for replacement URL base
+					$fileUrl = ! empty( $replacementSiteUrl )
+						? str_replace( $siteUrl, $replacementSiteUrl, $fileUrl )
+						: $fileUrl;
 
 					// Track the amount of images of a certain size
 					$sizeCount = ( $sizes->readIndex( $fileSize ) ?? 0 ) + 1;
