@@ -12,22 +12,19 @@ PHP library to provide common model and service patterns for building other appl
 
 ## Definitions
 
-* **Entity** - Any structured model, class, interface, etc representing data flowing through the system. 
-  The model contains sets of data fields with free-form and indexed content. For instance, a Post Type or 
-  Node which represents a Location with a free-form Address and an indexed Region or State.
-* **Entity Iterator** - PHP Iterator which takes a Class, Interface or Scalar type and validates each 
-  member entity is of the requested type
-* **Indexed Entity** - Any entity which uses a numerical index, for instance, a Post Type in WordPress 
-  uses a Post ID, its index.
-* **Indexed Group Entity** - Perhaps written in a grammatically incorrect way, this is a Group associated 
-  with an indexed entity, for instance a City/Region taxonomy associated with a Location
-* **Reader** - Data repository which only allows reading
-* **Repository** - Generic name for a place to store data, could be a CSV file, HTTP/S Endpoint, Database, etc.
-* **Set** - A grouping of similar data, generally expected to be of the same entity in this system, 
-  enforced using Entity Iterators
-* **Stream** - Flow of data between repositories, this system implements streams to read from source 
-  repositories and write to target repositories 
-* **Writer** - Data repository which allows reading/writing
+| Concept                  | Definition                                                                                                                                                                                                                                                                                           |
+|:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Entity**               | Any structured model, class, interface, etc representing data flowing through the system. The model contains one or more data fields with free-form and indexed content. For instance, a Post Type or Node which represents a Location with a free-form Address and an indexed City/Region or State. |
+| **Entity Iterator**      | PHP Iterator which takes a Class, Interface, or Scalar type and validates each member **Entity** is of the requested type                                                                                                                                                                            |
+| **Indexed Entity**       | Any entity for a set using a numerical index, for instance, a Post Type in WordPress the numeric ID field.                                                                                                                                                                                           |
+| **Indexed Group Entity** | A **set** of **Entities** associated with another **Indexed Entity** by a common index, for instance a City/Region taxonomy associated with a Location                                                                                                                                               |
+| **Processor**            | Coordinate one or more **Services** or **Repositories** in a data process, for instance read a **Set** or **Entities** for a CSV to determine if there are **Entities** to create or update in the target system.                                                                                    |
+| **Reader**               | Data repository in read-only mode.                                                                                                                                                                                                                                                                   |
+| **Repository**           | Generic place to store data, could be a CSV file, HTTP/S Endpoint, Database, etc.                                                                                                                                                                                                                    |
+| **Set**                  | A group of similar data, generally expected to be of the same **Entity** in this system, wrapped in an **Entity Iterator**                                                                                                                                                                           |
+| **Service**              | Coordinate data management between one or more **Repositories** for a single **Entity** type, for instance coordinate data flow between the Post, Meta, and Taxonomy for a WordPress post type; or turn a CSV into a Post Type **Entity** for processing                                             |
+| **Stream**               | Flow of data between **Repositories**, this system reads data from source **Repositories** and writes it to target **Repositories**                                                                                                                                                                  |
+| **Writer**               | Data repository which allows reading/writing                                                                                                                                                                                                                                                         |
 
 
 ## Structure
@@ -42,6 +39,13 @@ Group of commonly used CLI Commands available to register and use on WordPress, 
 
 For WordPress, all commands are for WPCLI, and can be registered from this library by calling 
 `Kanopi\Components\Commands\Registration::WPCLICommands()`.
+
+| CLI Commands                          | Purpose                                                                |
+|:--------------------------------------|:-----------------------------------------------------------------------|
+| `wp kanopi-report-flex-content audit` | Report a WordPress sites ACF flexible content areas                    |
+| `wp kanopi-report-post-type audit`    | Report a WordPress sites content in post types                         |
+| `wp kanopi-report-post-type media`    | Report all referenced site media; show if each is in the Media Library |
+
 
 ### Logger
 
@@ -96,7 +100,7 @@ Interfaces to coordinate data processing from external sources into an local sys
 
 Components which consolidate and simplify the transformation of standard/scalar data types into 
 coordinated structures of data for more readable and concise functionality. For instance,
-string utilities which sanitize or convert delimiters.
+string utilities which sanitize or convert delimiters and array utilities for fluent, chained manipulation.
 
 ## Code Quality 
 
