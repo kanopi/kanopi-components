@@ -10,6 +10,7 @@ use Kanopi\Components\Model\Data\Process\IndexedProcessStatistics;
 use Kanopi\Components\Model\Data\Stream\IStreamProperties;
 use Kanopi\Components\Model\Exception\ImportStreamException;
 use Kanopi\Components\Model\Exception\SetReaderException;
+use Kanopi\Components\Model\Exception\SetStreamException;
 use Kanopi\Components\Model\Exception\SetWriterException;
 use Kanopi\Components\Model\Transform\IEntitySet;
 use Kanopi\Components\Processor\DryRunProcessor;
@@ -100,14 +101,9 @@ abstract class Update implements IDryRunProcessor {
 	public function process( string $_input_stream_uri ): void {
 		try {
 			$processStartTime = hrtime( true );
-
-			$streamProperties = $this->externalService()->readStream(
-				$_input_stream_uri,
-				$this->incomingEntityTransformer()
-			);
+			$streamProperties = $this->readExternalStream( $_input_stream_uri );
 
 			$this->preProcessValidationEvents( $streamProperties );
-
 			$this->preProcessBanner( $streamProperties );
 			if ( false === $this->isStreamProcessValid( $streamProperties ) ) {
 				return;
@@ -246,7 +242,7 @@ abstract class Update implements IDryRunProcessor {
 
 	/**
 	 * Read the set of external entities, converted to the common entity type, to process
-	 *    - Override this in extended classes batching, etc
+	 *    - Separate to override and process batching, etc
 	 *
 	 * @return iterable
 	 */
@@ -254,6 +250,20 @@ abstract class Update implements IDryRunProcessor {
 		$entities = $this->externalService()->read();
 		$this->processStatistics->incomingTotal( $entities->count() );
 		return $entities;
+	}
+
+	/**
+	 * Read the external data stream
+	 *  - Separate to override as needed for alternate external data sources
+	 *
+	 * @param string $_input_stream_uri External string URI
+	 *
+	 * @throws SetStreamException Failure to read external import stream
+	 *
+	 * @return IStreamProperties Processed stream with properties
+	 */
+	protected function readExternalStream( string $_input_stream_uri ): IStreamProperties {
+		return $this->externalService()->readStream( $_input_stream_uri, $this->incomingEntityTransformer() );
 	}
 
 	/**
