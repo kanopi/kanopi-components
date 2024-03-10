@@ -16,6 +16,16 @@ trait PostTypeEntityWriter {
 	use IndexedEntityWriter;
 
 	/**
+	 * Allowed post statuses for index reading
+	 *  - Default of draft, future, pending, and publish
+	 *
+	 * @return string[]
+	 */
+	public function allowedIndexPostStatus(): array {
+		return [ 'draft', 'pending', 'publish', 'future' ];
+	}
+
+	/**
 	 * Read a given Entity by system index identifier
 	 *
 	 * @param int $_index_identifier Entity index identifier
@@ -97,6 +107,7 @@ trait PostTypeEntityWriter {
 	 */
 	public function readIndexFilter(): array {
 		return [
+			'post_status'    => $this->allowedIndexPostStatus(),
 			'post_type'      => $this->systemEntityName(),
 			'posts_per_page' => $this->maximumIndexLength(),
 			'fields'         => 'ids',
