@@ -67,7 +67,7 @@ class IndexedProcessStatistics implements IIndexedProcessStatistics {
 	 * {@inheritDoc}
 	 */
 	public function created( int $_identifier ): void {
-		$this->increment_type( '_created', $_identifier );
+		$this->increment_type( 'created', $_identifier );
 	}
 
 	/**
@@ -106,7 +106,7 @@ class IndexedProcessStatistics implements IIndexedProcessStatistics {
 	 * {@inheritDoc}
 	 */
 	public function deleted( int $_identifier ): void {
-		$this->increment_type( '_deleted', $_identifier );
+		$this->increment_type( 'deleted', $_identifier );
 	}
 
 	/**
@@ -141,14 +141,14 @@ class IndexedProcessStatistics implements IIndexedProcessStatistics {
 	 * {@inheritDoc}
 	 */
 	public function skipped( int $_identifier ): void {
-		$this->increment_type( '_skipped', $_identifier );
+		$this->increment_type( 'skipped', $_identifier );
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function updated( int $_identifier ): void {
-		$this->increment_type( '_updated', $_identifier );
+		$this->increment_type( 'updated', $_identifier );
 	}
 
 	/**
