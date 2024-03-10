@@ -36,6 +36,7 @@ trait PostTypeEntityWriter {
 	public function readByIndexIdentifier( int $_index_identifier ): ?IPostTypeEntity {
 		$post_cursor = $this->entityRepository()->read(
 			[
+				'post_status'    => $this->allowedIndexPostStatus(),
 				'post_type'      => $this->systemEntityName(),
 				'p'              => $_index_identifier,
 				'posts_per_page' => 1,
@@ -78,6 +79,7 @@ trait PostTypeEntityWriter {
 	public function readByUniqueIdentifier( string $_unique_identifier ): ?IPostTypeEntity {
 		$post_cursor = $this->entityRepository()->read(
 			[
+				'post_status'    => $this->allowedIndexPostStatus(),
 				'post_type'      => $this->systemEntityName(),
 				// phpcs:ignore -- Intentional meta data query
 				'meta_query'     => [
