@@ -85,6 +85,15 @@ abstract class Update implements IDryRunProcessor {
 	abstract protected function incomingEntityTransformer(): IEntitySet;
 
 	/**
+	 * Process statistics
+	 *
+	 * @return IndexedProcessStatistics
+	 */
+	protected function processStatistics(): IndexedProcessStatistics {
+		return $this->processStatistics();
+	}
+
+	/**
 	 * Target data store service
 	 *
 	 * @return IIndexedEntityWriter
@@ -92,6 +101,7 @@ abstract class Update implements IDryRunProcessor {
 	protected function systemService(): IIndexedEntityWriter {
 		return $this->systemService;
 	}
+
 	/**
 	 * Read the external data entities
 	 *
