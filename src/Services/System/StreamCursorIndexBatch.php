@@ -3,7 +3,7 @@
 namespace Kanopi\Components\Services\System;
 
 use Kanopi\Components\Model\Data\Process\StreamCursorBatchConfiguration;
-use Kanopi\Components\Model\Data\Process\StreamCursorIndexBatchConfiguration;
+use Kanopi\Components\Model\Data\Process\OffsetStreamCursorBatchConfiguration;
 use Kanopi\Components\Model\Data\Stream\StreamCursorProperties;
 use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Repositories\IGroupSetWriter;
@@ -40,7 +40,7 @@ class StreamCursorIndexBatch implements StreamCursorBatch {
 		int $_batch_size,
 		StreamCursorProperties $_properties
 	): StreamCursorBatchConfiguration {
-		$batch = new StreamCursorIndexBatchConfiguration( $_batch_size );
+		$batch = new OffsetStreamCursorBatchConfiguration( $_batch_size );
 
 		try {
 			$storedBatch = $this->readStoredBatchConfiguration( $_unique_identifier );

@@ -42,6 +42,22 @@ trait CoreProcessor {
 	abstract protected function systemService(): IIndexedEntityWriter;
 
 	/**
+	 * Events to execute after all system entities are processed
+	 *
+	 * @return void
+	 */
+	abstract protected function postProcessingEvents(): void;
+
+	/**
+	 * Events to execute after a system entity is processed
+	 *
+	 * @param IIndexedEntity $_entity Post-processed system entity
+	 *
+	 * @return void
+	 */
+	abstract protected function postSystemEntityProcessedEvent( IIndexedEntity $_entity ): void;
+
+	/**
 	 * Read the external data entities
 	 *
 	 * @param string $_input_stream_uri URI of the input stream
@@ -123,15 +139,6 @@ trait CoreProcessor {
 	}
 
 	/**
-	 * Events to execute after a system entity is processed
-	 *
-	 * @param IIndexedEntity $_entity Post-processed system entity
-	 *
-	 * @return void
-	 */
-	abstract protected function postSystemEntityProcessedEvent( IIndexedEntity $_entity ): void;
-
-	/**
 	 * Read an internal system entity using a cross-system unique identifier
 	 *
 	 * @param string $_identifier Entity cross-system unique identifier
@@ -202,13 +209,6 @@ trait CoreProcessor {
 	protected function shouldEntityUpdate( IIndexedEntity $_existing, IIndexedEntity $_incoming ): bool {
 		return $this->willAlwaysOverwrite() || $_incoming->version() !== $_existing->version();
 	}
-
-	/**
-	 * Events to execute after all system entities are processed
-	 *
-	 * @return void
-	 */
-	abstract protected function postProcessingEvents(): void;
 
 	/**
 	 * Logging banner to show after all system entities are processed

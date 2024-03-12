@@ -3,14 +3,14 @@
 namespace Kanopi\Components\Model\Data\Process;
 
 use Kanopi\Components\Model\Data\IIndexedEntity;
-use Kanopi\Components\Model\Data\Stream\IStreamProperties;
+use Kanopi\Components\Model\Data\Stream\StreamCursorProperties;
 
 /**
  * Stream cursor batch configuration implementation
  *
  * @package kanopi/components
  */
-class StreamCursorIndexBatchConfiguration implements StreamCursorBatchConfiguration {
+class OffsetStreamCursorBatchConfiguration implements StreamCursorBatchConfiguration {
 	/**
 	 * @var int
 	 */
@@ -32,9 +32,9 @@ class StreamCursorIndexBatchConfiguration implements StreamCursorBatchConfigurat
 	 */
 	protected array $processedBatches = [];
 	/**
-	 * @var IStreamProperties|null
+	 * @var StreamCursorProperties|null
 	 */
-	protected ?IStreamProperties $streamProperties;
+	protected ?StreamCursorProperties $streamProperties;
 	/**
 	 * @var int|null
 	 */
@@ -154,7 +154,7 @@ class StreamCursorIndexBatchConfiguration implements StreamCursorBatchConfigurat
 	/**
 	 * {@inheritDoc}
 	 */
-	public function streamProperties(): IStreamProperties {
+	public function streamProperties(): StreamCursorProperties {
 		return $this->streamProperties;
 	}
 
@@ -204,7 +204,7 @@ class StreamCursorIndexBatchConfiguration implements StreamCursorBatchConfigurat
 	/**
 	 * {@inheritDoc}
 	 */
-	public function updateStreamProperties( IStreamProperties $_properties ): void {
+	public function updateStreamProperties( StreamCursorProperties $_properties ): void {
 		$this->streamProperties = $_properties;
 	}
 

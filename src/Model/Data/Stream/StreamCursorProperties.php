@@ -7,7 +7,7 @@ namespace Kanopi\Components\Model\Data\Stream;
  *
  * @package kanopi/components
  */
-interface StreamCursorProperties extends IStreamProperties {
+interface StreamCursorProperties {
 	/**
 	 * Mark the stream cursor complete
 	 *
@@ -44,4 +44,11 @@ interface StreamCursorProperties extends IStreamProperties {
 	 * @return void
 	 */
 	public function updateNextOffset( string $_offset ): void;
+
+	/**
+	 * URI of the stream
+	 *
+	 * @return string
+	 */
+	public function uri(): string;
 }

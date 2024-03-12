@@ -3,7 +3,6 @@
 namespace Kanopi\Components\Model\Data\Process;
 
 use Kanopi\Components\Model\Data\IIndexedEntity;
-use Kanopi\Components\Model\Data\Stream\IStreamProperties;
 
 /**
  * Batch configuration for import/update processes using a cursor to track the next start index
@@ -40,13 +39,6 @@ interface StreamCursorBatchConfiguration extends IIndexedEntity {
 	public function processedBatches(): array;
 
 	/**
-	 * Properties of the target batched stream
-	 *
-	 * @return IStreamProperties
-	 */
-	public function streamProperties(): IStreamProperties;
-
-	/**
 	 * Starting stream index for current batch
 	 *
 	 * @return string
@@ -69,13 +61,4 @@ interface StreamCursorBatchConfiguration extends IIndexedEntity {
 	 * @return void
 	 */
 	public function updateBatch( int $_batchNumber, string $_nextStartIndex ): void;
-
-	/**
-	 * Update the stream properties associated with this batch process
-	 *
-	 * @param IStreamProperties $_properties Stream properties to process
-	 *
-	 * @return void
-	 */
-	public function updateStreamProperties( IStreamProperties $_properties ): void;
 }

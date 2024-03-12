@@ -3,34 +3,59 @@
 namespace Kanopi\Components\Processor\Recurrent;
 
 use Kanopi\Components\Logger\ILogger;
-use Kanopi\Components\Model\Data\IIndexedEntity;
-use Kanopi\Components\Model\Exception\SetReaderException;
-use Kanopi\Components\Model\Exception\SetWriterException;
+use Kanopi\Components\Model\Data\Process\IIndexedProcessStatistics;
+use Kanopi\Components\Model\Data\Process\IndexedProcessStatistics;
+use Kanopi\Components\Processor\DestructiveProcessor;
+use Kanopi\Components\Processor\DryRunProcessor;
+use Kanopi\Components\Processor\IDryRunProcessor;
+use Kanopi\Components\Processor\ProcessorStates;
 use Kanopi\Components\Services\External\IExternalStreamReader;
 use Kanopi\Components\Services\System\IIndexedEntityWriter;
 use Kanopi\Components\Services\System\ITrackingIndex;
-use Kanopi\Components\Transformers\Arrays;
 
 /**
- * Builds on patterns from Update processor
+ * Base implementation to Update entities for an external source, and remote any system entries not on the external
+ *
  *    - Creates/Updates entities in the incoming, external stream against the target system
  *    - Tracks and removes system entities missing in the incoming stream
+ *    - Requires implementation of 'createSystemEntity', 'incomingEntityTransformer', 'isStreamProcessValid',
+ *        'preProcessValidationEvents', 'processExternalStreamEvents', and 'trackingStorageUniqueIdentifier'
  *
  * @package kanopi/components
  */
-abstract class DestructiveUpdate extends Update {
+abstract class DestructiveUpdate implements IDryRunProcessor {
+	use DestructiveProcessor;
+	use DryRunProcessor;
+	use ProcessorStates;
+
+	/**
+	 * External data import source service
+	 *
+	 * @var IExternalStreamReader
+	 */
+	protected IExternalStreamReader $externalService;
+	/**
+	 * @var ILogger
+	 */
+	protected ILogger $logger;
+	/**
+	 * Target data store service
+	 *
+	 * @var IIndexedEntityWriter
+	 */
+	protected IIndexedEntityWriter $systemService;
+	/**
+	 * Statistics for the current process
+	 *
+	 * @var IIndexedProcessStatistics
+	 */
+	protected IIndexedProcessStatistics $processStatistics;
 	/**
 	 * Options interface to track batch progress
 	 *
 	 * @var ITrackingIndex
 	 */
 	protected ITrackingIndex $trackingService;
-	/**
-	 * Tracking index of (ID => Processed Boolean Flag)
-	 *
-	 * @var array
-	 */
-	protected array $trackingIndex = [];
 
 	/**
 	 * @param ILogger               $_logger           Logging service
@@ -44,46 +69,48 @@ abstract class DestructiveUpdate extends Update {
 		IIndexedEntityWriter $_system_service,
 		ITrackingIndex $_tracking_service
 	) {
-		parent::__construct( $_logger, $_external_service, $_system_service );
+		$this->processStatistics = new IndexedProcessStatistics();
+
+		$this->logger          = $_logger;
+		$this->externalService = $_external_service;
+		$this->systemService   = $_system_service;
 		$this->trackingService = $_tracking_service;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * External data import source service
+	 *
+	 * @return IExternalStreamReader
 	 */
-	protected function postProcessingBannerDataRow(): array {
-		return Arrays::from( parent::postProcessingBannerDataRow() )
-			->append(
-				[
-					'Deleted' => $this->processStatistics->deletedAmount(),
-				]
-			)->toArray();
+	protected function externalService(): IExternalStreamReader {
+		return $this->externalService;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Logging interface
+	 *
+	 * @return ILogger
 	 */
-	protected function postProcessingBannerHeader(): array {
-		return Arrays::from( parent::postProcessingBannerHeader() )
-			->append(
-				[
-					'Deleted',
-				]
-			)->toArray();
+	protected function logger(): ILogger {
+		return $this->logger;
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @throws SetWriterException
+	 * Process statistics
+	 *
+	 * @return IndexedProcessStatistics
 	 */
-	protected function postProcessingEvents(): void {
-		$this->logger()->info( 'Updating the stored tracking index' );
-		$this->trackingService()->updateByIdentifier(
-			$this->trackingStorageUniqueIdentifier(),
-			$this->trackingIndex
-		);
+	protected function processStatistics(): IndexedProcessStatistics {
+		return $this->processStatistics();
+	}
 
-		$this->deleteAllUnprocessedEntities();
+	/**
+	 * Target data store service
+	 *
+	 * @return IIndexedEntityWriter
+	 */
+	protected function systemService(): IIndexedEntityWriter {
+		return $this->systemService;
 	}
 
 	/**
@@ -93,65 +120,5 @@ abstract class DestructiveUpdate extends Update {
 	 */
 	protected function trackingService(): ITrackingIndex {
 		return $this->trackingService;
-	}
-
-	/**
-	 * Storage key for the tracking index of each given process
-	 *
-	 * @return string
-	 */
-	abstract protected function trackingStorageUniqueIdentifier(): string;
-
-	/**
-	 * Delete all unprocessed entities
-	 *
-	 * @return void
-	 */
-	protected function deleteAllUnprocessedEntities(): void {
-		foreach ( $this->trackingIndex as $_id => $_was_processed ) {
-			if ( $_was_processed || 0 === $_id ) {
-				continue;
-			}
-
-			$this->logger()->verbose( "Removing system entity with ID $_id" );
-			$proxyEntity = $this->createSystemEntity();
-			$proxyEntity->updateIndexIdentifier( $_id );
-
-			if ( false === $this->isDryRunEnabled() ) {
-				$this->systemService()->delete( $proxyEntity );
-			}
-
-			$this->processStatistics->deleted( $proxyEntity->indexIdentifier() );
-		}
-	}
-
-	/**
-	 * Create a new system entity, used as a proxy for the delete action
-	 *
-	 * @return IIndexedEntity
-	 */
-	abstract protected function createSystemEntity(): IIndexedEntity;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function postSystemEntityProcessedEvent( IIndexedEntity $_entity ): void {
-		if ( 0 < $_entity->indexIdentifier() ) {
-			$this->trackingIndex[ $_entity->indexIdentifier() ] = true;
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @throws SetReaderException
-	 */
-	protected function preProcessEvents(): void {
-		$this->trackingIndex = $this->trackingService()->readTrackingIndexByIdentifier(
-			$this->trackingStorageUniqueIdentifier(),
-			function () {
-				return $this->systemService()->read();
-			},
-			true
-		);
 	}
 }

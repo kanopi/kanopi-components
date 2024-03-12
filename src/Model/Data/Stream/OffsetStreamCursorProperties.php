@@ -3,12 +3,12 @@
 namespace Kanopi\Components\Model\Data\Stream;
 
 /**
- * Stream properties
- *  - Timestamps and lengths are considered 0, or irrelevant, for cursor based streams
+ * Stream properties for offset based cursors
+ *  - Stream only provides the next offset, no other pagination properties
  *
  * @package kanopi/components
  */
-class StreamCursorOffsetProperties implements StreamCursorProperties {
+class OffsetStreamCursorProperties implements StreamCursorProperties {
 	/**
 	 * Whether the stream is complete
 	 *
@@ -47,43 +47,6 @@ class StreamCursorOffsetProperties implements StreamCursorProperties {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function readTimestamp(): int {
-		return 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isSameStream( IStreamProperties $_comparison ): bool {
-		return $this->lastModifiedTimestamp() === $_comparison->lastModifiedTimestamp()
-			&& $this->length() === $_comparison->length()
-			&& $this->uri() === $_comparison->uri();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function lastModifiedTimestamp(): int {
-		return 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function length(): int {
-		return 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uri(): string {
-		return $this->uri;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function completeStream(): void {
 		$this->isStreamComplete = true;
 	}
@@ -107,6 +70,13 @@ class StreamCursorOffsetProperties implements StreamCursorProperties {
 	 */
 	public function offsetNext(): ?string {
 		return $this->nextOffset;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function uri(): string {
+		return $this->uri;
 	}
 
 	/**
