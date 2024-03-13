@@ -14,7 +14,7 @@ use Kanopi\Components\Services\System\ITrackingIndex;
  * @package kanopi/components
  */
 trait DestructiveProcessor {
-	use RecurrentProcessor {
+	use CoreProcessor {
 		preProcessEvents as corePreProcessEvents;
 	}
 
