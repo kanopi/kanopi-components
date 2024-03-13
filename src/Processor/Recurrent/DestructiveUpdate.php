@@ -101,7 +101,7 @@ abstract class DestructiveUpdate implements IDryRunProcessor {
 	 * @return IndexedProcessStatistics
 	 */
 	protected function processStatistics(): IndexedProcessStatistics {
-		return $this->processStatistics();
+		return $this->processStatistics;
 	}
 
 	/**
