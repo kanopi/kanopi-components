@@ -22,6 +22,12 @@ class OffsetStreamCursorProperties implements StreamCursorProperties {
 	 */
 	private ?string $nextOffset = null;
 	/**
+	 * Number of entities from the incoming stream
+	 *
+	 * @var int
+	 */
+	private int $entityCount = 0;
+	/**
 	 * Starting offset, if provided
 	 *
 	 * @var string|null
@@ -49,6 +55,13 @@ class OffsetStreamCursorProperties implements StreamCursorProperties {
 	 */
 	public function completeStream(): void {
 		$this->isStreamComplete = true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function entityCount(): int {
+		return $this->entityCount;
 	}
 
 	/**
@@ -82,7 +95,8 @@ class OffsetStreamCursorProperties implements StreamCursorProperties {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function updateNextOffset( string $_offset ): void {
-		$this->nextOffset = $_offset;
+	public function updateStream( string $_nextOffset, int $_entityCount ): void {
+		$this->nextOffset  = $_nextOffset;
+		$this->entityCount = $_entityCount;
 	}
 }

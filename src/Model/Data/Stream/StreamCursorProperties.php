@@ -23,6 +23,13 @@ interface StreamCursorProperties {
 	public function isStreamCursorComplete(): bool;
 
 	/**
+	 * Entities found in the current stream
+	 *
+	 * @return int
+	 */
+	public function entityCount(): int;
+
+	/**
 	 * Starting offset for the stream cursor
 	 *
 	 * @return string|null
@@ -37,13 +44,14 @@ interface StreamCursorProperties {
 	public function offsetNext(): ?string;
 
 	/**
-	 * Set the next offset
+	 * Update the stream properties
 	 *
-	 * @param string $_offset Next cursor offset
+	 * @param string $_nextOffset  Next cursor offset
+	 * @param int    $_entityCount Number of entities in the stream
 	 *
 	 * @return void
 	 */
-	public function updateNextOffset( string $_offset ): void;
+	public function updateStream( string $_nextOffset, int $_entityCount ): void;
 
 	/**
 	 * URI of the stream

@@ -5,7 +5,7 @@ namespace Kanopi\Components\Processor\Recurrent;
 use Kanopi\Components\Logger\ILogger;
 use Kanopi\Components\Model\Data\Process\IIndexedProcessStatistics;
 use Kanopi\Components\Model\Data\Process\IndexedProcessStatistics;
-use Kanopi\Components\Processor\CoreProcessor;
+use Kanopi\Components\Processor\RecurrentProcessor;
 use Kanopi\Components\Processor\DryRunProcessor;
 use Kanopi\Components\Processor\IDryRunProcessor;
 use Kanopi\Components\Processor\ProcessorStates;
@@ -24,9 +24,7 @@ use Kanopi\Components\Services\System\IIndexedEntityWriter;
  * @package kanopi/components
  */
 abstract class Update implements IDryRunProcessor {
-	use CoreProcessor;
-	use DryRunProcessor;
-	use ProcessorStates;
+	use RecurrentProcessor;
 	use ReadValidateStream;
 
 	/**

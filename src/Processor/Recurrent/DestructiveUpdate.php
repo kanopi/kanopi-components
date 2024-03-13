@@ -20,14 +20,12 @@ use Kanopi\Components\Services\System\ITrackingIndex;
  *    - Creates/Updates entities in the incoming, external stream against the target system
  *    - Tracks and removes system entities missing in the incoming stream
  *    - Requires implementation of 'createSystemEntity', 'incomingEntityTransformer', 'isStreamProcessValid',
- *        'preProcessValidationEvents', 'processExternalStreamEvents', and 'trackingStorageUniqueIdentifier'
+ *        'preProcessValidationEvents', and 'trackingStorageUniqueIdentifier'
  *
  * @package kanopi/components
  */
 abstract class DestructiveUpdate implements IDryRunProcessor {
 	use DestructiveProcessor;
-	use DryRunProcessor;
-	use ProcessorStates;
 	use ReadValidateStream;
 
 	/**

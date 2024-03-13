@@ -8,15 +8,20 @@ use Kanopi\Components\Model\Data\Stream\StreamCursorProperties;
 use Kanopi\Components\Model\Exception\ImportStreamException;
 use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Model\Exception\SetStreamException;
+use Kanopi\Components\Model\Exception\SetWriterException;
 use Kanopi\Components\Model\Transform\IEntitySet;
 use Kanopi\Components\Services\External\ExternalCursorStreamReader;
 use Kanopi\Components\Services\System\StreamCursorBatch;
 
 /**
  * Reads and validates an external cursor stream
+ *
+ * @package kanopi/components
  */
 trait CursorBatchStream {
-	use DestructiveProcessor;
+	use DestructiveProcessor {
+		postProcessingEvents as destructivePostProcessingEvents;
+	}
 
 	/**
 	 * State of the current process batch configuration
@@ -73,20 +78,18 @@ trait CursorBatchStream {
 	abstract protected function logger(): ILogger;
 
 	/**
-	 * Stream validity check
-	 *    - Return false to stop processing
-	 *
-	 * @return bool
-	 */
-	abstract protected function isStreamProcessValid(): bool;
-
-	/**
-	 * Events before process validation
+	 * (Optional Override) Perform actions before the stream is processed and stream statistics banners are logged
 	 *
 	 * @return void
-	 * @throws SetReaderException Could not validate input set
 	 */
-	abstract protected function preProcessValidationEvents(): void;
+	protected function preProcessValidationEvents(): void {}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function forceRestart(): void {
+		$this->forceBatchRestart = true;
+	}
 
 	/**
 	 * Process a cursor in batches of a given size
@@ -132,11 +135,7 @@ trait CursorBatchStream {
 
 			$this->preProcessValidationEvents();
 			$this->preProcessBanner();
-
-			if ( false === $this->isStreamProcessValid() ) {
-				throw new SetStreamException( 'External stream is invalid' );
-			}
-		} catch ( SetReaderException | SetStreamException $exception ) {
+		} catch ( SetStreamException $exception ) {
 			throw new SetStreamException( $exception->getMessage() );
 		}
 	}
@@ -162,6 +161,18 @@ trait CursorBatchStream {
 	}
 
 	/**
+	 * Read the set of external entities, converted to the common entity type, to process
+	 *    - Separate to override and process batching, etc
+	 *
+	 * @return iterable
+	 */
+	protected function readExternalEntities(): iterable {
+		$entities = $this->externalService()->read();
+		$this->processStatistics()->incomingTotal( $entities->count() );
+		return $entities;
+	}
+
+	/**
 	 * Logging banner to show before processing begins
 	 *
 	 * @return void
@@ -183,5 +194,32 @@ trait CursorBatchStream {
 				],
 			]
 		);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @throws SetWriterException
+	 */
+	protected function postProcessingEvents(): void {
+		$this->batchConfiguration->processCurrentBatch( $this->currentBatchProperties );
+
+		$this->logger()->info( 'Update the stored batch configuration and properties.' );
+		$this->batchService()->updateByIdentifier( $this->batchStorageUniqueIdentifier(), $this->batchConfiguration );
+
+		$this->logger()->info( 'Updating the stored tracking index' );
+		$this->trackingService()->updateByIdentifier(
+			$this->trackingStorageUniqueIdentifier(),
+			$this->trackingIndex
+		);
+
+		// Clears the tracking index when the batch is complete
+		if ( $this->batchConfiguration->isStreamComplete() ) {
+			if ( $this->willDeleteUnprocessed() ) {
+				$this->logger()->info( 'Remove unprocessed system entities' );
+				$this->deleteAllUnprocessedEntities();
+			}
+
+			$this->trackingService()->updateByIdentifier( $this->trackingStorageUniqueIdentifier(), [] );
+		}
 	}
 }

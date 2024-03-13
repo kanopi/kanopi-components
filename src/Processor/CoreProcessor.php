@@ -9,16 +9,21 @@ use Kanopi\Components\Model\Data\Process\IIndexedProcessStatistics;
 use Kanopi\Components\Model\Exception\ImportStreamException;
 use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Model\Exception\SetWriterException;
-use Kanopi\Components\Services\External\IExternalStreamReader;
 use Kanopi\Components\Services\System\IIndexedEntityWriter;
 
+/**
+ * Core processor functionality, combines foundation states to track:
+ *
+ *  - Delete Unprocessed: Control whether the process should remove unprocessed system entities
+ *  - Dry Run: Test run without committing changes to system
+ *  - Overwrite: Control whether to skip or force writing changes based on entity version() property
+ *  - Process Statistics: Track counts of entity state change
+ *
+ * @package kanopi/components
+ */
 trait CoreProcessor {
-	/**
-	 * External data import source service
-	 *
-	 * @return IExternalStreamReader
-	 */
-	abstract protected function externalService(): IExternalStreamReader;
+	use DryRunProcessor;
+	use ProcessorStates;
 
 	/**
 	 * Logging interface
@@ -40,33 +45,6 @@ trait CoreProcessor {
 	 * @return IIndexedEntityWriter
 	 */
 	abstract protected function systemService(): IIndexedEntityWriter;
-
-	/**
-	 * Events to execute after all system entities are processed
-	 *
-	 * @return void
-	 */
-	abstract protected function postProcessingEvents(): void;
-
-	/**
-	 * Events to execute after a system entity is processed
-	 *
-	 * @param IIndexedEntity $_entity Post-processed system entity
-	 *
-	 * @return void
-	 */
-	abstract protected function postSystemEntityProcessedEvent( IIndexedEntity $_entity ): void;
-
-	/**
-	 * Read the external data entities
-	 *
-	 * @param string $_inputStreamUri URI of the input stream
-	 *
-	 * @return void
-	 * @throws ImportStreamException Failure to process import stream
-	 */
-	abstract protected function processExternalStreamEvents( string $_inputStreamUri ): void;
-
 
 	/**
 	 * Completes the import process using the supplied data
@@ -97,6 +75,16 @@ trait CoreProcessor {
 	}
 
 	/**
+	 * Read the external data entities
+	 *
+	 * @param string $_inputStreamUri URI of the input stream
+	 *
+	 * @return void
+	 * @throws ImportStreamException Failure to process import stream
+	 */
+	abstract protected function processExternalStreamEvents( string $_inputStreamUri ): void;
+
+	/**
 	 * Events to execute before processing
 	 *
 	 * @return void
@@ -125,11 +113,7 @@ trait CoreProcessor {
 	 *
 	 * @return iterable
 	 */
-	protected function readExternalEntities(): iterable {
-		$entities = $this->externalService()->read();
-		$this->processStatistics->incomingTotal( $entities->count() );
-		return $entities;
-	}
+	abstract protected function readExternalEntities(): iterable;
 
 	/**
 	 * Process the supplied system entity
@@ -168,6 +152,46 @@ trait CoreProcessor {
 	}
 
 	/**
+	 * Events to execute after a system entity is processed
+	 *
+	 * @param IIndexedEntity $_entity Post-processed system entity
+	 *
+	 * @return void
+	 */
+	abstract protected function postSystemEntityProcessedEvent( IIndexedEntity $_entity ): void;
+
+	/**
+	 * Process creating a new system entity
+	 *
+	 * @param IIndexedEntity $_incoming Incoming, external entity model
+	 *
+	 * @return IIndexedEntity
+	 * @throws SetWriterException Unable to create/add new system entity
+	 */
+	protected function processNewSystemEntity( IIndexedEntity $_incoming ): IIndexedEntity {
+		if ( false === $this->isDryRunEnabled() ) {
+			$_incoming = $this->systemService()->create( $_incoming );
+		}
+
+		$this->processStatistics()->created( $_incoming->indexIdentifier() );
+		return $_incoming;
+	}
+
+	/**
+	 * Compares the existing System entity against the incoming entity to determine if the entity should update
+	 *    - By default, compares the two versions and updates if they are different (!==)
+	 *  - If overwriteContent is set, it will return true
+	 *
+	 * @param IIndexedEntity $_existing Current, internal entity model
+	 * @param IIndexedEntity $_incoming Incoming, external entity model
+	 *
+	 * @return bool
+	 */
+	protected function shouldEntityUpdate( IIndexedEntity $_existing, IIndexedEntity $_incoming ): bool {
+		return $this->willAlwaysOverwrite() || $_incoming->version() !== $_existing->version();
+	}
+
+	/**
 	 * Read an internal system entity using a cross-system unique identifier
 	 *
 	 * @param string $_identifier Entity cross-system unique identifier
@@ -199,45 +223,21 @@ trait CoreProcessor {
 				$this->systemService()->update( $_incoming );
 			}
 
-			$this->processStatistics->updated( $_incoming->indexIdentifier() );
+			$this->processStatistics()->updated( $_incoming->indexIdentifier() );
 		}
 		else {
-			$this->processStatistics->skipped( $_incoming->indexIdentifier() );
+			$this->processStatistics()->skipped( $_incoming->indexIdentifier() );
 		}
 
 		return $_incoming;
 	}
 
 	/**
-	 * Process creating a new system entity
+	 * Events to execute after all system entities are processed
 	 *
-	 * @param IIndexedEntity $_incoming Incoming, external entity model
-	 *
-	 * @return IIndexedEntity
-	 * @throws SetWriterException Unable to create/add new system entity
+	 * @return void
 	 */
-	protected function processNewSystemEntity( IIndexedEntity $_incoming ): IIndexedEntity {
-		if ( false === $this->isDryRunEnabled() ) {
-			$_incoming = $this->systemService()->create( $_incoming );
-		}
-
-		$this->processStatistics->created( $_incoming->indexIdentifier() );
-		return $_incoming;
-	}
-
-	/**
-	 * Compares the existing System entity against the incoming entity to determine if the entity should update
-	 *    - By default, compares the two versions and updates if they are different (!==)
-	 *  - If overwriteContent is set, it will return true
-	 *
-	 * @param IIndexedEntity $_existing Current, internal entity model
-	 * @param IIndexedEntity $_incoming Incoming, external entity model
-	 *
-	 * @return bool
-	 */
-	protected function shouldEntityUpdate( IIndexedEntity $_existing, IIndexedEntity $_incoming ): bool {
-		return $this->willAlwaysOverwrite() || $_incoming->version() !== $_existing->version();
-	}
+	abstract protected function postProcessingEvents(): void;
 
 	/**
 	 * Logging banner to show after all system entities are processed
@@ -277,11 +277,11 @@ trait CoreProcessor {
 	 */
 	protected function postProcessingBannerDataRow(): array {
 		return [
-			'Incoming'  => $this->processStatistics->incomingTotalAmount(),
-			'Created'   => $this->processStatistics->createdAmount(),
-			'Updated'   => $this->processStatistics->updatedAmount(),
-			'Skipped'   => $this->processStatistics->skippedAmount(),
-			'Processed' => $this->processStatistics->processedTotalAmount(),
+			'Incoming'  => $this->processStatistics()->incomingTotalAmount(),
+			'Created'   => $this->processStatistics()->createdAmount(),
+			'Updated'   => $this->processStatistics()->updatedAmount(),
+			'Skipped'   => $this->processStatistics()->skippedAmount(),
+			'Processed' => $this->processStatistics()->processedTotalAmount(),
 		];
 	}
 }

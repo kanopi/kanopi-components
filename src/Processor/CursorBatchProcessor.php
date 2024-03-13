@@ -9,7 +9,7 @@ use Kanopi\Components\Model\Exception\ImportStreamException;
  *
  * @package kanopi/components
  */
-interface CursorBatchProcessor extends IImportStream {
+interface CursorBatchProcessor extends IImportStream, DeleteProcessor {
 	/**
 	 * Restarts the next processed batch
 	 *

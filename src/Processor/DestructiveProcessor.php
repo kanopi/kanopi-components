@@ -74,7 +74,10 @@ trait DestructiveProcessor {
 			$this->trackingIndex
 		);
 
-		$this->deleteAllUnprocessedEntities();
+		if ( $this->willDeleteUnprocessed() ) {
+			$this->logger()->info( 'Remove unprocessed system entities' );
+			$this->deleteAllUnprocessedEntities();
+		}
 	}
 
 	/**
@@ -94,11 +97,26 @@ trait DestructiveProcessor {
 			$proxyEntity->updateIndexIdentifier( $_id );
 
 			if ( false === $this->isDryRunEnabled() ) {
-				$this->systemService()->delete( $proxyEntity );
+				$this->deleteAction( $proxyEntity );
 			}
 
 			$this->processStatistics->deleted( $proxyEntity->indexIdentifier() );
 		}
+	}
+
+	/**
+	 * Delete action to take for this process
+	 *  - Default proxyEntity contains only the Indexed Identifier
+	 *  - Default action is to run the systemService delete method
+	 *  - Override to perform another action
+	 *  - If overriding to archive or set a flag, you will need to read the full entity from the system first
+	 *
+	 * @param IIndexedEntity $_proxyEntity Proxy entity, contains only the system index identifier
+	 * @return void
+	 * @throws SetWriterException Cannot delete the entity
+	 */
+	protected function deleteAction( IIndexedEntity $_proxyEntity ): void {
+		$this->systemService()->delete( $_proxyEntity );
 	}
 
 	/**
