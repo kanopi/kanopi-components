@@ -3,29 +3,22 @@
 namespace Kanopi\Components\Model\Data\Process;
 
 use Kanopi\Components\Model\Data\IIndexedEntity;
+use Kanopi\Components\Model\Data\Stream\StreamCursorPagination;
+use Kanopi\Components\Model\Data\Stream\StreamCursorProperties;
 
 /**
- * Batch configuration for import/update processes using a cursor to track the next start index
+ * Batch configuration for import/update processes using a cursor to track the next starting offset/index
  *
  * @package kanopi/components
  */
 interface StreamCursorBatchConfiguration extends IIndexedEntity {
 	/**
-	 * Maximum size of any given batch
-	 *
-	 * @return int
+	 * @return StreamCursorPagination
 	 */
-	public function batchSize(): int;
+	public function currentPage(): StreamCursorPagination;
 
 	/**
-	 * Current batch to process
-	 *
-	 * @return int
-	 */
-	public function currentBatch(): int;
-
-	/**
-	 * Check to see if the set of stream batches is complete
+	 * Check to see if there are any more stream batches to read
 	 *
 	 * @return bool
 	 */
@@ -39,26 +32,11 @@ interface StreamCursorBatchConfiguration extends IIndexedEntity {
 	public function processedBatches(): array;
 
 	/**
-	 * Starting stream index for current batch
+	 * Process updates to the cursor stream with the last run/current batches properties
 	 *
-	 * @return string
-	 */
-	public function startIndex(): string;
-
-	/**
-	 * Maximum number of batches
-	 *
-	 * @return int
-	 */
-	public function totalBatches(): int;
-
-	/**
-	 * Update a given batch
-	 *
-	 * @param int    $_batchNumber    Batch index to use
-	 * @param string $_nextStartIndex Next batch starting index
+	 * @param StreamCursorProperties $_properties Current stream batch properties
 	 *
 	 * @return void
 	 */
-	public function updateBatch( int $_batchNumber, string $_nextStartIndex ): void;
+	public function processCurrentBatch( StreamCursorProperties $_properties ): void;
 }

@@ -4,7 +4,6 @@ namespace Kanopi\Components\Services\System;
 
 use Kanopi\Components\Model\Data\Process\StreamCursorBatchConfiguration;
 use Kanopi\Components\Model\Data\Process\OffsetStreamCursorBatchConfiguration;
-use Kanopi\Components\Model\Data\Stream\StreamCursorProperties;
 use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Repositories\IGroupSetWriter;
 
@@ -37,28 +36,21 @@ class StreamCursorIndexBatch implements StreamCursorBatch {
 	 */
 	public function readCurrentByIdentifier(
 		string $_unique_identifier,
-		int $_batch_size,
-		StreamCursorProperties $_properties
+		int $_batchSize,
+		int $_maximumEntities
 	): StreamCursorBatchConfiguration {
-		$batch = new OffsetStreamCursorBatchConfiguration( $_batch_size );
-
 		try {
 			$storedBatch = $this->readStoredBatchConfiguration( $_unique_identifier );
 		} catch ( SetReaderException $_exception ) {
 			throw new SetReaderException( "Error reading batch storage | {$_exception->getMessage()}" );
 		}
 
-		if ( null !== $storedBatch && ! $batch->isStreamComplete() ) {
-			$batch = $storedBatch;
-		}
-
-		$batch->updateStreamProperties( $_properties );
-
-		return $batch;
+		return $storedBatch ?? new OffsetStreamCursorBatchConfiguration( $_batchSize, $_maximumEntities );
 	}
 
 	/**
 	 * Read any system stored/tracked batch configuration
+	 *  - Checks to see if the batch is not started, complete, or restarted, if any is true, returns null
 	 *
 	 * @param string $_unique_identifier Batch unique identifier
 	 *
@@ -68,12 +60,18 @@ class StreamCursorIndexBatch implements StreamCursorBatch {
 	 */
 	protected function readStoredBatchConfiguration( string $_unique_identifier ): ?StreamCursorBatchConfiguration {
 		// Find the stored batch if a restart is not requested
-		$resumeBatch = $this->restartNextBatch ? null : $this->batchStorageRepository->read( $_unique_identifier );
+		$storedBatchSet = $this->batchStorageRepository->read( $_unique_identifier );
+
+		/**
+		 * @var StreamCursorBatchConfiguration|null $batch
+		 */
+		$batch          = $storedBatchSet->valid() ? $storedBatchSet->current() : null;
+		$useStoredBatch = ! ( $batch?->isStreamComplete() ?? false ) && ! $this->restartNextBatch;
 
 		// Clear the one-shot restart flag
 		$this->restartNextBatch = false;
 
-		return ! empty( $resumeBatch ) && $resumeBatch->valid() ? $resumeBatch->current() : null;
+		return $useStoredBatch ? $batch : null;
 	}
 
 	/**

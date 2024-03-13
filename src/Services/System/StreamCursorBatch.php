@@ -3,7 +3,6 @@
 namespace Kanopi\Components\Services\System;
 
 use Kanopi\Components\Model\Data\Process\StreamCursorBatchConfiguration;
-use Kanopi\Components\Model\Data\Stream\StreamCursorProperties;
 use Kanopi\Components\Model\Exception\{SetReaderException, SetWriterException};
 
 /**
@@ -24,18 +23,18 @@ interface StreamCursorBatch {
 	 *    - Compares against stored batch configurations
 	 *    - Continues matching batch or starts a new batch
 	 *
-	 * @param string                 $_unique_identifier Batch unique identifier
-	 * @param int                    $_batch_size        Size of batches
-	 * @param StreamCursorProperties $_properties        External stream properties
+	 * @param string $_unique_identifier Batch unique identifier
+	 * @param int    $_batchSize         Size of batches
+	 * @param int    $_maximumEntities   Maximum entities to read
 	 *
 	 * @return StreamCursorBatchConfiguration
-	 * @throws SetReaderException Unable to read batch information
 	 *
+	 * @throws SetReaderException Unable to read batch information
 	 */
 	public function readCurrentByIdentifier(
 		string $_unique_identifier,
-		int $_batch_size,
-		StreamCursorProperties $_properties
+		int $_batchSize,
+		int $_maximumEntities
 	): StreamCursorBatchConfiguration;
 
 	/**

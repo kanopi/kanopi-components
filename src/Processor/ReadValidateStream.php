@@ -27,7 +27,6 @@ trait ReadValidateStream {
 	 */
 	abstract protected function incomingEntityTransformer(): IEntitySet;
 
-
 	/**
 	 * Logging interface
 	 *

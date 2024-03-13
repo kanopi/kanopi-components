@@ -60,12 +60,41 @@ trait CoreProcessor {
 	/**
 	 * Read the external data entities
 	 *
+	 * @param string $_inputStreamUri URI of the input stream
+	 *
+	 * @return void
+	 * @throws ImportStreamException Failure to process import stream
+	 */
+	abstract protected function processExternalStreamEvents( string $_inputStreamUri ): void;
+
+
+	/**
+	 * Completes the import process using the supplied data
+	 *
 	 * @param string $_input_stream_uri URI of the input stream
 	 *
 	 * @return void
 	 * @throws ImportStreamException Failure to process import stream
 	 */
-	abstract protected function processExternalStreamEvents( string $_input_stream_uri ): void;
+	public function process( string $_input_stream_uri ): void {
+		try {
+			$processStartTime = hrtime( true );
+
+			$this->processExternalStreamEvents( $_input_stream_uri );
+			$this->preProcessEvents();
+			$this->mainProcessingEvent();
+			$this->postProcessingEvents();
+			$this->postProcessingBanner();
+
+			$processEndTime = hrtime( true );
+			$elapsedTime    = round( ( $processEndTime - $processStartTime ) / 1e+9, 1 );
+			$this->logger()->info( "Process run took $elapsedTime seconds." );
+		} catch ( Exception $exception ) {
+			throw new ImportStreamException(
+				"Record set unavailable | {$exception->getMessage()}"
+			);
+		}
+	}
 
 	/**
 	 * Events to execute before processing
@@ -254,33 +283,5 @@ trait CoreProcessor {
 			'Skipped'   => $this->processStatistics->skippedAmount(),
 			'Processed' => $this->processStatistics->processedTotalAmount(),
 		];
-	}
-
-	/**
-	 * Completes the import process using the supplied data
-	 *
-	 * @param string $_input_stream_uri URI of the input stream
-	 *
-	 * @return void
-	 * @throws ImportStreamException Failure to process import stream
-	 */
-	public function process( string $_input_stream_uri ): void {
-		try {
-			$processStartTime = hrtime( true );
-
-			$this->processExternalStreamEvents( $_input_stream_uri );
-			$this->preProcessEvents();
-			$this->mainProcessingEvent();
-			$this->postProcessingEvents();
-			$this->postProcessingBanner();
-
-			$processEndTime = hrtime( true );
-			$elapsedTime    = round( ( $processEndTime - $processStartTime ) / 1e+9, 1 );
-			$this->logger()->info( "Process run took $elapsedTime seconds." );
-		} catch ( Exception $exception ) {
-			throw new ImportStreamException(
-				"Record set unavailable | {$exception->getMessage()}"
-			);
-		}
 	}
 }

@@ -8,14 +8,15 @@ use Kanopi\Components\Model\Exception\SetWriterException;
 use Kanopi\Components\Services\System\ITrackingIndex;
 
 /**
- * Processor to remove any entities in the system which are not
- * found in the external stream. Useful when the external stream
- * is the source of truth for the data set
+ * Processor to remove any entities in the system which are not found in the external stream.
+ * Useful when the external stream is the source of truth for the data set.
  *
  * @package kanopi/components
  */
 trait DestructiveProcessor {
-	use CoreProcessor;
+	use CoreProcessor {
+		preProcessEvents as corePreProcessEvents;
+	}
 
 	/**
 	 * Create a new system entity, used as a proxy for the delete action
@@ -51,9 +52,7 @@ trait DestructiveProcessor {
 	 * @throws SetReaderException Unable to read the tracking index
 	 */
 	protected function preProcessEvents(): void {
-		if ( $this->isDryRunEnabled() ) {
-			$this->logger()->info( 'Dry run is enabled for this process' );
-		}
+		$this->corePreProcessEvents();
 
 		$this->trackingIndex = $this->trackingService()->readTrackingIndexByIdentifier(
 			$this->trackingStorageUniqueIdentifier(),
