@@ -10,6 +10,7 @@ use Kanopi\Components\Processor\DryRunProcessor;
 use Kanopi\Components\Processor\IDryRunProcessor;
 use Kanopi\Components\Processor\ProcessorStates;
 use Kanopi\Components\Processor\ReadValidateStream;
+use Kanopi\Components\Processor\RecurrentProcessor;
 use Kanopi\Components\Services\External\IExternalStreamReader;
 use Kanopi\Components\Services\System\IIndexedEntityWriter;
 use Kanopi\Components\Services\System\ITrackingIndex;
@@ -25,7 +26,11 @@ use Kanopi\Components\Services\System\ITrackingIndex;
  * @package kanopi/components
  */
 abstract class DestructiveUpdate implements IDryRunProcessor {
-	use DestructiveProcessor;
+	use DestructiveProcessor, RecurrentProcessor {
+		RecurrentProcessor::preProcessEvents insteadof DestructiveProcessor;
+		RecurrentProcessor::postProcessingBannerDataRow insteadof DestructiveProcessor;
+		RecurrentProcessor::postProcessingBannerHeader insteadof DestructiveProcessor;
+	}
 	use ReadValidateStream;
 
 	/**
