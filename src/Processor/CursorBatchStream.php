@@ -82,7 +82,8 @@ trait CursorBatchStream {
 	 *
 	 * @return void
 	 */
-	protected function preProcessValidationEvents(): void {}
+	protected function preProcessValidationEvents(): void {
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -135,7 +136,8 @@ trait CursorBatchStream {
 
 			$this->preProcessValidationEvents();
 			$this->preProcessBanner();
-		} catch ( SetStreamException $exception ) {
+		}
+		catch ( SetStreamException $exception ) {
 			throw new SetStreamException( $exception->getMessage() );
 		}
 	}
@@ -178,6 +180,9 @@ trait CursorBatchStream {
 	 * @return void
 	 */
 	protected function preProcessBanner(): void {
+		$start = empty( $this->currentBatchProperties->offsetStart() ) ? '-' : $this->currentBatchProperties->offsetStart();
+		$next  = empty( $this->currentBatchProperties->offsetNext() ) ? '-' : $this->currentBatchProperties->offsetNext();
+
 		$this->logger()->table(
 			[
 				'Stream Uri',
@@ -188,8 +193,8 @@ trait CursorBatchStream {
 			[
 				[
 					'Stream Uri'   => $this->currentBatchProperties->uri(),
-					'Start Offset' => $this->currentBatchProperties->offsetStart() ?? '-',
-					'Next Offset'  => $this->currentBatchProperties->offsetNext() ?? '-',
+					'Start Offset' => $start,
+					'Next Offset'  => $next,
 					'Last Batch'   => $this->currentBatchProperties->isStreamCursorComplete() ? 'Yes' : 'No',
 				],
 			]

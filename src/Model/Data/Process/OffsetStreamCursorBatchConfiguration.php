@@ -53,7 +53,7 @@ class OffsetStreamCursorBatchConfiguration implements StreamCursorBatchConfigura
 		$currentPage = new StreamCursorPagination();
 
 		$currentPage->pageSize = $this->batchSize;
-		$currentPage->offset   = $this->currentProperties?->offsetNext() ?? '';
+		$currentPage->offset   = $this->currentProperties?->offsetNext();
 		$currentPage->maxSize  = $this->maximumEntities;
 
 		return $currentPage;
@@ -97,11 +97,13 @@ class OffsetStreamCursorBatchConfiguration implements StreamCursorBatchConfigura
 		 * @var StreamCursorProperties $batchProperties
 		 */
 		foreach ( $this->processedBatches as $batchProperties ) {
+			$start = empty( $batchProperties->offsetStart() ) ? '-' : $batchProperties->offsetStart();
+			$next  = empty( $batchProperties->offsetNext() ) ? '-' : $batchProperties->offsetNext();
 			$batchDisplay->append(
 				[
 					'Stream Uri'   => $batchProperties->uri(),
-					'Start Offset' => $batchProperties->offsetStart() ?? '-',
-					'Next Offset'  => $batchProperties->offsetNext() ?? '-',
+					'Start Offset' => $start,
+					'Next Offset'  => $next,
 					'Complete?'    => $batchProperties->isStreamCursorComplete() ? 'Yes' : 'No',
 				]
 			);
