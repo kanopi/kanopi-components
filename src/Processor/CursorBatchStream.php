@@ -213,12 +213,13 @@ trait CursorBatchStream {
 	protected function preProcessEvents(): void {
 		$this->corePreProcessEvents();
 
+		$startingNewBatch    = empty( $this->batchConfiguration?->currentPage()->currentOffset() );
 		$this->trackingIndex = $this->trackingService()->readTrackingIndexByIdentifier(
 			$this->trackingStorageUniqueIdentifier(),
 			function () {
 				return $this->systemService()->read();
 			},
-			! empty( $this->batchConfiguration?->currentPage()->currentOffset() )
+			$startingNewBatch
 		);
 	}
 
