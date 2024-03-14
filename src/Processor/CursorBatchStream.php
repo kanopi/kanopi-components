@@ -206,6 +206,23 @@ trait CursorBatchStream {
 	}
 
 	/**
+	 * Events to execute before processing
+	 *
+	 * @throws SetReaderException Unable to read the tracking index
+	 */
+	protected function preProcessEvents(): void {
+		$this->corePreProcessEvents();
+
+		$this->trackingIndex = $this->trackingService()->readTrackingIndexByIdentifier(
+			$this->trackingStorageUniqueIdentifier(),
+			function () {
+				return $this->systemService()->read();
+			},
+			! empty( $this->batchConfiguration?->currentPage()->currentOffset() )
+		);
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * @throws SetWriterException
 	 */
