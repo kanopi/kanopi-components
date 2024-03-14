@@ -181,9 +181,9 @@ trait CursorBatchStream {
 		$this->logger()->table(
 			[
 				'Stream Uri',
-				'Complete?',
 				'Start Offset',
 				'Next Offset',
+				'Last Batch',
 			],
 			[
 				[
