@@ -155,6 +155,10 @@ trait CursorBatchStream {
 	protected function readExternalStream(
 		string $_inputStreamUri
 	): StreamCursorProperties {
+		if ( empty( $this->batchConfiguration ) ) {
+			throw new SetStreamException( 'Use processBatch() not process(), configuration must be provided' );
+		}
+
 		return $this->externalService()->readStream(
 			$_inputStreamUri,
 			$this->batchConfiguration->currentPage(),
