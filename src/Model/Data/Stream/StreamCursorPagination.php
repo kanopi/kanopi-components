@@ -28,6 +28,23 @@ class StreamCursorPagination implements CursorPagination {
 	public int $pageSize = 500;
 
 	/**
+	 * @var int
+	 */
+	private int $maximumAllowedPageSize;
+
+	/**
+	 * Build a pagination model
+	 *  - Allows overriding the default maximum allowed page size, used to clamp effective page size
+	 *
+	 * @param int $_maximumAllowedPageSize Maximum allowed page size (default 100)
+	 */
+	public function __construct(
+		int $_maximumAllowedPageSize = 100
+	) {
+		$this->maximumAllowedPageSize = $_maximumAllowedPageSize;
+	}
+
+	/**
 	 * Current offset GUID/path
 	 *
 	 * @return string
@@ -42,17 +59,18 @@ class StreamCursorPagination implements CursorPagination {
 	 * @return int
 	 */
 	public function effectiveMaxSize(): int {
-		return min( $this->maxSize, $this->effectivePageSize() );
+		return max( $this->maxSize, $this->effectivePageSize() );
 	}
 
 	/**
-	 * The effective page size, clamped between 1 and 100 (max for API)
+	 * The effective page size, clamped between 1 and maximumAllowedPageSize()
 	 *
 	 * @return int
 	 */
 	public function effectivePageSize(): int {
-		return max( 1, min( 100, $this->pageSize ) );
+		return max( 1, min( $this->maximumAllowedPageSize, $this->pageSize ) );
 	}
+
 	/**
 	 * Status check, whether to use an offset
 	 *
