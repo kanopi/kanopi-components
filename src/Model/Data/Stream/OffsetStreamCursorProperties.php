@@ -95,7 +95,7 @@ class OffsetStreamCursorProperties implements StreamCursorProperties {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function updateStream( string $_nextOffset, int $_entityCount ): void {
+	public function updateStream( ?string $_nextOffset, int $_entityCount ): void {
 		$this->nextOffset  = $_nextOffset;
 		$this->entityCount = $_entityCount;
 	}

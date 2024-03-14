@@ -46,12 +46,12 @@ interface StreamCursorProperties {
 	/**
 	 * Update the stream properties
 	 *
-	 * @param string $_nextOffset  Next cursor offset
-	 * @param int    $_entityCount Number of entities in the stream
+	 * @param string|null $_nextOffset  Next cursor offset (null if none provided)
+	 * @param int         $_entityCount Number of entities in the stream
 	 *
 	 * @return void
 	 */
-	public function updateStream( string $_nextOffset, int $_entityCount ): void;
+	public function updateStream( ?string $_nextOffset, int $_entityCount ): void;
 
 	/**
 	 * URI of the stream
