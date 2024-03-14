@@ -33,7 +33,7 @@ class OffsetStreamCursorBatchConfiguration implements StreamCursorBatchConfigura
 	/**
 	 * @var StreamCursorProperties|null
 	 */
-	private ?StreamCursorProperties $currentProperties;
+	private ?StreamCursorProperties $currentProperties = null;
 
 	/**
 	 * Stream batch constructor
