@@ -112,6 +112,28 @@ class Arrays implements IteratorAggregate, Countable {
 	}
 
 	/**
+	 * Whether the subject collection contains a given key (isset)
+	 *
+	 * @param mixed $_key Key to verify exists in the subject collection
+	 *
+	 * @return bool
+	 */
+	public function containsKey( mixed $_key ): bool {
+		return isset( $this->subject[ $_key ] );
+	}
+
+	/**
+	 * Whether the subject collection contains a given value (in_array)
+	 *
+	 * @param mixed $_value Value to search in the subject collection
+	 *
+	 * @return bool
+	 */
+	public function containsValue( mixed $_value ): bool {
+		return in_array( $_value, $this->subject, true );
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function count(): int {
