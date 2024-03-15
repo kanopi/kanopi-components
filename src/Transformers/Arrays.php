@@ -190,6 +190,19 @@ class Arrays implements IteratorAggregate, Countable {
 	}
 
 	/**
+	 * Chainable wrapper to run array_map on the internal subject
+	 *
+	 * @param callable $_function Map internal collection to a new internal collection
+	 *
+	 * @return Arrays
+	 */
+	public function map( callable $_function ): Arrays {
+		$this->subject = array_map( $_function, $this->subject );
+
+		return $this;
+	}
+
+	/**
 	 * Read the value stored at a given index, null if it does not exist
 	 *
 	 * @param int|string $_index Index to read
