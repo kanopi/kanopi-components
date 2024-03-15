@@ -79,7 +79,7 @@ class IndexedProcessStatistics implements IIndexedProcessStatistics {
 	 * @return void
 	 */
 	protected function increment_type( string $_type, int $_identifier ): void {
-		$property = "{$_type}_index";
+		$property = "{$_type}Index";
 		if ( ! isset( $this->{$property}[ $_identifier ] ) ) {
 			$this->{$property}[ $_identifier ] = 0;
 		}
