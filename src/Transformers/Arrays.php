@@ -112,6 +112,28 @@ class Arrays implements IteratorAggregate, Countable {
 	}
 
 	/**
+	 * Whether the subject collection contains a given key (isset)
+	 *
+	 * @param mixed $_key Key to verify exists in the subject collection
+	 *
+	 * @return bool
+	 */
+	public function containsKey( mixed $_key ): bool {
+		return isset( $this->subject[ $_key ] );
+	}
+
+	/**
+	 * Whether the subject collection contains a given value (in_array)
+	 *
+	 * @param mixed $_value Value to search in the subject collection
+	 *
+	 * @return bool
+	 */
+	public function containsValue( mixed $_value ): bool {
+		return in_array( $_value, $this->subject, true );
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function count(): int {
@@ -187,6 +209,19 @@ class Arrays implements IteratorAggregate, Countable {
 	 */
 	public function join( string $_separator = ',' ): string {
 		return implode( $_separator, $this->subject );
+	}
+
+	/**
+	 * Chainable wrapper to run array_map on the internal subject
+	 *
+	 * @param callable $_function Map internal collection to a new internal collection
+	 *
+	 * @return Arrays
+	 */
+	public function map( callable $_function ): Arrays {
+		$this->subject = array_map( $_function, $this->subject );
+
+		return $this;
 	}
 
 	/**

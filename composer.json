@@ -1,40 +1,40 @@
 {
-  "name": "kanopi/components",
-  "description": "Kanopi Modular Component patterns for use in related PHP libraries, plugins, themes, and more",
-  "type": "library",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Kanopi Studios",
-      "email": "support@kanopistudios.com"
-    }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Kanopi\\Components\\": "src/"
-    }
-  },
-  "require": {
-	"league/csv": "~9.8.0",
-    "php": ">=8.0",
-    "ext-json": "*"
-  },
-  "require-dev": {
-    "automattic/vipwpcs": "~3.0.0",
-    "dealerdirect/phpcodesniffer-composer-installer": "~0.7.2",
-    "phpcompatibility/php-compatibility": "10.x-dev",
-    "phpunit/phpunit": "~9.6.15"
-  },
-  "config": {
-    "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
-    }
-  },
-  "scripts": {
-    "phpcbf": "./vendor/bin/phpcbf",
-    "phpcs": "./vendor/bin/phpcs",
-    "phpcbf-latest": "./vendor/bin/phpcbf -standard=\"./.phpcs-8.2.xml.dist\" ./",
-    "phpcs-latest": "./vendor/bin/phpcs --standard=\"./.phpcs-8.2.xml.dist\" ./",
-    "phpunit": "./vendor/bin/phpunit -c \"./phpunit.xml.dist\""
-  }
+	"name": "kanopi/components",
+	"description": "Kanopi Modular Component patterns for use in related PHP libraries, plugins, themes, and more",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Kanopi Studios",
+			"email": "support@kanopistudios.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Kanopi\\Components\\": "src/"
+		}
+	},
+	"require": {
+		"league/csv": "~9.8.0",
+		"php": ">=8.0",
+		"ext-json": "*"
+	},
+	"require-dev": {
+		"automattic/vipwpcs": "~3.0.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "~0.7.2",
+		"phpcompatibility/php-compatibility": "10.x-dev",
+		"phpunit/phpunit": "~9.6.15"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"scripts": {
+		"phpcbf": "./vendor/bin/phpcbf",
+		"phpcs": "./vendor/bin/phpcs",
+		"phpcbf-latest": "./vendor/bin/phpcbf -standard=\"./.phpcs-8.2.xml.dist\" ./",
+		"phpcs-latest": "./vendor/bin/phpcs --standard=\"./.phpcs-8.2.xml.dist\" ./",
+		"phpunit": "./vendor/bin/phpunit -c \"./phpunit.xml.dist\""
+	}
 }

@@ -33,7 +33,7 @@ interface IImportStream {
 	/**
 	 * Completes the import process using the supplied data
 	 *
-	 * @param string $_input_stream_uri URI of the input strea
+	 * @param string $_input_stream_uri URI of the input stream
 	 *
 	 * @return void
 	 * @throws ImportStreamException Failure to process import stream
