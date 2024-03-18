@@ -2,8 +2,6 @@
 
 namespace Kanopi\Components\Processor\WordPress;
 
-use Kanopi\Components\Model\Data\WordPress\IPostTypeEntity;
-
 /**
  * Process Site Content into structured block content
  *

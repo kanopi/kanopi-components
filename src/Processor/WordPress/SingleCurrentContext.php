@@ -218,7 +218,8 @@ trait SingleCurrentContext {
 		 *
 		 * @var Crawler $child
 		 */
-		foreach ( $_collection as $child ) {
+		foreach ( $_collection as $_child ) {
+			$child = new Crawler( $_child );
 			$this->removeEmptyChildrenByTagName( $child );
 
 			$status = $this->hasCurrentContext()

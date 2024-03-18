@@ -19,6 +19,7 @@
 		"ext-json": "*",
 		"league/csv": "~9.8.0",
 		"php": ">=8.0",
+		"symfony/css-selector": "~v6.0.19",
 		"symfony/dom-crawler": "~v6.0.19"
     },
 	"require-dev": {
