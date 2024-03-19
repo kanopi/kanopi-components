@@ -9,7 +9,6 @@ use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Services\System\IIndexedEntityWriter;
 use Kanopi\Components\Transformers\Arrays;
 use Symfony\Component\DomCrawler\Crawler;
-use Wa72\HtmlPageDom\HtmlPageCrawler;
 
 /**
  * Transform an image found inline for another block (like paragraph) to a WordPress Media library entity
@@ -44,11 +43,11 @@ class ImageInline implements DomTransform {
 	 * Transform a Node into an Inline Image
 	 *  - Returns empty if there is no src URL (unlikely as that is invalid)
 	 *
-	 * @param HtmlPageCrawler $_node Node to transform
+	 * @param Crawler $_node Node to transform
 	 *
 	 * @return string
 	 */
-	protected function processBlockTransformation( HtmlPageCrawler $_node ): string {
+	protected function processBlockTransformation( Crawler $_node ): string {
 		$tagAttributes = Arrays::from( [] );
 
 		// Read the source node attributes
@@ -117,10 +116,6 @@ class ImageInline implements DomTransform {
 	 * {@inheritDoc}
 	 */
 	public function transform( Crawler $_node, bool $_allowEmpty ): string {
-		$node = HtmlPageCrawler::create( $_node );
-
-		return $this->matchesTransform( $_node )
-			? $this->processBlockTransformation( $node )
-			: '';
+		return $this->matchesTransform( $_node ) ? $this->processBlockTransformation( $_node ) : '';
 	}
 }

@@ -9,7 +9,6 @@ use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Services\System\IIndexedEntityWriter;
 use Kanopi\Components\Transformers\Arrays;
 use Symfony\Component\DomCrawler\Crawler;
-use Wa72\HtmlPageDom\HtmlPageCrawler;
 
 /**
  * Transform an img tag into a WordPress Image Block
@@ -44,11 +43,11 @@ class Image implements DomTransform {
 	 * Transform a Node into an Image Block
 	 *  - Returns empty if there is no src URL (unlikely as that is invalid)
 	 *
-	 * @param HtmlPageCrawler $_node Node to transform
+	 * @param Crawler $_node Node to transform
 	 *
 	 * @return string
 	 */
-	protected function processBlockTransformation( HtmlPageCrawler $_node ): string {
+	protected function processBlockTransformation( Crawler $_node ): string {
 		$blockAttributes = Arrays::from( [ '"sizeSlug":"full"' ] );
 		$tagAttributes   = Arrays::from( [] );
 

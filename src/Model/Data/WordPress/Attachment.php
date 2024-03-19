@@ -3,7 +3,7 @@
 namespace Kanopi\Components\Model\Data\WordPress;
 
 /**
- * Attachment post type class
+ * Attachment post type entity
  *
  * @package kanopi/components
  */
