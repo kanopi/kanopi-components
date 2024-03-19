@@ -19,20 +19,11 @@ class ImageInline implements DomTransform {
 	use FlowElementTransform;
 
 	/**
-	 * Attachments Service to lookup WordPress image attachment URLs
+	 * Inline image transform constructor
 	 *
-	 * @var IIndexedEntityWriter
+	 * @param IIndexedEntityWriter $imageService Attachment lookup service
 	 */
-	protected IIndexedEntityWriter $imageService;
-
-	/**
-	 * Image transform constructor
-	 *
-	 * @param IIndexedEntityWriter $_attachmentService Attachment lookup service
-	 */
-	public function __construct( IIndexedEntityWriter $_attachmentService ) {
-		$this->imageService = $_attachmentService;
-	}
+	public function __construct( protected IIndexedEntityWriter $imageService ) {}
 
 	/**
 	 * DOMNode to WordPress Template with Class Style (spacing deliberate for block editor format checks)

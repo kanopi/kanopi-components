@@ -28,6 +28,18 @@ trait NamedPropertyMap {
 	protected ?Arrays $typeActions = null;
 
 	/**
+	 * Action provides access to the current entity prior to mapping its property fields
+	 *  - Override for additional processing, default is a pass-through
+	 *
+	 * @param IPostTypeEntity $_entity Current Entity
+	 *
+	 * @return IPostTypeEntity
+	 */
+	protected function beforeEntityMapping( IPostTypeEntity $_entity ): IPostTypeEntity {
+		return $_entity;
+	}
+
+	/**
 	 * Initialize the set of standard actions for built-in PHP variable types
 	 *  - Only assigns the defaults if the underlying typeActions is null,
 	 *      circumvents lack of built-in constructor access
@@ -143,10 +155,8 @@ trait NamedPropertyMap {
 		// Ensure the default actions are registered
 		$this->initializeTypeActions();
 
-		/**
-		 * @var IPostTypeEntity $entity
-		 */
-		$entity   = $className::fromWPPost( $_postEntity );
+		// Read any existing instance of the entity core attributes and meta-data
+		$entity   = $this->beforeEntityMapping( $className::fromWPPost( $_postEntity ) );
 		$metaData = $this->metaDataRepository()->read( $entity->indexIdentifier() );
 
 		/**
