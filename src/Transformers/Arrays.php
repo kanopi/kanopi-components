@@ -81,6 +81,28 @@ class Arrays implements IteratorAggregate, Countable {
 	}
 
 	/**
+	 * Whether any internal subject value matches a test function
+	 *  - $_test function is passed each item in the internal subject and stops testing once a match is found
+	 *  - $_test function must return a boolean value of true to match, otherwise, considered false
+	 *
+	 * @param callable $_test Callable test function of this form - function( mixed $item ): bool
+	 * @return bool
+	 */
+	public function any( callable $_test ): bool {
+		$match = false;
+
+		foreach ( $this->subject as $item ) {
+			$match = is_callable( $_test ) ? call_user_func( $_test, $item ) : false;
+
+			if ( true === $match ) {
+				break;
+			}
+		}
+
+		return $match;
+	}
+
+	/**
 	 * Append an array segment to the inner subject
 	 *
 	 * @param array $_addition Array segment to append
@@ -137,7 +159,18 @@ class Arrays implements IteratorAggregate, Countable {
 	 * {@inheritDoc}
 	 */
 	public function count(): int {
-		return count( $this->subject ) ?? 0;
+		return ! empty( $this->subject ) ? count( $this->subject ) ?? 0 : 0;
+	}
+
+	/**
+	 * Empty the current internal subject
+	 *
+	 * @return Arrays
+	 */
+	public function empty(): Arrays {
+		$this->subject = [];
+
+		return $this;
 	}
 
 	/**
@@ -198,6 +231,24 @@ class Arrays implements IteratorAggregate, Countable {
 	 */
 	public function getIterator(): Traversable {
 		return new ArrayIterator( $this->subject );
+	}
+
+	/**
+	 * Whether the internal subject is empty
+	 *
+	 * @return bool
+	 */
+	public function isEmpty(): bool {
+		return empty( $this->subject );
+	}
+
+	/**
+	 * Read the set of array keys for the top-level internal subject
+	 *
+	 * @return array
+	 */
+	public function keys(): array {
+		return $this->isEmpty() ? [] : array_keys( $this->subject );
 	}
 
 	/**
