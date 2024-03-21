@@ -13,8 +13,9 @@ use WP_Post;
 
 /**
  * WordPress standard attachment post type entity
+ *  - Unique Identifier match is via RegEx comparison, it works with both direct file name and expression
  *
- * @package mpi-knbol
+ * @package kanopi/components
  */
 class Attachments implements IIndexedEntityWriter {
 	use PostTypeEntityWriter;
@@ -90,12 +91,13 @@ class Attachments implements IIndexedEntityWriter {
 			[
 				'post_status'    => $this->allowedIndexPostStatus(),
 				'post_type'      => $this->systemEntityName(),
-				// phpcs:ignore -- Intentional meta data query
+				// phpcs:ignore -- Intentional meta query, Regexp to match full path or date-based path fragments
 				'meta_query'     => [
 					[
 						'key'     => $this->uniqueIdentifierFieldName(),
 						'value'   => $_unique_identifier,
-						'compare' => 'LIKE',
+						// phpcs:ignore WordPressVIPMinimum.Performance.RegexpCompare.compare_compare -- Intentional
+						'compare' => 'REGEXP',
 					],
 				],
 				'posts_per_page' => 1,
