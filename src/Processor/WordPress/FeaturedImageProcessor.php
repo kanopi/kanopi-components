@@ -49,7 +49,7 @@ abstract class FeaturedImageProcessor extends BatchedCursorUpdate {
 			$extension       = pathinfo( $image->fileName, PATHINFO_EXTENSION );
 			$existingImage   = $this->attachmentService()->readByUniqueIdentifier( "{$filename}(-scaled)?\.{$extension}" );
 			$existingImageId = $existingImage?->indexIdentifier() ?? 0;
-			$nextImageId     = 0 < $existingImageId ? $existingImage : $this->imageService()->import( $image );
+			$nextImageId     = 0 < $existingImageId ? $existingImageId : $this->imageService()->import( $image );
 			$_entity->updateFeaturedImageIdentifier( $nextImageId );
 		} catch ( SetReaderException ) {
 			$_entity->updateFeaturedImageIdentifier( $_existingId );
