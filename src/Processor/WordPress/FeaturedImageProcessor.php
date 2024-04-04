@@ -45,15 +45,12 @@ abstract class FeaturedImageProcessor extends BatchedCursorUpdate {
 
 		// WordPress will scale large images, to accommodate this, use a regular expression to check
 		try {
-			$filename       = pathinfo( $image->fileName, PATHINFO_FILENAME );
-			$extension      = pathinfo( $image->fileName, PATHINFO_EXTENSION );
-			$currentImage   = $this->attachmentService()->readByUniqueIdentifier( "{$filename}(-scaled)?\.{$extension}" );
-			$currentImageId = $currentImage?->indexIdentifier() ?? 0;
-			$_entity->updateFeaturedImageIdentifier(
-				1 > $currentImageId
-					? $this->imageService()->import( $image )
-					: 0
-			);
+			$filename        = pathinfo( $image->fileName, PATHINFO_FILENAME );
+			$extension       = pathinfo( $image->fileName, PATHINFO_EXTENSION );
+			$existingImage   = $this->attachmentService()->readByUniqueIdentifier( "{$filename}(-scaled)?\.{$extension}" );
+			$existingImageId = $existingImage?->indexIdentifier() ?? 0;
+			$nextImageId     = 0 < $existingImageId ? $existingImage : $this->imageService()->import( $image );
+			$_entity->updateFeaturedImageIdentifier( $nextImageId );
 		} catch ( SetReaderException ) {
 			$_entity->updateFeaturedImageIdentifier( $_existingId );
 		}
