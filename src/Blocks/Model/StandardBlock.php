@@ -89,7 +89,13 @@ trait StandardBlock {
 			$classes->addMaybe( $replacement, $nodeHasOriginal );
 		}
 
-		return $classes->join( ' ' );
+		return trim(
+			$classes->filterUnique()->filter(
+				function ( $_item ) {
+					return ! empty( $_item );
+				}
+			)->join( ' ' )
+		);
 	}
 
 	/**
