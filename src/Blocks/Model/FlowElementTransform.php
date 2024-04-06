@@ -97,9 +97,7 @@ trait FlowElementTransform {
 	 */
 	public function verifyClassAttribute( Crawler $_element, array $_expectedClasses ): bool {
 		// Manually split and match instead of HtmlPageCrawler hasClass(), which can only handle one class at a time
-		$attribute = $_element->matches( '*' ) && method_exists( $_element, 'getAttribute' )
-			? $_element->getAttribute( 'class' )
-			: null;
+		$attribute = $_element->matches( '*' ) ? $_element->attr( 'class' ) : null;
 		$classes   = preg_split( '/\s+/', $attribute ?? '' );
 		$checkSet  = false !== $classes ? Arrays::from( $classes ) : Arrays::fresh();
 
