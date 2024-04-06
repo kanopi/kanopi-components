@@ -69,6 +69,14 @@ trait StandardBlock {
 		Arrays $_domAttributes
 	): void {}
 
+	/**
+	 * Flag whether to keep the original set of Node classes when mapping
+	 *  - Override as false in a consuming class to remove the original class listing
+	 */
+	protected function keepOriginalMappedClasses(): bool {
+		return true;
+	}
+
 
 	/**
 	 * Check the nodes class list and replace select classes
@@ -81,7 +89,7 @@ trait StandardBlock {
 		$classes     = Arrays::fresh();
 		$nodeClasses = $_node->attr( 'class' ) ?? '';
 
-		$classes->addMaybe( $nodeClasses, ! empty( $nodeClasses ) );
+		$classes->addMaybe( $nodeClasses, $this->keepOriginalMappedClasses() && ! empty( $nodeClasses ) );
 
 		foreach ( $this->classMapping() as $original => $replacement ) {
 			$nodeHasOriginal = $this->verifyClassAttribute( $_node, [ $original ] );
