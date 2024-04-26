@@ -102,6 +102,15 @@ trait PostTypeEntity {
 	}
 
 	/**
+	 * Direct read access for the internal system entity (WP_Post)
+	 *
+	 * @return WP_Post|null
+	 */
+	public function internalSystemEntity(): ?WP_Post {
+		return $this->wpPost;
+	}
+
+	/**
 	 * @see IIndexedEntity::systemEntityName()
 	 */
 	public function systemEntityName(): string {
