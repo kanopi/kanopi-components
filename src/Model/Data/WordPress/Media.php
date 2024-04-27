@@ -8,32 +8,34 @@ use Kanopi\Components\Transformers\Arrays;
  * WP REST API Generic Attachment/Media post type model
  *  - Requires the target system (being migrated into) attaches a post meta field named legacy_url to the attachment (Media) post type
  *
- * @package pen-content-migration
+ * @package kanopi/components
  */
-class Media implements IPostTypeEntity {
+class Media implements MediaPostEntity {
 	use PostTypeEntity;
 
 	/**
-	 * Generic post type constructor
+	 * Generic media post type constructor
 	 *
+	 * @param string      $external_url      Legacy URL used as the cross-system unique identifier
 	 * @param string      $post_mime_type    (Optional) Mime type of attachment, i.e. image/svg+xml, image/png
-	 * @param string      $legacy_url        (Optional) Legacy URL used as the cross-system unique identifier
-	 * @param int         $legacy_id         (Optional) Legacy ID from previous system, if available
 	 * @param string      $post_modified_gmt (Optional) Last Modification date/time in UTC
+	 * @param int         $legacy_id         (Optional) Legacy ID from previous system, if available
 	 * @param string|null $post_date_gmt     (Optional) Post date string from the remote source in UTC
 	 * @param string|null $post_excerpt      (Optional) Caption, uses post excerpt
 	 * @param string|null $post_name         (Optional) Desired post name/slug
 	 * @param string      $_wp_attached_file (Optional) Attachment URL either relative to the Site URL or an external URL
+	 * @param string      $overrideFileName  (Optional) Override the file name to write when importing
 	 */
 	public function __construct(
+		public string $external_url = '',
 		public string $post_mime_type = '',
-		public string $legacy_url = '',
-		public int $legacy_id = 0,
 		public string $post_modified_gmt = '',
+		public ?int $legacy_id = null,
 		private ?string $post_date_gmt = null,
 		private ?string $post_excerpt = null,
 		private ?string $post_name = null,
-		private ?string $_wp_attached_file = null
+		private ?string $_wp_attached_file = null,
+		private ?string $overrideFileName = null
 	) {
 		$this->metaFields = Arrays::fresh();
 	}
@@ -60,7 +62,7 @@ class Media implements IPostTypeEntity {
 		)
 		->appendMaybe( [ 'post_excerpt' => $this->caption() ], null !== $this->caption() )
 		->appendMaybe( [ 'post_name' => $this->slug() ], null !== $this->slug() )
-			->toArray();
+		->toArray();
 	}
 
 	/**
@@ -73,10 +75,42 @@ class Media implements IPostTypeEntity {
 	/**
 	 * {@inheritDoc}
 	 */
+	public function fileName(): string {
+		$externalPath = $this->overrideFileName ?? $this->external_url;
+		$path         = ! empty( $this->_wp_attached_file ) ? $this->_wp_attached_file : $externalPath;
+
+		return pathinfo( $path, PATHINFO_BASENAME );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function legacyId(): ?string {
+		return $this->legacy_id;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function externalUrl(): string {
+		return $this->external_url;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function metaFieldMapping(): array {
 		return $this->metaFields
-			->writeIndex( 'legacy_url', $this->legacy_url )
+			->writeIndex( 'external_url', $this->external_url )
+			->appendMaybe( [ 'legacy_id' => $this->legacy_id ], null !== $this->legacy_id )
 			->toArray();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function readMeta( string $_key ): mixed {
+		return $this->metaFields->readIndex( $_key );
 	}
 
 	/**
@@ -113,7 +147,7 @@ class Media implements IPostTypeEntity {
 	 * {@inheritDoc}
 	 */
 	public function uniqueIdentifier(): string {
-		return $this->legacy_url;
+		return $this->external_url;
 	}
 
 	/**
@@ -130,5 +164,14 @@ class Media implements IPostTypeEntity {
 	 */
 	public function version(): string {
 		return $this->post_modified_gmt;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function writeMeta( string $_key, mixed $_value ): MediaPostEntity {
+		$this->metaFields->writeIndex( $_key, $_value );
+
+		return $this;
 	}
 }

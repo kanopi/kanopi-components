@@ -17,7 +17,7 @@ use League\Csv\Writer;
 /**
  * Service to read and write from a CSV driven data-set with League CSV
  *
- * @package kanopi/cli
+ * @package kanopi/components
  */
 class LeagueCsv implements IExternalStreamReader {
 	use Entities;

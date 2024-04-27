@@ -8,7 +8,6 @@ use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Processor\Recurrent\BatchedCursorUpdate;
 use Kanopi\Components\Services\System\IIndexedEntityWriter;
 use Kanopi\Components\Services\System\WordPress\ImageWriter;
-use WP_Error;
 
 /**
  * Manage featured images on supported post entities
@@ -31,6 +30,23 @@ abstract class FeaturedImageProcessor extends BatchedCursorUpdate {
 	abstract protected function attachmentService(): IIndexedEntityWriter;
 
 	/**
+	 * Regex used to match images in the Media Library in processFeatureImage()
+	 *  - Default checks for scaled images
+	 *  - May need to override if the site uses plugins for WebP or other formats
+	 *
+	 * @param string $_filename  Expected filename
+	 * @param string $_extension Expected file extension
+	 *
+	 * @return string
+	 */
+	protected function featureImageIdentifierExpression(
+		string $_filename,
+		string $_extension
+	): string {
+		return "{$_filename}(-scaled)?\.{$_extension}";
+	}
+
+	/**
 	 * Process any newly requested featured image, maintains current on error
 	 *
 	 * @param FeaturedImagePostEntity $_entity     External entity to process
@@ -39,15 +55,17 @@ abstract class FeaturedImageProcessor extends BatchedCursorUpdate {
 	 */
 	protected function processFeaturedImage( FeaturedImagePostEntity $_entity, int $_existingId = 0 ): void {
 		$image = $_entity->readNewFeaturedImage();
-		if ( ! $image->useFeaturedImage() ) {
+		if ( empty( $image->externalUrl() ) || empty( $image->fileName() ) ) {
 			return;
 		}
 
 		// WordPress will scale large images, to accommodate this, use a regular expression to check
 		try {
-			$filename        = pathinfo( $image->fileName, PATHINFO_FILENAME );
-			$extension       = pathinfo( $image->fileName, PATHINFO_EXTENSION );
-			$existingImage   = $this->attachmentService()->readByUniqueIdentifier( "{$filename}(-scaled)?\.{$extension}" );
+			$filename        = pathinfo( $image->fileName(), PATHINFO_FILENAME );
+			$extension       = pathinfo( $image->fileName(), PATHINFO_EXTENSION );
+			$existingImage   = $this->attachmentService()->readByUniqueIdentifier(
+				$this->featureImageIdentifierExpression( $filename, $extension )
+			);
 			$existingImageId = $existingImage?->indexIdentifier() ?? 0;
 			$nextImageId     = 0 < $existingImageId ? $existingImageId : $this->imageService()->import( $image );
 			$_entity->updateFeaturedImageIdentifier( $nextImageId );

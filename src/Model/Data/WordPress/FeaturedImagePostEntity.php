@@ -18,17 +18,17 @@ interface FeaturedImagePostEntity extends IPostTypeEntity {
 	/**
 	 * Read an incoming featured image
 	 *
-	 * @return FeaturedImage
+	 * @return MediaPostEntity
 	 */
-	public function readNewFeaturedImage(): FeaturedImage;
+	public function readNewFeaturedImage(): MediaPostEntity;
 
 	/**
 	 * Change the new featured image
 	 *
-	 * @param FeaturedImage $_image Feature image details
+	 * @param MediaPostEntity $_image Feature image details
 	 * @return void
 	 */
-	public function updateNewFeaturedImage( FeaturedImage $_image ): void;
+	public function updateNewFeaturedImage( MediaPostEntity $_image ): void;
 
 	/**
 	 * Change the featured image identifier
