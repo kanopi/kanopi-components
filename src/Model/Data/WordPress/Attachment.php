@@ -79,6 +79,6 @@ class Attachment implements IPostTypeEntity {
 	 * {@inheritDoc}
 	 */
 	public function version(): string {
-		return $this->_wpPost?->post_modified_gmt ?? '';
+		return $this->wpPost?->post_modified_gmt ?? '';
 	}
 }

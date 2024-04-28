@@ -46,7 +46,7 @@ trait IndexedEntityWriter {
 	/**
 	 * System writable repository
 	 *
-	 * @returns ISetWriter
+	 * @return ISetWriter
 	 */
 	abstract public function entityRepository(): ISetWriter;
 

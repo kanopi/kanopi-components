@@ -9,7 +9,6 @@ use Kanopi\Components\Repositories\IIndexedEntityGroupWriter;
 use Kanopi\Components\Repositories\ISetReader;
 use Kanopi\Components\Repositories\ISetWriter;
 use Kanopi\Components\Services\System\IIndexedEntityWriter;
-use WP_Post;
 
 /**
  * WordPress standard attachment post type entity
@@ -65,7 +64,7 @@ class Attachments implements IIndexedEntityWriter {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function entityRepository(): ISetWriter {
+	public function entityRepository(): ISetWriter {
 		return $this->entityRepository;
 	}
 

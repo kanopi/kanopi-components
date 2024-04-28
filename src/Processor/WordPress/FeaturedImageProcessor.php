@@ -6,8 +6,7 @@ use Kanopi\Components\Model\Data\IIndexedEntity;
 use Kanopi\Components\Model\Data\WordPress\FeaturedImagePostEntity;
 use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Processor\Recurrent\BatchedCursorUpdate;
-use Kanopi\Components\Services\System\IIndexedEntityWriter;
-use Kanopi\Components\Services\System\WordPress\ImageWriter;
+use Kanopi\Components\Services\System\WordPress\MediaFileWriter;
 
 /**
  * Manage featured images on supported post entities
@@ -16,18 +15,11 @@ use Kanopi\Components\Services\System\WordPress\ImageWriter;
  */
 abstract class FeaturedImageProcessor extends BatchedCursorUpdate {
 	/**
-	 * Media Library Image Import Service
-	 *
-	 * @return ImageWriter
-	 */
-	abstract protected function imageService(): ImageWriter;
-
-	/**
 	 * Media Library to Post Attachment Service
 	 *
-	 * @return IIndexedEntityWriter
+	 * @return MediaFileWriter
 	 */
-	abstract protected function attachmentService(): IIndexedEntityWriter;
+	abstract protected function attachmentService(): MediaFileWriter;
 
 	/**
 	 * Regex used to match images in the Media Library in processFeatureImage()
@@ -67,7 +59,7 @@ abstract class FeaturedImageProcessor extends BatchedCursorUpdate {
 				$this->featureImageIdentifierExpression( $filename, $extension )
 			);
 			$existingImageId = $existingImage?->indexIdentifier() ?? 0;
-			$nextImageId     = 0 < $existingImageId ? $existingImageId : $this->imageService()->import( $image );
+			$nextImageId     = 0 < $existingImageId ? $existingImageId : $this->attachmentService()->importFile( $image );
 			$_entity->updateFeaturedImageIdentifier( $nextImageId );
 		} catch ( SetReaderException ) {
 			$_entity->updateFeaturedImageIdentifier( $_existingId );

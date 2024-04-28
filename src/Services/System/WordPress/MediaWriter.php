@@ -52,11 +52,18 @@ class MediaWriter implements MediaFileWriter {
 		return $this->entityRepository;
 	}
 
-		/**
-		 * {@inheritDoc}
-		 */
+	/**
+	 * {@inheritDoc}
+	 */
 	public function importFile( MediaPostEntity $_media ): int {
-		return $this->mediaWriter->import( $_media );
+		$newImageId = $this->mediaWriter->import( $_media );
+
+		if ( 0 < $newImageId ) {
+			$_media->updateIndexIdentifier( $newImageId );
+			$this->update( $_media );
+		}
+
+		return $newImageId;
 	}
 
 	/**
