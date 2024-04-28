@@ -8,7 +8,6 @@ use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Repositories\IIndexedEntityGroupWriter;
 use Kanopi\Components\Repositories\ISetReader;
 use Kanopi\Components\Repositories\ISetWriter;
-use Kanopi\Components\Services\System\IIndexedEntityWriter;
 
 /**
  * WordPress standard attachment post type entity
@@ -16,7 +15,7 @@ use Kanopi\Components\Services\System\IIndexedEntityWriter;
  *
  * @package kanopi/components
  */
-class MediaWriter implements IIndexedEntityWriter, MediaFileWriter {
+class MediaWriter implements MediaFileWriter {
 	use PostTypeEntityWriter;
 	use NamedPropertyMap;
 
