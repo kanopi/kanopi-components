@@ -2,13 +2,12 @@
 
 namespace Kanopi\Components\Services\System\WordPress;
 
-use Kanopi\Components\Model\Data\WordPress\Attachment;
-use Kanopi\Components\Model\Data\WordPress\IPostTypeEntity;
+use Kanopi\Components\Model\Data;
+use Kanopi\Components\Model\Data\WordPress\MediaPostEntity;
 use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Repositories\IIndexedEntityGroupWriter;
 use Kanopi\Components\Repositories\ISetReader;
 use Kanopi\Components\Repositories\ISetWriter;
-use Kanopi\Components\Services\System\IIndexedEntityWriter;
 
 /**
  * WordPress standard attachment post type entity
@@ -16,7 +15,7 @@ use Kanopi\Components\Services\System\IIndexedEntityWriter;
  *
  * @package kanopi/components
  */
-class Attachments implements IIndexedEntityWriter {
+class MediaWriter implements MediaFileWriter {
 	use PostTypeEntityWriter;
 	use NamedPropertyMap;
 
@@ -27,13 +26,13 @@ class Attachments implements IIndexedEntityWriter {
 	 * @param ISetWriter                $entityRepository   Attachment/post entity repository
 	 * @param ISetReader                $metaDataRepository Metadata entity repository
 	 * @param IIndexedEntityGroupWriter $taxonomyRepository Entity term repository
-	 * @param string                    $contentFilePath    Base file path for attached files
+	 * @param ImageWriter               $mediaWriter        Media image file writer service
 	 */
 	public function __construct(
 		protected ISetWriter $entityRepository,
 		protected ISetReader $metaDataRepository,
 		protected IIndexedEntityGroupWriter $taxonomyRepository,
-		protected string $contentFilePath
+		protected ImageWriter $mediaWriter
 	) {}
 
 	/**
@@ -47,25 +46,24 @@ class Attachments implements IIndexedEntityWriter {
 	}
 
 	/**
-	 * Set the base URL for attachments before mapping fields
-	 *
-	 * @param IPostTypeEntity $_entity Entity to process
-	 *
-	 * @return IPostTypeEntity
+	 * {@inheritDoc}
 	 */
-	protected function beforeEntityMapping( IPostTypeEntity $_entity ): IPostTypeEntity {
-		if ( is_a( $_entity, Attachment::class ) ) {
-			$_entity->changeUrlBasePath( $this->contentFilePath );
-		}
-
-		return $_entity;
+	public function entityRepository(): ISetWriter {
+		return $this->entityRepository;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function entityRepository(): ISetWriter {
-		return $this->entityRepository;
+	public function importFile( MediaPostEntity $_media ): int {
+		$newImageId = $this->mediaWriter->import( $_media );
+
+		if ( 0 < $newImageId ) {
+			$_media->updateIndexIdentifier( $newImageId );
+			$this->update( $_media );
+		}
+
+		return $newImageId;
 	}
 
 	/**
@@ -82,10 +80,10 @@ class Attachments implements IIndexedEntityWriter {
 	 *
 	 * @param string $_unique_identifier Entity index identifier
 	 *
-	 * @return IPostTypeEntity|null
+	 * @return Data\WordPress\IPostTypeEntity|null
 	 * @throws SetReaderException Unable to read system entity
 	 */
-	public function readByUniqueIdentifier( string $_unique_identifier ): ?IPostTypeEntity {
+	public function readByUniqueIdentifier( string $_unique_identifier ): ?Data\WordPress\IPostTypeEntity {
 		$post_cursor = $this->entityRepository()->read(
 			[
 				'post_status'    => $this->allowedIndexPostStatus(),
@@ -111,7 +109,14 @@ class Attachments implements IIndexedEntityWriter {
 	 * {@inheritDoc}
 	 */
 	protected function readEntityClassName(): string {
-		return Attachment::class;
+		return Data\WordPress\Media::class;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function readSystemUrl( MediaPostEntity $_media ): string {
+		return function_exists( 'wp_get_attachment_url' ) ? wp_get_attachment_url( $_media->indexIdentifier() ) : '';
 	}
 
 	/**
@@ -125,6 +130,6 @@ class Attachments implements IIndexedEntityWriter {
 	 * {@inheritDoc}
 	 */
 	public function uniqueIdentifierFieldName(): string {
-		return '_wp_attached_file';
+		return 'external_url';
 	}
 }

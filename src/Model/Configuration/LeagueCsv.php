@@ -5,7 +5,7 @@ namespace Kanopi\Components\Model\Configuration;
 /**
  * League CSV Configuration
  *
- * @package kanopi/cli
+ * @package kanopi/components
  */
 class LeagueCsv {
 	const VALID_FILE_MODES = [ 'r', 'r+', 'w' ];

@@ -2,7 +2,8 @@
 
 namespace Kanopi\Components\Services\System\WordPress;
 
-use Kanopi\Components\Model\Data\WordPress\FeaturedImage;
+use Kanopi\Components\Model\Data\WordPress\MediaPostEntity;
+use Kanopi\Components\Model\Exception\DependencyException;
 
 /**
  * System image import service
@@ -13,9 +14,11 @@ interface ImageWriter {
 	/**
 	 * Download an external image, then upload it to the Media Library
 	 *
-	 * @param FeaturedImage $_image Featured image to associate
+	 * @param MediaPostEntity $_image External image to import
+	 *
+	 * @throws DependencyException Missing dependency service to write the media file
 	 *
 	 * @return int New image attachment identifier
 	 */
-	public function import( FeaturedImage $_image ): int;
+	public function import( MediaPostEntity $_image ): int;
 }

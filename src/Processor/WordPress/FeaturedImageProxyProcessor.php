@@ -6,20 +6,29 @@ use Kanopi\Components\Model\Data\IIndexedEntity;
 use Kanopi\Components\Model\Data\WordPress\FeaturedImagePostEntity;
 use Kanopi\Components\Model\Exception\SetReaderException;
 use Kanopi\Components\Processor\Recurrent\BatchedCursorUpdate;
-use Kanopi\Components\Services\System\WordPress\MediaFileWriter;
+use Kanopi\Components\Services\System\WordPress\Attachments;
+use Kanopi\Components\Services\System\WordPress\ImageWriter;
 
 /**
- * Manage featured images on supported post entities
+ * Manage featured images on supported post entities using a calculated, proxy file name instead of the originating URL
+ *  - Used for cases where the origination media URL may expire or change at anytime (CDN, AirTable, etc)
  *
  * @package kanopi/components
  */
-abstract class FeaturedImageProcessor extends BatchedCursorUpdate {
+abstract class FeaturedImageProxyProcessor extends BatchedCursorUpdate {
+	/**
+	 * Media Library Image Import Service
+	 *
+	 * @return ImageWriter
+	 */
+	abstract protected function imageService(): ImageWriter;
+
 	/**
 	 * Media Library to Post Attachment Service
 	 *
-	 * @return MediaFileWriter
+	 * @return Attachments
 	 */
-	abstract protected function attachmentService(): MediaFileWriter;
+	abstract protected function attachmentService(): Attachments;
 
 	/**
 	 * Regex used to match images in the Media Library in processFeatureImage()
@@ -47,7 +56,7 @@ abstract class FeaturedImageProcessor extends BatchedCursorUpdate {
 	 */
 	protected function processFeaturedImage( FeaturedImagePostEntity $_entity, int $_existingId = 0 ): void {
 		$image = $_entity->readNewFeaturedImage();
-		if ( empty( $image->externalUrl() ) || empty( $image->fileName() ) ) {
+		if ( ! $image->externalUrl() ) {
 			return;
 		}
 
@@ -59,7 +68,7 @@ abstract class FeaturedImageProcessor extends BatchedCursorUpdate {
 				$this->featureImageIdentifierExpression( $filename, $extension )
 			);
 			$existingImageId = $existingImage?->indexIdentifier() ?? 0;
-			$nextImageId     = 0 < $existingImageId ? $existingImageId : $this->attachmentService()->importFile( $image );
+			$nextImageId     = 0 < $existingImageId ? $existingImageId : $this->imageService()->import( $image );
 			$_entity->updateFeaturedImageIdentifier( $nextImageId );
 		} catch ( SetReaderException ) {
 			$_entity->updateFeaturedImageIdentifier( $_existingId );
