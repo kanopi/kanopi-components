@@ -115,6 +115,13 @@ class MediaWriter implements MediaFileWriter {
 	/**
 	 * {@inheritDoc}
 	 */
+	public function readSystemUrl( MediaPostEntity $_media ): string {
+		return function_exists( 'wp_get_attachment_url' ) ? wp_get_attachment_url( $_media->indexIdentifier() ) : '';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function systemEntityName(): string {
 		return 'attachment';
 	}

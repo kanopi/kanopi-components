@@ -20,4 +20,13 @@ interface MediaFileWriter extends IIndexedEntityWriter {
 	 * @return int New media attachment identifier
 	 */
 	public function importFile( MediaPostEntity $_media ): int;
+
+	/**
+	 * Read the system URL for a media item
+	 *
+	 * @param MediaPostEntity $_media Media entity
+	 *
+	 * @return string
+	 */
+	public function readSystemUrl( MediaPostEntity $_media ): string;
 }

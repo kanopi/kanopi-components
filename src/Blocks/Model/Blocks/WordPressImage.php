@@ -107,13 +107,14 @@ class WordPressImage implements DomTransform {
 		$tagAttributes   = Arrays::from( [] );
 
 		// Read the source node attributes
-		$nodeSrcUrl = null !== $_attachment ? $_attachment->externalUrl() : urldecode( $_node->attr( 'src' ) ?? '' );
+		$nodeSrcUrl = urldecode( $_node->attr( 'src' ) ?? '' );
 
 		// Process the URL, either a Site Attachment or External URL; tag attributes are explicit ordered
 		if ( null !== $_attachment ) {
+			$nodeSrcUrl = $this->mediaService->readSystemUrl( $_attachment );
 			$blockAttributes->append( [ sprintf( '"id":%d', $_attachment->indexIdentifier() ) ] );
 			$blockAttributes->append( [ '"linkDestination":"none"' ] );
-			$tagAttributes->append( [ sprintf( 'src="%s"', $_attachment->externalUrl() ) ] );
+			$tagAttributes->append( [ sprintf( 'src="%s"', $nodeSrcUrl ) ] );
 			$tagAttributes->append( [ sprintf( 'class="wp-image-%s"', $_attachment->indexIdentifier() ) ] );
 		}
 		else {
